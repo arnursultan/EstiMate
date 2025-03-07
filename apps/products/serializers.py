@@ -7,7 +7,6 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_price(self, value):
-        """ Проверка, что цена не отрицательная """
         if value < 0:
             raise serializers.ValidationError("Цена не может быть отрицательной!")
         return value
