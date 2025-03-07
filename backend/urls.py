@@ -8,9 +8,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="BaiEl API",
+        title=" API",
         default_version='v1',
-        description="Документация API проекта BaiEl",
+        description="Документация API проекта ",
     ),
     public=True,
 )
