@@ -15,7 +15,6 @@ import os
 
 User = get_user_model()
 
-# Функция отправки SMS через Twilio
 def send_sms(to, message):
     account_sid = os.getenv("TWILIO_ACCOUNT_SID")
     auth_token = os.getenv("TWILIO_AUTH_TOKEN")
@@ -65,7 +64,6 @@ class PasswordResetPhoneConfirmView(APIView):
         if not cached_code or cached_code != reset_code:
             return Response({"error": "Неверный код подтверждения"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Находим пользователя по номеру телефона
         user = User.objects.filter(phone=phone).first()
         if not user:
             return Response({"error": "Пользователь не найден"}, status=status.HTTP_404_NOT_FOUND)
@@ -142,7 +140,7 @@ class PasswordResetView(APIView):
             return Response({"error": "Пользователь не найден"}, status=status.HTTP_404_NOT_FOUND)
 
         reset_token = str(random.randint(10000, 99999))
-        user.token_reset = reset_token  # Используем поле `token_reset`
+        user.token_reset = reset_token
         user.save()
 
         if user.email:
@@ -155,7 +153,6 @@ class PasswordResetView(APIView):
             )
             return Response({"message": "Код отправлен на email"}, status=status.HTTP_200_OK)
 
-        # Тут можно добавить отправку SMS, если нужно
         return Response({"message": "Код отправлен на телефон"}, status=status.HTTP_200_OK)
 
 class PasswordResetConfirmView(APIView):
