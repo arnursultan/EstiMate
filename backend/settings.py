@@ -12,21 +12,25 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'drf_yasg',
-    'django_filters',
-    'apps.users',
-    'apps.products',
-    'apps.stores',
-    'apps.orders',
-    'apps.finance',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "rest_framework",
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
+
+    "drf_yasg",
+    "django_filters",
+
+    "apps.users",
+    "apps.products",
+    "apps.stores",
+    "apps.orders",
+    "apps.finance",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +71,9 @@ DATABASES = {
         'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': os.getenv("DB_HOST"),
         'PORT': os.getenv("DB_PORT"),
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+        }
     }
 }
 
@@ -86,27 +93,53 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "apps.users.serializers.CustomRegisterSerializer"
+}
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "apps.users.serializers.UserSerializer"
+}
+
+AUTH_USER_MODEL = "users.User"
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=int(os.getenv("ACCESS_TOKEN_LIFETIME", 1))),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.getenv("REFRESH_TOKEN_LIFETIME", 7))),
 }
 
-CELERY_BROKER_URL = os.getenv("REDIS_URL")
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "False") == "True"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-AUTH_USER_MODEL = 'users.User'
 
 LANGUAGE_CODE = 'ru-RU'
 TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
 
+
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
 
 LOGGING = {
     'version': 1,
@@ -115,7 +148,7 @@ LOGGING = {
         'file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/errors.log'),
+            'filename': os.path.join(LOG_DIR, 'errors.log'),
         },
     },
     'loggers': {
