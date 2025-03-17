@@ -1,23 +1,15 @@
-from rest_framework import viewsets, permissions, filters
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from .models import Store
 from .serializers import StoreSerializer
 
+
 class StoreViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all()
+
+    queryset = Store.objects.all().order_by("-created_at")
     serializer_class = StoreSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 
-    filterset_fields = ['city', 'status']
-    search_fields = ['name', 'inn']
-    ordering_fields = ['debt', 'payment']
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.role == 'admin':
-            return Store.objects.all()
-        return Store.objects.filter(owner=user)
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    def create(self, request, *args, **kwargs):
+        return Response({"error": "Создание магазинов доступно только через заявки."}, status=status.HTTP_403_FORBIDDEN)

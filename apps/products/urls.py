@@ -1,9 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProductViewSet
+from .views import ProductViewSet, ProductImageViewSet
 
+# Используем Router для ViewSet'ов
 router = DefaultRouter()
-router.register(r'products', ProductViewSet)
+router.register(r'products', ProductViewSet, basename='product')
+router.register(r'product-images', ProductImageViewSet, basename='product-image')
 
 urlpatterns = [
     path('', include(router.urls)),

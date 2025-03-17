@@ -42,8 +42,24 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        if "password" in validated_data:
-            instance.set_password(validated_data.pop("password"))
-        instance = super().update(instance, validated_data)
+        print("🔥 StoreSerializer update() вызван!")
+        new_payment = validated_data.get("payment", 0)
+
+        if new_payment > 0:
+            old_debt = instance.debt
+            instance.debt = max(instance.debt - new_payment, 0)
+            instance.payment += new_payment
+
+            if instance.debt == 0:
+                instance.status = "closed"
+
+            logger.info(
+                f"[{instance.updated_at}] Магазин {instance.name} внес {new_payment} KGS, "
+                f"долг был {old_debt}, стал {instance.debt}."
+            )
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
         instance.save()
         return instance
