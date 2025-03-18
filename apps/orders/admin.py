@@ -3,14 +3,11 @@ from .models import OrderRequest
 
 @admin.register(OrderRequest)
 class OrderRequestAdmin(admin.ModelAdmin):
-    list_display = ("id", "store_name", "partner", "status", "created_at")
-    list_filter = ("status",)
+    list_display = ("id", "store_name", "inn", "city", "status", "created_at")
+    list_filter = ("status", "city")
     search_fields = ("store_name", "inn", "partner__email")
-    ordering = ("-created_at",)
-    actions = ["approve_selected"]
 
-    def approve_selected(self, request, queryset):
-        for order in queryset:
-            order.approve()
-
-    approve_selected.short_description = "Подтвердить выбранные заявки"
+    def save_model(self, request, obj, form, change):
+        if obj.status == "approved" and "status" in form.changed_data:
+            obj.approve()
+        super().save_model(request, obj, form, change)

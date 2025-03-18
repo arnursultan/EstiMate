@@ -9,6 +9,7 @@ from .views import (
     PasswordResetConfirmView,
     # PasswordResetPhoneView,
     # PasswordResetPhoneConfirmView,
+    CustomTokenRefreshView,
 )
 
 urlpatterns = [
@@ -22,5 +23,5 @@ urlpatterns = [
     # path("password-reset/phone/", PasswordResetPhoneView.as_view(), name="password_reset_phone"),
     # path("password-reset/phone/confirm/", PasswordResetPhoneConfirmView.as_view(), name="password_reset_phone_confirm"),
 
-    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
 ]

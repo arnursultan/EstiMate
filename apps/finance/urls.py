@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import FinanceViewSet
+from .views import FinanceSummaryView
 
 router = DefaultRouter()
-router.register(r'finance', FinanceViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
+    path("summary/", FinanceSummaryView.as_view(), name="finance-summary"),  # ✅ Теперь View подключен правильно
 ]

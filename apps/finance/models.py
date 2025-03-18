@@ -1,20 +1,23 @@
 from django.db import models
-from apps.stores.models import Store
+from django.apps import apps
+from django.utils.timezone import now
+
 
 class Finance(models.Model):
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name="finances")
-    income = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    expense = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    bonus = models.PositiveIntegerField(default=0)
-    defect = models.PositiveIntegerField(default=0)
-    debt = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    payment = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    created_at = models.DateTimeField(auto_now_add=True)
+    store = models.ForeignKey("stores.Store", on_delete=models.CASCADE, verbose_name="Магазин")
+    income = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, verbose_name="Доход")  # 💰
+    expense = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, verbose_name="Расход")  # 🛒
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, verbose_name="Остаток")  # 🏦
+    bonus = models.IntegerField(default=0, verbose_name="Бонусные товары")  # 🎁
+    defect = models.IntegerField(default=0, verbose_name="Бракованные товары")  # ❌
+    debt = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, verbose_name="Долг")  # 🔥
+    payment = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, verbose_name="Погашение")  # ✅
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата операции")
 
     def save(self, *args, **kwargs):
-        self.balance = self.income - self.expense - self.debt + self.payment
+        self.balance = self.income - self.expense + self.debt - self.payment
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return f"Финансы {self.store.name} - Баланс: {self.balance}"
+    class Meta:
+        verbose_name = "Финансы"
+        verbose_name_plural = "Финансы"

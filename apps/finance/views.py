@@ -1,18 +1,30 @@
-from rest_framework import viewsets, permissions, filters
-from django_filters.rest_framework import DjangoFilterBackend
-from .models import Finance
-from .serializers import FinanceSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Sum
+from apps.finance.models import Finance
+from datetime import datetime, timedelta
 
-class FinanceViewSet(viewsets.ModelViewSet):
-    queryset = Finance.objects.all()
-    serializer_class = FinanceSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['store']
-    ordering_fields = ['created_at', 'balance']
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.role == 'admin':
-            return Finance.objects.all()
-        return Finance.objects.filter(store__owner=user)
+class FinanceSummaryView(APIView):
+    def get_finance_summary(self, start_date):
+        summary = Finance.objects.filter(created_at__gte=start_date).aggregate(
+            total_income=Sum("income", default=0),
+            total_expense=Sum("expense", default=0),
+            total_debt=Sum("debt", default=0),
+            total_payment=Sum("payment", default=0),
+            total_bonus=Sum("bonus", default=0),
+        )
+        summary["total_debt"] = max(summary["total_debt"] - summary["total_payment"], 0)
+
+        return summary
+
+    def get(self, request):
+        today = datetime.now().date()
+        week_ago = today - timedelta(days=7)
+        month_ago = today - timedelta(days=30)
+
+        return Response({
+            "today": self.get_finance_summary(today),
+            "week": self.get_finance_summary(week_ago),
+            "month": self.get_finance_summary(month_ago),
+        })

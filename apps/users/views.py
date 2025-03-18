@@ -8,6 +8,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from .serializers import UserSerializer
 from apps.users.tasks import send_reset_email
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework.response import Response
+from rest_framework import status
+
 # from django.core.cache import cache
 # from django.contrib.auth import get_user_model
 # from twilio.rest import Client
@@ -184,3 +188,13 @@ class LogoutView(APIView):
         except Exception as e:
             print(f"❌ Ошибка при выходе: {str(e)}")
             return Response({"error": "Ошибка при выходе"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        try:
+            response = super().post(request, *args, **kwargs)
+            return response
+        except Exception as e:
+            return Response({"error": "Refresh-токен недействителен, войдите заново."},
+                            status=status.HTTP_401_UNAUTHORIZED)
