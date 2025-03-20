@@ -2,12 +2,13 @@ import re
 from rest_framework import serializers
 from .models import User
 import logging
+
 logger = logging.getLogger(__name__)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email", "login", "phone", "role", "full_name", "password"]
+        fields = ["id", "email", "login", "phone", "role", "first_name", "last_name", "password"]
         extra_kwargs = {
             "password": {"write_only": True},
         }
@@ -25,14 +26,19 @@ class UserSerializer(serializers.ModelSerializer):
         return value
 
     def validate_phone(self, value):
+        value = value.replace("+", "")  # Убираем "+"
         if not re.match(r"^\d{10,15}$", value):
             raise serializers.ValidationError("Телефон должен содержать только цифры (10-15 символов).")
         return value
 
-    def validate_full_name(self, value):
-        """ФИО: 15-24 символа"""
-        if not (15 <= len(value) <= 24):
-            raise serializers.ValidationError("Имя должно быть от 15 до 24 символов.")
+    def validate_first_name(self, value):
+        if not (2 <= len(value) <= 24):
+            raise serializers.ValidationError("Имя должно быть от 2 до 24 символов.")
+        return value
+
+    def validate_last_name(self, value):
+        if not (2 <= len(value) <= 24):
+            raise serializers.ValidationError("Фамилия должна быть от 2 до 24 символов.")
         return value
 
     def create(self, validated_data):
@@ -44,24 +50,11 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        print("🔥 StoreSerializer update() вызван!")
-        new_payment = validated_data.get("payment", 0)
-
-        if new_payment > 0:
-            old_debt = instance.debt
-            instance.debt = max(instance.debt - new_payment, 0)
-            instance.payment += new_payment
-
-            if instance.debt == 0:
-                instance.status = "closed"
-
-            logger.info(
-                f"[{instance.updated_at}] Магазин {instance.name} внес {new_payment} KGS, "
-                f"долг был {old_debt}, стал {instance.debt}."
-            )
-
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+
+        if "password" in validated_data:
+            instance.set_password(validated_data["password"])
 
         instance.save()
         return instance

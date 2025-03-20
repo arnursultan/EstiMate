@@ -16,8 +16,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ("category", "status", "bonus")
     search_fields = ("name", "category__name", "owner__email")
     ordering = ("-created_at",)
-    readonly_fields = ("created_at", "updated_at", "bonus")  # bonus теперь только для чтения
-    list_editable = ("price", "stock", "status")  # bonus убрали
+    readonly_fields = ("created_at", "updated_at", "bonus")
+    list_editable = ("price", "stock", "status")
     fieldsets = (
         ("Основная информация", {
             "fields": ("name", "description", "category", "price", "currency", "status", "stock", "owner")

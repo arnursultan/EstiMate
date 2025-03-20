@@ -19,13 +19,30 @@ class OrderRequest(models.Model):
         ("rejected", "Отклонена"),
     ]
 
+    ORDER_TYPE_CHOICES = [
+        ("self", "Для себя"),
+        ("store", "Для магазина"),
+    ]
+
+    order_type = models.CharField(
+        max_length=10,
+        choices=ORDER_TYPE_CHOICES,
+        default="self",
+        verbose_name="Тип заказа",
+    )
+
     partner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Партнёр")
-    store_name = models.CharField(max_length=255, verbose_name="Название магазина")
-    inn = models.CharField(max_length=14, unique=True, validators=[validate_inn], verbose_name="ИНН")
-    city = models.CharField(max_length=50, choices=[("Ош", "Ош"), ("Джалал-Абад", "Джалал-Абад"), ("Баткен", "Баткен")], verbose_name="Город")
+    store_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Название магазина")
+    inn = models.CharField(
+        max_length=14, unique=True, blank=True, null=True,
+        validators=[validate_inn], verbose_name="ИНН"
+    )
+    city = models.CharField(
+        max_length=50, choices=[("Ош", "Ош"), ("Джалал-Абад", "Джалал-Абад"), ("Баткен", "Баткен")],
+        blank=True, null=True, verbose_name="Город"
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending", verbose_name="Статус")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата подачи")
-
     def approve(self):
         logger.info(f"✅ Подтверждаем заявку: {self.store_name} (ИНН: {self.inn})")
         if self.pk is None:
@@ -54,8 +71,7 @@ class OrderRequest(models.Model):
         logger.info(f"✅ Заявка {self.store_name} (ИНН: {self.inn}) подтверждена!")
 
     def __str__(self):
-        return f"Заявка {self.store_name} - {self.get_status_display()}"
-
+        return f"Заявка {self.store_name or self.partner} - {self.get_status_display()}"
     class Meta:
         verbose_name = "Заявка на регистрацию магазина"
         verbose_name_plural = "Заявки на регистрацию магазинов"

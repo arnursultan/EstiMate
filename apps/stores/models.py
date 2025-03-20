@@ -41,31 +41,37 @@ class Store(models.Model):
             new_payment = self.payment - old_store.payment
             new_debt = self.debt - old_store.debt
 
-            if new_payment > 0:
-                if old_store.debt == 0:
-                    raise ValidationError("Ошибка: Долг уже погашен, платежи больше не принимаются!")
+            if new_payment > 0 and old_store.debt == 0:
+                logger.info(f"💰 Магазин {self.name} оплатил наличными: {new_payment} KGS.")
 
-                if new_payment > old_store.debt:
-                    raise ValidationError(f"Ошибка: Платеж {new_payment} больше текущего долга {old_store.debt}!")
+                Finance.objects.create(
+                    store=self,
+                    income=new_payment,
+                    expense=0,
+                    debt=0,
+                    payment=0,
+                    bonus=0,
+                    defect=0,
+                )
 
-                old_debt = old_store.debt
-                self.debt = max(old_store.debt - new_payment, 0)
-
-                logger.info(f"💰 Магазин {self.name} внёс {new_payment} KGS. Долг был {old_debt}, стал {self.debt}.")
+            # ✅ Бонусные товары
+            if hasattr(self, "bonus_items") and self.bonus_items > 0:
+                logger.info(f"🎁 Магазин {self.name} получил бонусных товаров: {self.bonus_items} шт.")
 
                 Finance.objects.create(
                     store=self,
                     income=0,
                     expense=0,
-                    debt=self.debt,
-                    payment=new_payment,
-                    bonus=0,
+                    debt=0,
+                    payment=0,
+                    bonus=self.bonus_items,
                     defect=0,
                 )
 
+            # ✅ Новый долг
             if new_debt < 0:
-                new_debt_abs = abs(new_debt)
-                logger.info(f"🏦 Магазин {self.name} оформил новый долг: {new_debt_abs} KGS.")
+                logger.info(f"🏦 Магазин {self.name} оформил новый долг: {abs(new_debt)} KGS.")
+
                 Finance.objects.create(
                     store=self,
                     income=0,

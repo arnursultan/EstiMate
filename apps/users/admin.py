@@ -11,7 +11,7 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ("last_login",)
 
     fieldsets = (
-        ("Основная информация", {"fields": ("email", "login", "phone", "full_name", "role")}),
+        ("Основная информация", {"fields": ("email", "login", "phone", "first_name", "last_name", "role")}),
         ("Безопасность", {"fields": ("password",)}),
         ("Статус", {"fields": ("is_active", "is_staff", "is_superuser", "last_login")}),
         ("Группы и разрешения", {"fields": ("groups", "user_permissions")}),

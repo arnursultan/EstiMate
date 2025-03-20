@@ -12,74 +12,6 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.response import Response
 from rest_framework import status
 
-# from django.core.cache import cache
-# from django.contrib.auth import get_user_model
-# from twilio.rest import Client
-# from twilio.base.exceptions import TwilioRestException
-# import os
-
-# User = get_user_model()
-#
-# def send_sms(to, message):
-#     account_sid = os.getenv("TWILIO_ACCOUNT_SID")
-#     auth_token = os.getenv("TWILIO_AUTH_TOKEN")
-#     twilio_number = os.getenv("TWILIO_PHONE_NUMBER")
-#
-#     try:
-#         client = Client(account_sid, auth_token)
-#         message = client.messages.create(
-#             body=message,
-#             from_=twilio_number,
-#             to=to
-#         )
-#         print(f"✅ SMS отправлено! Message SID: {message.sid}")
-#         return True
-#     except TwilioRestException as e:
-#         print(f"❌ Ошибка Twilio: {e}")
-#         return False
-#
-# class PasswordResetPhoneView(APIView):
-#     permission_classes = [permissions.AllowAny]
-#
-#     def post(self, request):
-#         phone = request.data.get("phone")
-#
-#         user = User.objects.filter(phone=phone).first()
-#         if not user:
-#             return Response({"error": "Пользователь с таким номером не найден"}, status=status.HTTP_404_NOT_FOUND)
-#
-#         reset_code = str(random.randint(10000, 99999))
-#         cache.set(f"password_reset_{phone}", reset_code, timeout=600)
-#
-#         send_sms(phone, f"Ваш код для сброса пароля: {reset_code}")
-#
-#         return Response({"message": "Код отправлен на номер телефона"}, status=status.HTTP_200_OK)
-#
-#
-# class PasswordResetPhoneConfirmView(APIView):
-#     permission_classes = [permissions.AllowAny]
-#
-#     def post(self, request):
-#         phone = request.data.get("phone")
-#         reset_code = request.data.get("reset_code")
-#         new_password = request.data.get("new_password")
-#
-#         cached_code = cache.get(f"password_reset_{phone}")
-#
-#         if not cached_code or cached_code != reset_code:
-#             return Response({"error": "Неверный код подтверждения"}, status=status.HTTP_400_BAD_REQUEST)
-#
-#         user = User.objects.filter(phone=phone).first()
-#         if not user:
-#             return Response({"error": "Пользователь не найден"}, status=status.HTTP_404_NOT_FOUND)
-#
-#         user.set_password(new_password)
-#         user.save()
-#
-#         cache.delete(f"password_reset_{phone}")
-#
-#         return Response({"message": "Пароль успешно изменён"}, status=status.HTTP_200_OK)
-
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -87,6 +19,7 @@ class RegisterView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(role="partner")
+
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -124,13 +57,22 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def update(self, request, *args, **kwargs):
         user = self.get_object()
         data = request.data
+
         if "role" in data and not user.is_staff:
             return Response({"error": "Вы не можете изменить свою роль"}, status=status.HTTP_403_FORBIDDEN)
 
         if "password" in data:
             user.set_password(data.pop("password"))
 
-        return super().update(request, *args, **kwargs)
+        if "first_name" in data:
+            user.first_name = data["first_name"]
+
+        if "last_name" in data:
+            user.last_name = data["last_name"]
+
+        user.save()
+        return Response({"message": "Профиль обновлён успешно!"}, status=status.HTTP_200_OK)
+
 
 class PasswordResetView(APIView):
     def post(self, request):
@@ -148,9 +90,6 @@ class PasswordResetView(APIView):
         if user.email:
             send_reset_email.delay(user.email, reset_token)
             return Response({"message": "Код отправлен на email"}, status=status.HTTP_200_OK)
-        # else:
-        #     send_sms.delay(user.phone, f"Ваш код для сброса пароля: {reset_token}")
-        #     return Response({"message": "Код отправлен на телефон"}, status=status.HTTP_200_OK)
 
 class PasswordResetConfirmView(APIView):
     permission_classes = [permissions.AllowAny]

@@ -7,8 +7,6 @@ from .views import (
     ProfileView,
     PasswordResetView,
     PasswordResetConfirmView,
-    # PasswordResetPhoneView,
-    # PasswordResetPhoneConfirmView,
     CustomTokenRefreshView,
 )
 
@@ -19,9 +17,6 @@ urlpatterns = [
     path("profile/", ProfileView.as_view(), name="profile"),
     path("password-reset/", PasswordResetView.as_view(), name="password_reset"),
     path("password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-
-    # path("password-reset/phone/", PasswordResetPhoneView.as_view(), name="password_reset_phone"),
-    # path("password-reset/phone/confirm/", PasswordResetPhoneConfirmView.as_view(), name="password_reset_phone_confirm"),
 
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
 ]
