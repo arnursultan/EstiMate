@@ -880,3 +880,115 @@ kombu.exceptions.OperationalError: Error 10061 connecting to localhost:6379. ÐŸÐ
 [2025-03-22 00:52:00] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css.map HTTP/1.1" 200 251096
 [2025-03-22 00:52:01] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js.map HTTP/1.1" 200 517830
 [2025-03-22 00:52:01] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js.map HTTP/1.1" 200 1540070
+[2025-03-22 01:20:38] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:20:38] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:24:26] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css.map HTTP/1.1" 304 0
+[2025-03-22 01:24:26] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js.map HTTP/1.1" 304 0
+[2025-03-22 01:24:27] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js.map HTTP/1.1" 304 0
+[2025-03-22 01:24:27] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-22 01:24:27] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 01:25:18] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:25:18] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:25:51] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:25:51] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:26:13] INFO "GET /api/users/profile/ HTTP/1.1" 200 143
+[2025-03-22 01:28:33] INFO Watching for file changes with StatReloader
+[2025-03-22 01:28:37] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 01:28:39] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 01:28:57] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:28:57] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:34:48] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:34:48] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:37:21] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 01:37:21] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 01:38:11] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-22 01:39:00] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 01:39:00] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+[2025-03-22 01:39:00] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+[2025-03-22 01:39:00] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+[2025-03-22 01:39:00] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+[2025-03-22 01:39:00] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+[2025-03-22 01:39:00] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+[2025-03-22 01:39:00] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+[2025-03-22 01:39:01] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+[2025-03-22 01:39:01] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 01:39:25] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:39:25] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:40:35] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 01:40:38] INFO Watching for file changes with StatReloader
+[2025-03-22 01:40:48] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 01:40:50] INFO Watching for file changes with StatReloader
+[2025-03-22 01:42:57] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 01:42:58] INFO Watching for file changes with StatReloader
+[2025-03-22 01:43:16] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 01:43:17] INFO Watching for file changes with StatReloader
+[2025-03-22 01:43:27] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 01:43:28] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 01:43:44] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:43:44] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:48:27] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\models.py changed, reloading.
+[2025-03-22 01:48:29] INFO Watching for file changes with StatReloader
+[2025-03-22 01:49:15] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 01:49:16] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 01:49:31] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 01:49:31] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 01:56:47] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\orders\views.py changed, reloading.
+[2025-03-22 01:56:49] INFO Watching for file changes with StatReloader
+[2025-03-22 01:58:06] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\orders\views.py changed, reloading.
+[2025-03-22 01:58:07] INFO Watching for file changes with StatReloader
+[2025-03-22 01:58:22] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\orders\views.py changed, reloading.
+[2025-03-22 01:58:23] INFO Watching for file changes with StatReloader
+[2025-03-22 01:58:58] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\orders\views.py changed, reloading.
+[2025-03-22 01:58:59] INFO Watching for file changes with StatReloader
+[2025-03-22 01:59:57] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 01:59:57] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 02:00:16] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 02:00:16] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 02:01:42] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\chats\views.py changed, reloading.
+[2025-03-22 02:01:44] INFO Watching for file changes with StatReloader
+[2025-03-22 02:02:02] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\chats\views.py changed, reloading.
+[2025-03-22 02:02:03] INFO Watching for file changes with StatReloader
+[2025-03-22 02:02:07] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 02:02:07] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 02:02:29] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 02:02:29] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 02:02:44] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 02:02:44] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 02:04:25] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css.map HTTP/1.1" 304 0
+[2025-03-22 02:04:25] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js.map HTTP/1.1" 304 0
+[2025-03-22 02:04:25] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js.map HTTP/1.1" 304 0
+[2025-03-22 02:04:30] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 02:04:30] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 02:06:18] INFO "GET /api/users/profile/ HTTP/1.1" 200 143
+[2025-03-22 02:07:23] INFO "POST /api/users/logout/ HTTP/1.1" 200 44
+[2025-03-22 02:11:28] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\orders\views.py changed, reloading.
+[2025-03-22 02:11:29] INFO Watching for file changes with StatReloader
+[2025-03-22 02:12:00] WARNING Forbidden: /api/users/profile/
+[2025-03-22 02:12:00] WARNING "PUT /api/users/profile/ HTTP/1.1" 403 69
+[2025-03-22 02:14:41] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 02:14:42] INFO Watching for file changes with StatReloader
+[2025-03-22 02:15:47] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 02:15:48] INFO Watching for file changes with StatReloader
+[2025-03-22 02:15:49] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 02:15:49] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 02:15:49] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 02:15:49] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 02:15:49] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 02:15:49] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 02:15:49] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 02:15:49] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 02:15:50] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-22 02:15:50] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24715
+[2025-03-22 02:16:47] WARNING Bad Request: /api/users/login/
+[2025-03-22 02:16:47] WARNING "POST /api/users/login/ HTTP/1.1" 400 56
+[2025-03-22 02:17:07] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-22 02:17:24] INFO "POST /api/users/token/refresh/ HTTP/1.1" 200 483
+[2025-03-22 02:18:35] INFO "GET /api/users/profile/ HTTP/1.1" 200 143

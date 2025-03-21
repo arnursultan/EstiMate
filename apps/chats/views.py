@@ -12,7 +12,7 @@ class ChatRoomViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == "admin":
+        if User.role == "admin":
             return ChatRoom.objects.all()
         return ChatRoom.objects.filter(user=user)
 

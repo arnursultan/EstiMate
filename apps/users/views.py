@@ -1,6 +1,6 @@
 import random
 from django.core.mail import send_mail
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, status
@@ -19,6 +19,24 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=["email", "first_name", "last_name", "password"],
+            properties={
+                "email": openapi.Schema(type=openapi.TYPE_STRING, format="email", description="Email", maxLength=50),
+                "login": openapi.Schema(type=openapi.TYPE_STRING, description="Логин", maxLength=50, nullable=True),
+                "phone": openapi.Schema(type=openapi.TYPE_STRING, description="Телефон", maxLength=15, nullable=True),
+                "first_name": openapi.Schema(type=openapi.TYPE_STRING, description="Имя", maxLength=24, minLength=2),
+                "last_name": openapi.Schema(type=openapi.TYPE_STRING, description="Фамилия", maxLength=24, minLength=2),
+                "password": openapi.Schema(type=openapi.TYPE_STRING, description="Пароль", maxLength=128, minLength=1),
+            },
+        ),
+        responses={201: openapi.Response("Пользователь создан", UserSerializer)}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save(role="partner")
@@ -57,20 +75,34 @@ class LoginView(APIView):
 
         return Response({"error": "Неверные учетные данные"}, status=400)
 
+
 class ProfileView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return self.request.user
+        """ Возвращает текущего аутентифицированного пользователя """
+        user = self.request.user
+
+        # Защита от AnonymousUser
+        if not user.is_authenticated:
+            return Response({"error": "Вы не авторизованы"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return user
 
     def update(self, request, *args, **kwargs):
+        """ Обновляет профиль пользователя, запрещая изменение роли """
         user = self.get_object()
+
+        if isinstance(user, Response):
+            return user
+
         data = request.data
 
         if "role" in data and not user.is_staff:
             return Response({"error": "Вы не можете изменить свою роль"}, status=status.HTTP_403_FORBIDDEN)
+
 
         if "password" in data:
             user.set_password(data.pop("password"))
@@ -82,6 +114,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
             user.last_name = data["last_name"]
 
         user.save()
+
         return Response({"message": "Профиль обновлён успешно!"}, status=status.HTTP_200_OK)
 
 
