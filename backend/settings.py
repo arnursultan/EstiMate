@@ -3,14 +3,21 @@ from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent
+dotenv_path = os.path.join(BASE_DIR, ".env")  # Явный путь
+load_dotenv(dotenv_path)
+
+print(f"DEBUG = {os.getenv('DEBUG')}")
+print(f"DB_NAME = {os.getenv('DB_NAME')}")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
 DEBUG = os.getenv("DEBUG", "False") == "True"
-SERVER_IP = os.getenv("SERVER_IP", "123.456.78.90")
-ALLOWED_HOSTS = [SERVER_IP, "127.0.0.1", "localhost"]
+# SERVER_IP = os.getenv("SERVER_IP", "123.456.78.90")
+# ALLOWED_HOSTS = [SERVER_IP, "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -48,12 +55,17 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://127.0.0.1:8000",
+#     "http://localhost:8000",
+#     f"http://{SERVER_IP}",
+#     f"https://{SERVER_IP}",
+# ]
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
-    f"http://{SERVER_IP}",
-    f"https://{SERVER_IP}",
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
@@ -154,8 +166,9 @@ EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "False") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-STATIC_ROOT = os.getenv("STATIC_ROOT", "/var/www/bai_el/static/")
-MEDIA_ROOT = os.getenv("MEDIA_ROOT", "/var/www/bai_el/media/")
+# STATIC_ROOT = os.getenv("STATIC_ROOT", "/var/www/bai_el/static/")
+# MEDIA_ROOT = os.getenv("MEDIA_ROOT", "/var/www/bai_el/media/")
+
 
 
 LANGUAGE_CODE = 'ru-RU'
@@ -163,17 +176,21 @@ TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
 
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+'''Пока чекаем на локалке поэтому все настройки безопасности отключены'''
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_BROWSER_XSS_FILTER = False
+SECURE_CONTENT_TYPE_NOSNIFF = False
+SECURE_HSTS_SECONDS = 0 #31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
