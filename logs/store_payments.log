@@ -435,3 +435,448 @@ drf_yasg.errors.SwaggerGenerationError: Schema for <class 'apps.chats.serializer
 [2025-03-21 22:14:44] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
 [2025-03-21 22:14:44] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 21758
 [2025-03-21 22:15:52] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-21 22:19:36] WARNING Bad Request: /api/users/register/
+[2025-03-21 22:19:36] WARNING "POST /api/users/register/ HTTP/1.1" 400 110
+[2025-03-21 22:19:56] INFO "POST /api/users/register/ HTTP/1.1" 201 136
+[2025-03-21 22:22:20] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-21 22:22:22] INFO Watching for file changes with StatReloader
+[2025-03-21 22:22:30] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-21 22:22:31] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-21 22:22:32] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 22325
+[2025-03-21 22:22:57] WARNING Unauthorized: /api/users/password-reset/
+[2025-03-21 22:22:57] WARNING "POST /api/users/password-reset/ HTTP/1.1" 401 82
+[2025-03-21 22:23:13] WARNING Unauthorized: /api/users/password-reset/
+[2025-03-21 22:23:13] WARNING "POST /api/users/password-reset/ HTTP/1.1" 401 82
+[2025-03-21 22:23:52] WARNING Unauthorized: /api/users/password-reset/
+[2025-03-21 22:23:52] WARNING "POST /api/users/password-reset/ HTTP/1.1" 401 82
+[2025-03-21 22:24:29] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-21 22:24:31] INFO Watching for file changes with StatReloader
+[2025-03-21 22:24:33] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-21 22:24:34] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 22325
+[2025-03-21 22:25:03] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\utils\functional.py", line 32, in __call__
+    return self.__value__
+           ^^^^^^^^^^^^^^
+AttributeError: 'ChannelPromise' object has no attribute '__value__'. Did you mean: '__call__'?
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\virtual\base.py", line 951, in create_channel
+    return self._avail_channels.pop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 357, in connect
+    sock = self.retry.call_with_retry(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\retry.py", line 62, in call_with_retry
+    return do()
+           ^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 358, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 730, in _connect
+    raise err
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 718, in _connect
+    sock.connect(socket_address)
+ConnectionRefusedError: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 472, in _reraise_as_library_errors
+    yield
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 459, in _ensure_connection
+    return retry_over_time(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\utils\functional.py", line 318, in retry_over_time
+    return fun(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 938, in _connection_factory
+    self._connection = self._establish_connection()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 860, in _establish_connection
+    conn = self.transport.establish_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\virtual\base.py", line 975, in establish_connection
+    self._avail_channels.append(self.create_channel(self))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\virtual\base.py", line 953, in create_channel
+    channel = self.Channel(connection)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\redis.py", line 744, in __init__
+    self.client.ping()
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\commands\core.py", line 1212, in ping
+    return self.execute_command("PING", **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 1422, in get_connection
+    connection.connect()
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py", line 127, in post
+    send_reset_email.delay(user.email, reset_token)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\task.py", line 444, in delay
+    return self.apply_async(args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\task.py", line 594, in apply_async
+    return app.send_task(
+           ^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\base.py", line 801, in send_task
+    amqp.send_task_message(P, name, message, **options)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\amqp.py", line 518, in send_task_message
+    ret = producer.publish(
+          ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\messaging.py", line 190, in publish
+    return _publish(
+           ^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 556, in _ensured
+    return fun(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\messaging.py", line 200, in _publish
+    channel = self.channel
+              ^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\messaging.py", line 224, in _get_channel
+    channel = self._channel = channel()
+                              ^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\utils\functional.py", line 34, in __call__
+    value = self.__value__ = self.__contract__()
+                             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\messaging.py", line 240, in <lambda>
+    channel = ChannelPromise(lambda: connection.default_channel)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 957, in default_channel
+    self._ensure_connection(**conn_opts)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 458, in _ensure_connection
+    with ctx():
+  File "C:\Users\nooke\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 476, in _reraise_as_library_errors
+    raise ConnectionError(str(exc)) from exc
+kombu.exceptions.OperationalError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+[2025-03-21 22:25:03] ERROR "POST /api/users/password-reset/ HTTP/1.1" 500 28657
+[2025-03-21 22:29:29] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\tasks.py changed, reloading.
+[2025-03-21 22:29:32] INFO Watching for file changes with StatReloader
+[2025-03-21 22:41:28] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\tasks.py changed, reloading.
+[2025-03-21 22:41:29] INFO Watching for file changes with StatReloader
+[2025-03-21 22:41:46] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 22:42:39] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 22:43:17] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 22:44:11] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 22:46:53] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 1428, in get_connection
+    if connection.can_read() and self.cache is None:
+       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 570, in can_read
+    return self._parser.can_read(timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\_parsers\base.py", line 128, in can_read
+    return self._buffer and self._buffer.can_read(timeout)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\_parsers\socket.py", line 95, in can_read
+    return bool(self.unread_bytes()) or self._read_from_socket(
+                                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\_parsers\socket.py", line 68, in _read_from_socket
+    raise ConnectionError(SERVER_CLOSED_CONNECTION_ERROR)
+redis.exceptions.ConnectionError: Connection closed by server.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 357, in connect
+    sock = self.retry.call_with_retry(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\retry.py", line 62, in call_with_retry
+    return do()
+           ^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 358, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 730, in _connect
+    raise err
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 718, in _connect
+    sock.connect(socket_address)
+ConnectionRefusedError: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 556, in _ensured
+    return fun(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\messaging.py", line 214, in _publish
+    return channel.basic_publish(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\virtual\base.py", line 614, in basic_publish
+    return self._put(routing_key, message, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\redis.py", line 1024, in _put
+    client.lpush(self._q_for_pri(queue, pri), dumps(message))
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\commands\core.py", line 2728, in lpush
+    return self.execute_command("LPUSH", name, *values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 1432, in get_connection
+    connection.connect()
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\virtual\base.py", line 951, in create_channel
+    return self._avail_channels.pop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 357, in connect
+    sock = self.retry.call_with_retry(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\retry.py", line 62, in call_with_retry
+    return do()
+           ^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 358, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+            ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 730, in _connect
+    raise err
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 718, in _connect
+    sock.connect(socket_address)
+ConnectionRefusedError: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 472, in _reraise_as_library_errors
+    yield
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 578, in _ensured
+    self._ensure_connection(
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 459, in _ensure_connection
+    return retry_over_time(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\utils\functional.py", line 318, in retry_over_time
+    return fun(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 938, in _connection_factory
+    self._connection = self._establish_connection()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 860, in _establish_connection
+    conn = self.transport.establish_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\virtual\base.py", line 975, in establish_connection
+    self._avail_channels.append(self.create_channel(self))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\virtual\base.py", line 953, in create_channel
+    channel = self.Channel(connection)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\transport\redis.py", line 744, in __init__
+    self.client.ping()
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\commands\core.py", line 1212, in ping
+    return self.execute_command("PING", **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 1422, in get_connection
+    connection.connect()
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\redis\connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py", line 127, in post
+    send_reset_email.delay(user.email, reset_token)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\task.py", line 444, in delay
+    return self.apply_async(args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\task.py", line 594, in apply_async
+    return app.send_task(
+           ^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\base.py", line 801, in send_task
+    amqp.send_task_message(P, name, message, **options)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\celery\app\amqp.py", line 518, in send_task_message
+    ret = producer.publish(
+          ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\messaging.py", line 190, in publish
+    return _publish(
+           ^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 553, in _ensured
+    with self._reraise_as_library_errors():
+  File "C:\Users\nooke\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\nooke\PycharmProjects\EstiMate\.venv\Lib\site-packages\kombu\connection.py", line 476, in _reraise_as_library_errors
+    raise ConnectionError(str(exc)) from exc
+kombu.exceptions.OperationalError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+[2025-03-21 22:46:53] ERROR "POST /api/users/password-reset/ HTTP/1.1" 500 31840
+[2025-03-21 22:47:00] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 22:59:15] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 22:59:47] WARNING Bad Request: /api/users/register/
+[2025-03-21 22:59:47] WARNING "POST /api/users/register/ HTTP/1.1" 400 187
+[2025-03-21 23:00:02] INFO "POST /api/users/register/ HTTP/1.1" 201 143
+[2025-03-21 23:00:21] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 23:05:36] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 23:06:35] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-21 23:09:02] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-21 23:09:03] INFO Watching for file changes with StatReloader
+[2025-03-21 23:09:14] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-21 23:09:15] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 23054
+[2025-03-22 00:12:36] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 00:12:38] INFO Watching for file changes with StatReloader
+[2025-03-22 00:14:38] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 00:14:40] INFO Watching for file changes with StatReloader
+[2025-03-22 00:15:18] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\urls.py changed, reloading.
+[2025-03-22 00:15:19] INFO Watching for file changes with StatReloader
+[2025-03-22 00:15:24] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-22 00:15:24] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 23865
+[2025-03-22 00:18:38] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\models.py changed, reloading.
+[2025-03-22 00:18:39] INFO Watching for file changes with StatReloader
+[2025-03-22 00:25:32] INFO Watching for file changes with StatReloader
+[2025-03-22 00:25:36] WARNING Bad Request: /api/users/register/
+[2025-03-22 00:25:36] WARNING "POST /api/users/register/ HTTP/1.1" 400 96
+[2025-03-22 00:25:46] INFO "POST /api/users/register/ HTTP/1.1" 201 143
+[2025-03-22 00:26:20] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-22 00:26:37] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-22 00:27:50] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-22 00:28:42] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-22 00:28:42] WARNING "POST /api/users/password-reset/confirm/ HTTP/1.1" 400 55
+[2025-03-22 00:28:55] INFO "POST /api/users/password-reset/verify/ HTTP/1.1" 200 43
+[2025-03-22 00:29:07] INFO "POST /api/users/password-reset/confirm/ HTTP/1.1" 200 56
+[2025-03-22 00:30:44] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 00:30:46] INFO Watching for file changes with StatReloader
+[2025-03-22 00:31:02] WARNING Unauthorized: /api/users/logout/
+[2025-03-22 00:31:02] WARNING "POST /api/users/logout/ HTTP/1.1" 401 82
+[2025-03-22 00:32:58] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 00:32:58] WARNING "GET /api/users/profile/ HTTP/1.1" 401 82
+[2025-03-22 00:37:36] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 00:37:36] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 00:37:36] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 00:37:36] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 00:37:36] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 00:37:36] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 00:37:36] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 00:37:36] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 00:37:37] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-22 00:37:37] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 23928
+[2025-03-22 00:39:24] INFO C:\Users\nooke\PycharmProjects\EstiMate\backend\settings.py changed, reloading.
+[2025-03-22 00:39:25] INFO Watching for file changes with StatReloader
+[2025-03-22 00:39:37] INFO Watching for file changes with StatReloader
+[2025-03-22 00:39:43] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 00:39:44] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 00:40:10] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-22 00:41:11] WARNING Unauthorized: /api/users/logout/
+[2025-03-22 00:41:11] WARNING "POST /api/users/logout/ HTTP/1.1" 401 82
+[2025-03-22 00:42:14] INFO C:\Users\nooke\PycharmProjects\EstiMate\apps\users\views.py changed, reloading.
+[2025-03-22 00:42:15] INFO Watching for file changes with StatReloader
+[2025-03-22 00:42:20] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 00:42:20] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 00:42:36] WARNING Unauthorized: /api/users/logout/
+[2025-03-22 00:42:36] WARNING "POST /api/users/logout/ HTTP/1.1" 401 82
+[2025-03-22 00:46:03] WARNING Not Found: /users/logout/
+[2025-03-22 00:46:03] WARNING "POST /users/logout/ HTTP/1.1" 404 3978
+[2025-03-22 00:47:34] INFO "POST /api/users/logout/ HTTP/1.1" 200 44
+[2025-03-22 00:50:12] INFO C:\Users\nooke\PycharmProjects\EstiMate\backend\settings.py changed, reloading.
+[2025-03-22 00:50:13] INFO Watching for file changes with StatReloader
+[2025-03-22 00:50:17] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 00:50:18] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 24059
+[2025-03-22 00:50:34] WARNING Unauthorized: /api/users/logout/
+[2025-03-22 00:50:34] WARNING "POST /api/users/logout/ HTTP/1.1" 401 82
+[2025-03-22 00:52:00] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css.map HTTP/1.1" 200 251096
+[2025-03-22 00:52:01] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js.map HTTP/1.1" 200 517830
+[2025-03-22 00:52:01] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js.map HTTP/1.1" 200 1540070

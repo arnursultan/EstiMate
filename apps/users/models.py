@@ -58,6 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="partner", verbose_name="Роль")
     token_reset = models.CharField(max_length=5, blank=True, null=True, verbose_name="Токен сброса пароля")
+    is_reset_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     is_staff = models.BooleanField(default=False, verbose_name="Сотрудник")
 

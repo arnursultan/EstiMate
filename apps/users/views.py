@@ -85,7 +85,35 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return Response({"message": "Профиль обновлён успешно!"}, status=status.HTTP_200_OK)
 
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import random
+
 class PasswordResetView(APIView):
+    """
+    Отправка кода подтверждения на email
+    """
+    permission_classes = [AllowAny]
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['email_or_phone'],
+            properties={
+                'email_or_phone': openapi.Schema(type=openapi.TYPE_STRING, description='Email или телефон пользователя'),
+            },
+        ),
+        responses={
+            200: openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                'message': openapi.Schema(type=openapi.TYPE_STRING, description='Сообщение об отправке кода'),
+            }),
+            404: openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                'error': openapi.Schema(type=openapi.TYPE_STRING, description='Ошибка, если пользователь не найден'),
+            }),
+        }
+    )
     def post(self, request):
         email_or_phone = request.data.get("email_or_phone")
         user = User.objects.filter(email=email_or_phone).first() or \
@@ -102,37 +130,111 @@ class PasswordResetView(APIView):
             send_reset_email.delay(user.email, reset_token)
             return Response({"message": "Код отправлен на email"}, status=status.HTTP_200_OK)
 
-class PasswordResetConfirmView(APIView):
+        return Response({"error": "Не удалось отправить код"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetVerifyView(APIView):
+    """
+    Верификация кода подтверждения перед сменой пароля.
+    """
     permission_classes = [permissions.AllowAny]
 
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['token'],
+            properties={
+                'token': openapi.Schema(type=openapi.TYPE_STRING, description='Код подтверждения'),
+            },
+        ),
+        responses={
+            200: openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                'message': openapi.Schema(type=openapi.TYPE_STRING, description='Код подтверждён'),
+            }),
+            400: openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                'error': openapi.Schema(type=openapi.TYPE_STRING, description='Неверный код подтверждения'),
+            }),
+        }
+    )
     def post(self, request):
-        email_or_phone = request.data.get("email_or_phone")
         reset_token = request.data.get("token")
-        new_password = request.data.get("new_password")
 
-        user = User.objects.filter(email=email_or_phone).first() or \
-               User.objects.filter(phone=email_or_phone).first()
+        user = User.objects.filter(token_reset=reset_token).first()
 
-        if not user or user.token_reset != reset_token:
+        if not user:
             return Response({"error": "Неверный код подтверждения"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Сохраняем факт подтверждения кода
+        user.is_reset_verified = True
+        user.save()
+
+        return Response({"message": "Код подтверждён"}, status=status.HTTP_200_OK)
+
+class PasswordResetConfirmView(APIView):
+    """
+    Установка нового пароля после успешного подтверждения кода.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['new_password', 'confirm_password'],
+            properties={
+                'new_password': openapi.Schema(type=openapi.TYPE_STRING, description='Новый пароль'),
+                'confirm_password': openapi.Schema(type=openapi.TYPE_STRING, description='Подтверждение пароля'),
+            },
+        ),
+        responses={
+            200: openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                'message': openapi.Schema(type=openapi.TYPE_STRING, description='Пароль успешно изменён'),
+            }),
+            400: openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                'error': openapi.Schema(type=openapi.TYPE_STRING, description='Ошибка при смене пароля'),
+            }),
+        }
+    )
+    def post(self, request):
+        new_password = request.data.get("new_password")
+        confirm_password = request.data.get("confirm_password")
+
+        if new_password != confirm_password:
+            return Response({"error": "Пароли не совпадают"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Получаем пользователя, который уже подтвердил код
+        user = User.objects.filter(is_reset_verified=True).first()
+
+        if not user:
+            return Response({"error": "Ошибка при смене пароля"}, status=status.HTTP_400_BAD_REQUEST)
+
         user.set_password(new_password)
-        user.token_reset = None
+        user.token_reset = None  # Очистка кода
+        user.is_reset_verified = False  # Сбрасываем флаг подтверждения
         user.save()
 
         return Response({"message": "Пароль успешно изменён"}, status=status.HTTP_200_OK)
+
 
 class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         try:
-            refresh_token = request.data.get("refresh")
-            if not refresh_token:
-                return Response({"error": "Refresh-токен обязателен"}, status=status.HTTP_400_BAD_REQUEST)
+            # Проверяем, что пользователь аутентифицирован
+            if not request.user or not request.user.is_authenticated:
+                return Response({"error": "Вы не авторизованы"}, status=status.HTTP_401_UNAUTHORIZED)
 
-            token = RefreshToken(refresh_token)
-            token.blacklist()
+            # Опционально получаем refresh-токен
+            refresh_token = request.data.get("refresh")
+
+            if refresh_token:
+                try:
+                    token = RefreshToken(refresh_token)
+                    token.blacklist()  # Добавляем в blacklist
+                except Exception as e:
+                    print(f"Ошибка при блокировке токена: {str(e)}")
+                    return Response({"error": "Неверный refresh-токен"}, status=status.HTTP_400_BAD_REQUEST)
+
             return Response({"message": "Вы успешно вышли"}, status=status.HTTP_200_OK)
 
         except Exception as e:
