@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = "UserUserSerializer"
         model = User
         fields = ["id", "email", "login", "phone", "role", "first_name", "last_name", "password"]
         extra_kwargs = {
@@ -58,3 +59,9 @@ class UserSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+
+class LoginSerializer(serializers.Serializer):
+    login_or_phone_or_email = serializers.CharField()
+    password = serializers.CharField(write_only=True)

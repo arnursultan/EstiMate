@@ -4,6 +4,7 @@ from apps.users.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = "ChatUserSerializer"
         model = User
         fields = ["id", "first_name", "last_name", "role"]
 

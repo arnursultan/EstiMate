@@ -1,12 +1,15 @@
 import random
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, LoginSerializer
 from apps.users.tasks import send_reset_email
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.response import Response
@@ -22,16 +25,24 @@ class RegisterView(generics.CreateAPIView):
 
 
 class LoginView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        request_body=LoginSerializer,
+        responses={200: openapi.Response("Tokens", schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "refresh": openapi.Schema(type=openapi.TYPE_STRING),
+                "access": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ))},
+    )
     def post(self, request):
-        print("🔹 Полученные данные:", request.data)
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        login_or_phone_or_email = request.data.get("login_or_phone_or_email")
-        password = request.data.get("password")
-
-        if not login_or_phone_or_email or not password:
-            return Response({"error": "Логин/телефон/email и пароль обязательны"}, status=400)
+        login_or_phone_or_email = serializer.validated_data["login_or_phone_or_email"]
+        password = serializer.validated_data["password"]
 
         user = User.objects.filter(email=login_or_phone_or_email).first() or \
                User.objects.filter(phone=login_or_phone_or_email).first() or \
