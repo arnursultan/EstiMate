@@ -85,7 +85,6 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         """ Возвращает текущего аутентифицированного пользователя """
         user = self.request.user
 
-        # Защита от AnonymousUser
         if not user.is_authenticated:
             return Response({"error": "Вы не авторизованы"}, status=status.HTTP_401_UNAUTHORIZED)
 
