@@ -191,6 +191,20 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+SWAGGER_SETTINGS = {
+    "DEFAULT_INFO": "backend.urls.schema_view",
+    "USE_SESSION_AUTH": False,  # Отключаем Basic Auth (чтобы не было полей username/password)
+    "JSON_EDITOR": True,
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Введите JWT токен в формате: Bearer <your_token>",
+        }
+    },
+    "DEFAULT_SECURITY": [{"Bearer": []}],
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
