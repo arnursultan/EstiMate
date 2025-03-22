@@ -992,3 +992,2045 @@ kombu.exceptions.OperationalError: Error 10061 connecting to localhost:6379. П�
 [2025-03-22 02:17:07] INFO "POST /api/users/login/ HTTP/1.1" 200 483
 [2025-03-22 02:17:24] INFO "POST /api/users/token/refresh/ HTTP/1.1" 200 483
 [2025-03-22 02:18:35] INFO "GET /api/users/profile/ HTTP/1.1" 200 143
+[2025-03-22 12:09:01] INFO Watching for file changes with StatReloader
+[2025-03-22 12:09:57] INFO Watching for file changes with StatReloader
+[2025-03-22 12:10:30] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 12:10:30] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+[2025-03-22 12:10:30] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+[2025-03-22 12:10:30] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+[2025-03-22 12:10:30] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+[2025-03-22 12:10:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+[2025-03-22 12:10:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+[2025-03-22 12:10:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+[2025-03-22 12:10:31] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+[2025-03-22 12:10:31] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 22274
+[2025-03-22 12:14:26] WARNING Bad Request: /api/users/register/
+[2025-03-22 12:14:26] WARNING "POST /api/users/register/ HTTP/1.1" 400 95
+[2025-03-22 12:15:08] INFO "POST /api/users/register/ HTTP/1.1" 201 142
+[2025-03-22 12:15:30] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-22 12:16:01] INFO "GET /api/users/profile/ HTTP/1.1" 200 142
+[2025-03-22 12:26:22] INFO - Broken pipe from ('127.0.0.1', 57623)
+[2025-03-22 12:26:26] INFO "GET /admin/ HTTP/1.1" 302 0
+[2025-03-22 12:26:27] INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4338
+[2025-03-22 12:26:27] INFO "GET /static/admin/css/login.css HTTP/1.1" 200 951
+[2025-03-22 12:26:27] INFO "GET /static/admin/css/base.css HTTP/1.1" 200 22092
+[2025-03-22 12:26:27] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2804
+[2025-03-22 12:26:27] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+[2025-03-22 12:26:27] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 200 17972
+[2025-03-22 12:26:27] INFO "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+[2025-03-22 12:26:27] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+[2025-03-22 12:26:27] WARNING Not Found: /favicon.ico
+[2025-03-22 12:26:27] WARNING "GET /favicon.ico HTTP/1.1" 404 3971
+[2025-03-22 12:26:37] INFO "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[2025-03-22 12:26:37] INFO "GET /admin/ HTTP/1.1" 200 14842
+[2025-03-22 12:26:37] INFO "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+[2025-03-22 12:26:37] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+[2025-03-22 12:26:37] INFO "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+[2025-03-22 12:26:42] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16305
+[2025-03-22 12:26:42] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9097
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+[2025-03-22 12:26:42] INFO "GET /static/admin/css/forms.css HTTP/1.1" 200 8794
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+[2025-03-22 12:26:42] INFO "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+[2025-03-22 12:26:42] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 200 11564
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+[2025-03-22 12:26:42] INFO "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+[2025-03-22 12:26:42] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 12:26:42] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+[2025-03-22 12:26:42] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+[2025-03-22 12:26:45] INFO "GET /admin/stores/store/add/ HTTP/1.1" 200 22319
+[2025-03-22 12:26:45] INFO "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+[2025-03-22 12:26:45] INFO "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+[2025-03-22 12:26:45] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 12:27:04] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16305
+[2025-03-22 12:55:53] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\models.py changed, reloading.
+[2025-03-22 12:55:57] INFO Watching for file changes with StatReloader
+[2025-03-22 13:02:32] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 13:02:34] INFO Watching for file changes with StatReloader
+[2025-03-22 13:03:42] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 13:03:44] INFO Watching for file changes with StatReloader
+[2025-03-22 13:04:29] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 13:04:31] INFO Watching for file changes with StatReloader
+[2025-03-22 13:05:14] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 13:05:16] INFO Watching for file changes with StatReloader
+[2025-03-22 13:05:33] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 13:05:35] INFO Watching for file changes with StatReloader
+[2025-03-22 15:12:25] INFO Watching for file changes with StatReloader
+[2025-03-22 15:14:00] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 15:14:01] INFO Watching for file changes with StatReloader
+[2025-03-22 15:14:13] INFO Watching for file changes with StatReloader
+[2025-03-22 15:15:21] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 15:15:22] INFO Watching for file changes with StatReloader
+[2025-03-22 15:15:47] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 15:15:47] INFO Watching for file changes with StatReloader
+[2025-03-22 15:26:12] INFO Watching for file changes with StatReloader
+[2025-03-22 15:26:17] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16248
+[2025-03-22 15:26:17] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-22 15:26:17] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-22 15:26:18] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-22 15:26:18] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:26:18] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-22 15:26:18] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-22 15:26:18] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 15:26:28] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-22 15:26:28] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:26:28] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164583
+[2025-03-22 15:27:44] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 15:27:45] INFO Watching for file changes with StatReloader
+[2025-03-22 15:28:09] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 15:28:10] INFO Watching for file changes with StatReloader
+[2025-03-22 15:28:14] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:28:14] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 15:29:54] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 15:29:55] INFO Watching for file changes with StatReloader
+[2025-03-22 15:30:37] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 15:30:37] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:30:37] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164583
+[2025-03-22 15:44:30] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:44:31] INFO Watching for file changes with StatReloader
+[2025-03-22 15:44:34] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 15:44:35] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:44:35] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164583
+[2025-03-22 15:46:07] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:46:08] INFO Watching for file changes with StatReloader
+[2025-03-22 15:46:12] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:46:12] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 15:47:15] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:47:16] INFO Watching for file changes with StatReloader
+[2025-03-22 15:48:33] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:48:34] INFO Watching for file changes with StatReloader
+[2025-03-22 15:48:38] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:48:38] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 165139
+[2025-03-22 15:48:38] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:48:38] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 165139
+[2025-03-22 15:51:36] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:51:37] INFO Watching for file changes with StatReloader
+[2025-03-22 15:52:47] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:52:48] INFO Watching for file changes with StatReloader
+[2025-03-22 15:53:31] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:53:31] INFO Watching for file changes with StatReloader
+[2025-03-22 15:53:38] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:53:38] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 15:54:13] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:54:14] INFO Watching for file changes with StatReloader
+[2025-03-22 15:56:59] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:57:00] INFO Watching for file changes with StatReloader
+[2025-03-22 15:57:40] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 15:57:41] INFO Watching for file changes with StatReloader
+[2025-03-22 16:04:16] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:04:16] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:04:44] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:04:45] INFO Watching for file changes with StatReloader
+[2025-03-22 16:05:17] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:05:18] INFO Watching for file changes with StatReloader
+[2025-03-22 16:05:21] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:05:21] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:06:22] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:06:23] INFO Watching for file changes with StatReloader
+[2025-03-22 16:06:31] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:06:31] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:07:06] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\urls.py changed, reloading.
+[2025-03-22 16:07:07] INFO Watching for file changes with StatReloader
+[2025-03-22 16:07:41] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\urls.py changed, reloading.
+[2025-03-22 16:07:42] INFO Watching for file changes with StatReloader
+[2025-03-22 16:07:45] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:07:45] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164962
+[2025-03-22 16:07:50] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\urls.py changed, reloading.
+[2025-03-22 16:07:51] INFO Watching for file changes with StatReloader
+[2025-03-22 16:07:56] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\urls.py changed, reloading.
+[2025-03-22 16:07:57] INFO Watching for file changes with StatReloader
+[2025-03-22 16:09:02] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:09:03] INFO Watching for file changes with StatReloader
+[2025-03-22 16:10:25] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:10:26] INFO Watching for file changes with StatReloader
+[2025-03-22 16:10:26] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:10:26] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:10:33] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:10:34] INFO Watching for file changes with StatReloader
+[2025-03-22 16:11:59] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:12:00] INFO Watching for file changes with StatReloader
+[2025-03-22 16:12:03] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:12:03] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:12:47] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:12:49] INFO Watching for file changes with StatReloader
+[2025-03-22 16:13:30] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:13:31] INFO Watching for file changes with StatReloader
+[2025-03-22 16:14:03] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:14:04] INFO Watching for file changes with StatReloader
+[2025-03-22 16:15:12] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:15:13] INFO Watching for file changes with StatReloader
+[2025-03-22 16:15:27] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:15:27] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:15:50] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:15:51] INFO Watching for file changes with StatReloader
+[2025-03-22 16:15:54] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:15:54] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:15:55] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:15:55] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:15:55] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:15:55] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:15:56] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:15:56] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:15:56] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:15:56] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:16:05] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:16:07] INFO Watching for file changes with StatReloader
+[2025-03-22 16:16:22] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:16:23] INFO Watching for file changes with StatReloader
+[2025-03-22 16:16:25] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:16:25] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:16:35] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\products\views.py changed, reloading.
+[2025-03-22 16:16:36] INFO Watching for file changes with StatReloader
+[2025-03-22 16:19:56] WARNING Unauthorized: /api/users/profile/
+[2025-03-22 16:19:56] WARNING "GET /api/users/profile/ HTTP/1.1" 401 79
+[2025-03-22 16:20:21] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:20:21] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 16:23:01] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\urls.py changed, reloading.
+[2025-03-22 16:23:02] INFO Watching for file changes with StatReloader
+[2025-03-22 16:23:15] WARNING Not Found: /
+[2025-03-22 16:23:15] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 16:23:28] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 16:23:28] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 16:23:28] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 16:23:28] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 16:23:28] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 16:23:28] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 16:23:28] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 16:23:28] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 16:23:28] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:23:28] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 164563
+[2025-03-22 16:23:33] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:23:33] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 164563
+[2025-03-22 16:27:17] INFO Watching for file changes with StatReloader
+[2025-03-22 16:27:41] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:27:41] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 164508
+[2025-03-22 16:29:16] WARNING Bad Request: /api/users/login/
+[2025-03-22 16:29:16] WARNING "POST /api/users/login/ HTTP/1.1" 400 116
+[2025-03-22 16:29:57] WARNING Bad Request: /api/users/login/
+[2025-03-22 16:29:57] WARNING "POST /api/users/login/ HTTP/1.1" 400 86
+[2025-03-22 16:30:19] WARNING Bad Request: /api/users/login/
+[2025-03-22 16:30:19] WARNING "POST /api/users/login/ HTTP/1.1" 400 36
+[2025-03-22 16:30:29] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-22 16:31:12] WARNING Not Found: /api/applications/
+[2025-03-22 16:31:12] WARNING "POST /api/applications/ HTTP/1.1" 404 4167
+[2025-03-22 16:31:37] WARNING Bad Request: /api/stores/applications/
+[2025-03-22 16:31:37] WARNING "POST /api/stores/applications/ HTTP/1.1" 400 250
+[2025-03-22 16:32:06] INFO "POST /api/stores/applications/ HTTP/1.1" 201 250
+[2025-03-22 16:32:57] INFO "GET /admin/ HTTP/1.1" 200 14832
+[2025-03-22 16:32:57] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[2025-03-22 16:32:57] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16248
+[2025-03-22 16:33:02] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 16:33:02] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-22 16:33:02] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-22 16:33:22] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16248
+[2025-03-22 16:33:22] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 16:33:58] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\admin.py changed, reloading.
+[2025-03-22 16:33:59] INFO Watching for file changes with StatReloader
+[2025-03-22 16:34:57] WARNING Method Not Allowed: /api/users/login/
+[2025-03-22 16:34:57] WARNING "GET /api/users/login/ HTTP/1.1" 405 54
+[2025-03-22 16:35:06] WARNING Method Not Allowed: /api/users/login/
+[2025-03-22 16:35:06] WARNING "GET /api/users/login/ HTTP/1.1" 405 54
+[2025-03-22 16:35:31] WARNING Method Not Allowed: /api/users/login/
+[2025-03-22 16:35:31] WARNING "GET /api/users/login/ HTTP/1.1" 405 54
+[2025-03-22 16:35:46] WARNING Method Not Allowed: /api/stores/applications/
+[2025-03-22 16:35:46] WARNING "GET /api/stores/applications/ HTTP/1.1" 405 54
+[2025-03-22 16:36:03] WARNING Method Not Allowed: /api/stores/applications/
+[2025-03-22 16:36:03] WARNING "GET /api/stores/applications/ HTTP/1.1" 405 54
+[2025-03-22 16:37:15] WARNING Method Not Allowed: /api/stores/applications/list/
+[2025-03-22 16:37:15] WARNING "POST /api/stores/applications/list/ HTTP/1.1" 405 55
+[2025-03-22 16:37:31] ERROR Internal Server Error: /api/stores/applications/list/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py", line 76, in get
+    applications = Application.objects.filter(owner=request.user)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1491, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1303, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1768, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'owner' into field. Choices are: address, city, created_at, full_name, id, inn, phone_number, status, title
+[2025-03-22 16:37:31] ERROR "GET /api/stores/applications/list/ HTTP/1.1" 500 145186
+[2025-03-22 16:38:16] ERROR Internal Server Error: /api/stores/applications/list/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py", line 76, in get
+    applications = Application.objects.filter(owner=request.user)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1491, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1303, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1768, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'owner' into field. Choices are: address, city, created_at, full_name, id, inn, phone_number, status, title
+[2025-03-22 16:38:16] ERROR "GET /api/stores/applications/list/ HTTP/1.1" 500 145186
+[2025-03-22 16:42:26] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\models.py changed, reloading.
+[2025-03-22 16:42:27] INFO Watching for file changes with StatReloader
+[2025-03-22 16:50:37] INFO Watching for file changes with StatReloader
+[2025-03-22 16:50:48] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 16:50:48] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 16:50:48] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 16:50:48] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 16:50:48] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 16:50:48] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 16:50:48] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 16:50:48] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 16:50:49] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-22 16:50:49] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:50:49] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164583
+[2025-03-22 16:51:07] WARNING Bad Request: /api/stores/applications/
+[2025-03-22 16:51:07] WARNING "POST /api/stores/applications/ HTTP/1.1" 400 115
+[2025-03-22 16:53:25] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 16:53:26] INFO Watching for file changes with StatReloader
+[2025-03-22 16:53:30] WARNING Bad Request: /api/stores/applications/
+[2025-03-22 16:53:30] WARNING "POST /api/stores/applications/ HTTP/1.1" 400 115
+[2025-03-22 16:54:10] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-22 16:54:11] INFO Watching for file changes with StatReloader
+[2025-03-22 16:54:14] INFO "POST /api/stores/applications/ HTTP/1.1" 201 250
+[2025-03-22 16:54:35] INFO "GET /api/stores/applications/list/ HTTP/1.1" 200 252
+[2025-03-22 16:57:05] WARNING Method Not Allowed: /api/users/login/
+[2025-03-22 16:57:05] WARNING "DELETE /api/users/login/ HTTP/1.1" 405 57
+[2025-03-22 16:57:12] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-22 17:00:06] WARNING Not Found: /api/store/applications/2/approve/
+[2025-03-22 17:00:06] WARNING "POST /api/store/applications/2/approve/ HTTP/1.1" 404 4215
+[2025-03-22 17:02:53] ERROR Internal Server Error: /api/stores/applications/2/approve/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: ОШИБКА:  значение NULL в столбце "owner_id" отношения "stores_store" нарушает ограничение NOT NULL
+DETAIL:  Ошибочная строка содержит (1, Магазин Ивана, 12345678901234, Москва, 0.00, active, 2025-03-22 12:02:53.79355+00, 2025-03-22 12:02:53.79355+00, null, ул. Ленина, 1, Иван Иванов, 0.00, 0.00, +996777123456).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py", line 144, in post
+    store = application.move_to_store()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\models.py", line 33, in move_to_store
+    store.save()
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ОШИБКА:  значение NULL в столбце "owner_id" отношения "stores_store" нарушает ограничение NOT NULL
+DETAIL:  Ошибочная строка содержит (1, Магазин Ивана, 12345678901234, Москва, 0.00, active, 2025-03-22 12:02:53.79355+00, 2025-03-22 12:02:53.79355+00, null, ул. Ленина, 1, Иван Иванов, 0.00, 0.00, +996777123456).
+
+[2025-03-22 17:02:53] ERROR "POST /api/stores/applications/2/approve/ HTTP/1.1" 500 187610
+[2025-03-22 17:04:02] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\models.py changed, reloading.
+[2025-03-22 17:04:03] INFO Watching for file changes with StatReloader
+[2025-03-22 17:04:07] ERROR Internal Server Error: /api/stores/applications/2/approve/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\fields.py", line 437, in get_attribute
+    return get_attribute(instance, self.source_attrs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\fields.py", line 104, in get_attribute
+    instance = getattr(instance, attr)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Store' object has no attribute 'full_name'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py", line 149, in post
+    ApplicationSerializer(store).data,
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 571, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 525, in to_representation
+    attribute = field.get_attribute(instance)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\fields.py", line 470, in get_attribute
+    raise type(exc)(msg)
+AttributeError: Got AttributeError when attempting to get a value for field `full_name` on serializer `ApplicationSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `Store` instance.
+Original exception text was: 'Store' object has no attribute 'full_name'.
+[2025-03-22 17:04:07] ERROR "POST /api/stores/applications/2/approve/ HTTP/1.1" 500 131629
+[2025-03-22 17:05:43] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\models.py changed, reloading.
+[2025-03-22 17:05:44] INFO Watching for file changes with StatReloader
+[2025-03-22 17:06:17] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-22 17:06:18] INFO Watching for file changes with StatReloader
+[2025-03-22 17:06:35] ERROR Internal Server Error: /api/stores/applications/2/approve/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ОШИБКА:  повторяющееся значение ключа нарушает ограничение уникальности "stores_store_inn_key"
+DETAIL:  Ключ "(inn)=(12345678901234)" уже существует.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\views.py", line 144, in post
+    store = application.move_to_store()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\models.py", line 34, in move_to_store
+    store.save()
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ОШИБКА:  повторяющееся значение ключа нарушает ограничение уникальности "stores_store_inn_key"
+DETAIL:  Ключ "(inn)=(12345678901234)" уже существует.
+
+[2025-03-22 17:06:35] ERROR "POST /api/stores/applications/2/approve/ HTTP/1.1" 500 185733
+[2025-03-22 17:07:45] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\models.py changed, reloading.
+[2025-03-22 17:07:46] INFO Watching for file changes with StatReloader
+[2025-03-22 17:08:38] INFO "POST /api/stores/applications/ HTTP/1.1" 201 250
+[2025-03-22 17:09:18] INFO "POST /api/stores/applications/3/approve/ HTTP/1.1" 200 251
+[2025-03-22 17:10:04] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:10:04] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164528
+[2025-03-22 17:11:04] INFO "GET /api/redoc/ HTTP/1.1" 200 926
+[2025-03-22 17:11:04] INFO "GET /static/drf-yasg/redoc-init.js HTTP/1.1" 200 2566
+[2025-03-22 17:11:04] INFO "GET /static/drf-yasg/redoc/redoc.min.js HTTP/1.1" 200 1042511
+[2025-03-22 17:11:04] ERROR Internal Server Error: /api/redoc/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\drf_yasg\utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:11:04] ERROR "GET /api/redoc/?format=openapi HTTP/1.1" 500 164440
+[2025-03-22 17:13:49] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\admin.py changed, reloading.
+[2025-03-22 17:13:50] INFO Watching for file changes with StatReloader
+[2025-03-22 17:13:53] INFO "GET /admin/stores/store/ HTTP/1.1" 200 20194
+[2025-03-22 17:13:53] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 17:13:53] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-22 17:13:53] INFO "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+[2025-03-22 17:15:03] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\admin.py changed, reloading.
+[2025-03-22 17:15:04] INFO Watching for file changes with StatReloader
+[2025-03-22 17:15:11] INFO "GET /admin/stores/store/ HTTP/1.1" 200 20655
+[2025-03-22 17:15:11] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 17:15:13] INFO "GET /admin/stores/application/ HTTP/1.1" 200 19114
+[2025-03-22 17:15:13] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 17:15:53] INFO "POST /api/stores/applications/ HTTP/1.1" 201 250
+[2025-03-22 17:16:22] INFO "POST /api/stores/applications/4/reject/ HTTP/1.1" 200 45
+[2025-03-22 17:16:29] INFO "GET /admin/stores/application/ HTTP/1.1" 200 19108
+[2025-03-22 17:16:29] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 17:16:32] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16709
+[2025-03-22 17:16:33] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 17:16:34] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16709
+[2025-03-22 17:16:34] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546

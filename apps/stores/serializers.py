@@ -1,47 +1,69 @@
-import logging
-from rest_framework import serializers
+import re
 from django.core.exceptions import ValidationError
-from .models import Store
+from rest_framework import serializers
+from .models import Store, Application
+from apps.finance.models import Finance
 
-logger = logging.getLogger(__name__)
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['full_name', 'phone_number', 'inn', 'city', 'address', 'title', 'status', 'created_at']
+
+    def validate_phone_number(self, value):
+        """
+        Валидация для номера телефона.
+        Проверяем, чтобы номер телефона был в формате +996 и 9 цифр.
+        """
+        if not re.match(r"^\+996\d{9}$", value):  # Для Кыргызстана
+            raise ValidationError("Неверный формат номера телефона. Например: +996777123456")
+        return value
+
+    def validate_inn(self, value):
+        """
+        Валидация для ИНН.
+        Проверяем, чтобы ИНН был длиной 14 символов.
+        """
+        if len(value) != 14:
+            raise ValidationError("ИНН должен содержать 14 символов.")
+        return value
+
+    def validate_title(self, value):
+        """
+        Валидация для названия магазина.
+        Название магазина не может быть пустым или слишком коротким.
+        """
+        if not value:
+            raise ValidationError("Название магазина обязательно.")
+        if len(value) < 3:
+            raise ValidationError("Название магазина должно быть не менее 3 символов.")
+        return value
+
+    def create(self, validated_data):
+        """
+        Создание заявки. Устанавливаем владельца заявки как текущего пользователя.
+        """
+        validated_data['owner'] = self.context['request'].user
+        return super().create(validated_data)
 
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = '__all__'
+        fields = ['name', 'inn', 'city', 'address', 'contact_name', 'phone', 'owner', 'debt', 'payment_total', 'status', 'created_at', 'updated_at', 'debt_limit']
 
-    def update(self, instance, validated_data):
-        new_payment = validated_data.pop("payment", None)
-        status_changed = False
+    def validate_phone(self, value):
+        """
+        Валидация для номера телефона.
+        Проверяем, чтобы номер телефона был в формате +996 и 9 цифр.
+        """
+        if not re.match(r"^\+996\d{9}$", value):  # Для Кыргызстана
+            raise ValidationError("Неверный формат номера телефона. Например: +996777123456")
+        return value
 
-        if new_payment is not None and new_payment > 0:
-            if instance.debt == 0:
-                raise ValidationError("Ошибка: Долг уже погашен. Новый платеж невозможен.")
-
-            if new_payment > instance.debt:
-                raise ValidationError(
-                    f"Ошибка: Платеж {new_payment} превышает текущий долг {instance.debt}."
-                )
-
-            old_debt = instance.debt
-            instance.debt = max(instance.debt - new_payment, 0)
-            instance.payment += new_payment
-
-            if instance.debt == 0:
-                instance.status = "closed"
-                status_changed = True
-
-            logger.info(
-                f"💰 Магазин {instance.name} внес {new_payment} KGS. "
-                f"Долг был {old_debt}, стал {instance.debt}."
-            )
-
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
-
-        if status_changed:
-            logger.info(f"✅ Магазин {instance.name} полностью погасил долг и теперь закрыт.")
-
-        return instance
+    def validate_inn(self, value):
+        """
+        Валидация для ИНН.
+        Проверяем, чтобы ИНН был длиной 14 символов.
+        """
+        if len(value) != 14:
+            raise ValidationError("ИНН должен содержать 14 символов.")
+        return value

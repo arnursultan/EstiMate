@@ -1,49 +1,167 @@
-from rest_framework import viewsets, permissions, status, filters
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import ValidationError
-from .models import Store
-from .serializers import StoreSerializer
-from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q
+from rest_framework import status
+from .models import Application
+from .serializers import ApplicationSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+
+class ApplicationCreateAPIView(APIView):
+    """
+    Создание заявки на создание магазина.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=["full_name", "phone_number", "inn", "city", "address", "title"],
+            properties={
+                "full_name": openapi.Schema(type=openapi.TYPE_STRING, description="ФИО владельца", maxLength=255),
+                "phone_number": openapi.Schema(type=openapi.TYPE_STRING, description="Телефон владельца", maxLength=13),
+                "inn": openapi.Schema(type=openapi.TYPE_STRING, description="ИНН магазина", maxLength=14),
+                "city": openapi.Schema(type=openapi.TYPE_STRING, description="Город", maxLength=50),
+                "address": openapi.Schema(type=openapi.TYPE_STRING, description="Адрес магазина", maxLength=255),
+                "title": openapi.Schema(type=openapi.TYPE_STRING, description="Название магазина", maxLength=255),
+            },
+        ),
+        responses={
+            201: openapi.Response("Заявка успешно создана", ApplicationSerializer),
+            400: openapi.Response("Ошибки валидации данных", openapi.TYPE_OBJECT),
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        """
+        Создание заявки на создание магазина.
+        """
+        # Добавляем информацию о текущем пользователе в контекст сериализатора
+        serializer = ApplicationSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            # Привязываем заявку к текущему пользователю
+            application = serializer.save(owner=request.user)  # Здесь устанавливаем владельца заявки
+
+            return Response(
+                ApplicationSerializer(application).data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            {"detail": "Ошибка валидации данных", "errors": serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 
-class StoreViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all().order_by("-created_at")
-    serializer_class = StoreSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ["inn", "city"]
-    search_fields = ["name", "inn", "city"]
 
-    def create(self, request, *args, **kwargs):
-        return Response({"error": "Создание магазинов доступно только через заявки."}, status=status.HTTP_403_FORBIDDEN)
+class ApplicationListAPIView(APIView):
+    """
+    Просмотр заявок.
+    Админ видит все, партнер — только свои.
+    """
+    permission_classes = [IsAuthenticated]
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+    @swagger_auto_schema(
+        operation_description="Получить заявки. Админ видит все, партнер — только свои.",
+        responses={
+            200: openapi.Response("Список заявок", ApplicationSerializer(many=True)),
+            400: openapi.Response("Ошибки валидации данных", openapi.TYPE_OBJECT),
+        }
+    )
+    def get(self, request, *args, **kwargs):
+        """
+        Получить заявки.
+        Админ видит все заявки, партнер — только свои.
+        """
+        if request.user.is_staff:
+            applications = Application.objects.all()
+        else:
+            applications = Application.objects.filter(owner=request.user)
 
+        serializer = ApplicationSerializer(applications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+class ApplicationDeleteAPIView(APIView):
+    """
+    Удаление заявки.
+    Только админ или владелец заявки может удалить заявку.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Удалить заявку по ID. Только администратор или владелец заявки может удалить заявку.",
+        responses={
+            204: openapi.Response("Заявка успешно удалена."),
+            404: openapi.Response("Заявка не найдена."),
+            401: openapi.Response("Не авторизован"),
+        }
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        """
+        Удалить заявку по id (pk).
+        """
         try:
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            application = Application.objects.get(pk=pk)
 
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            if application.owner != request.user and not request.user.is_staff:
+                return Response({"detail": "У вас нет прав для удаления этой заявки."},
+                                status=status.HTTP_403_FORBIDDEN)
 
-        except Exception as e:
-            return Response({"error": "Ошибка сервера", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    def get_queryset(self):
-        queryset = Store.objects.all().order_by("-created_at")
-        search_query = self.request.GET.get("search")
-
-        if search_query:
-            queryset = queryset.filter(
-                Q(name__icontains=search_query) |
-                Q(inn__icontains=search_query) |
-                Q(city__icontains=search_query)
+            application.delete()
+            return Response({"detail": "Заявка успешно удалена."}, status=status.HTTP_204_NO_CONTENT)
+        except Application.DoesNotExist:
+            return Response(
+                {"detail": "Заявка не найдена."},
+                status=status.HTTP_404_NOT_FOUND
             )
 
-        return queryset
+class ApplicationActionAPIView(APIView):
+    """
+    Подтверждение или отклонение заявки.
+    """
+    permission_classes = [IsAdminUser]
+
+    @swagger_auto_schema(
+        operation_description="Подтвердить или отклонить заявку.",
+        responses={
+            200: openapi.Response("Заявка успешно обработана", ApplicationSerializer),
+            404: openapi.Response("Заявка не найдена."),
+            401: openapi.Response("Не авторизован"),
+        }
+    )
+    def post(self, request, pk, action, *args, **kwargs):
+        """
+        Подтвердить или отклонить заявку по ID (pk).
+        """
+        try:
+            application = Application.objects.get(pk=pk)
+            if action == 'approve':
+                store = application.move_to_store()
+                application.status = 'approved'
+                application.save()
+
+                return Response(
+                    ApplicationSerializer(application).data,
+                    status=status.HTTP_200_OK
+                )
+            elif action == 'reject':
+
+                application.status = 'rejected'
+                application.save()
+
+                return Response(
+                    {"detail": "Заявка отклонена."},
+                    status=status.HTTP_200_OK
+                )
+            else:
+                return Response(
+                    {"detail": "Неверное действие."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except Application.DoesNotExist:
+            return Response({"detail": "Заявка не найдена."}, status=status.HTTP_404_NOT_FOUND)
