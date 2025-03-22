@@ -3034,3 +3034,1718 @@ AssertionError: Serializer class or instance required, not str
 [2025-03-22 17:16:33] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
 [2025-03-22 17:16:34] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16709
 [2025-03-22 17:16:34] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:32:51] INFO Watching for file changes with StatReloader
+[2025-03-22 15:33:49] INFO Watching for file changes with StatReloader
+[2025-03-22 15:33:50] WARNING Not Found: /
+[2025-03-22 15:33:50] WARNING "GET / HTTP/1.1" 404 179
+[2025-03-22 15:34:20] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-03-22 15:34:20] INFO Watching for file changes with StatReloader
+[2025-03-22 15:34:22] WARNING Not Found: /
+[2025-03-22 15:34:22] WARNING "GET / HTTP/1.1" 404 3920
+[2025-03-22 15:34:34] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 15:34:34] INFO Watching for file changes with StatReloader
+[2025-03-22 15:34:48] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 15:34:48] INFO Watching for file changes with StatReloader
+[2025-03-22 15:34:49] WARNING Not Found: /
+[2025-03-22 15:34:49] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:34:51] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:34:52] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:34:52] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158146
+[2025-03-22 15:36:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 15:36:34] INFO Watching for file changes with StatReloader
+[2025-03-22 15:36:34] WARNING Not Found: /
+[2025-03-22 15:36:34] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:36:37] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:36:37] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:36:37] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158146
+[2025-03-22 15:37:42] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 15:37:42] INFO Watching for file changes with StatReloader
+[2025-03-22 15:40:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:40:21] INFO Watching for file changes with StatReloader
+[2025-03-22 15:40:22] WARNING Not Found: /
+[2025-03-22 15:40:22] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:40:25] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:40:25] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:40:25] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158146
+[2025-03-22 15:42:41] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:42:41] INFO Watching for file changes with StatReloader
+[2025-03-22 15:42:42] WARNING Not Found: /
+[2025-03-22 15:42:42] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:42:45] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:42:45] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:42:45] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158753
+[2025-03-22 15:42:48] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:42:48] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:42:48] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158479
+[2025-03-22 15:44:24] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:44:25] INFO Watching for file changes with StatReloader
+[2025-03-22 15:44:26] WARNING Not Found: /
+[2025-03-22 15:44:26] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:44:29] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:44:29] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:44:29] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158753
+[2025-03-22 15:44:58] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:44:58] INFO Watching for file changes with StatReloader
+[2025-03-22 15:45:04] WARNING Not Found: /
+[2025-03-22 15:45:04] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:45:06] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:45:06] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:45:06] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158146
+[2025-03-22 15:45:23] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:45:23] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:45:23] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158146
+[2025-03-22 15:45:24] INFO "GET /admin/ HTTP/1.1" 200 15894
+[2025-03-22 15:45:24] INFO "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+[2025-03-22 15:45:24] INFO "GET /static/admin/css/base.css HTTP/1.1" 200 22092
+[2025-03-22 15:45:24] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2804
+[2025-03-22 15:45:24] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+[2025-03-22 15:45:24] INFO "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+[2025-03-22 15:45:24] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+[2025-03-22 15:45:24] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 200 17972
+[2025-03-22 15:45:24] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-22 15:45:24] INFO "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[2025-03-22 15:45:29] INFO "GET /admin/ HTTP/1.1" 200 15894
+[2025-03-22 15:45:34] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16708
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:45:34] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-22 15:45:34] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-22 15:45:37] INFO "GET /admin/stores/application/ HTTP/1.1" 200 16133
+[2025-03-22 15:45:37] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:45:38] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16708
+[2025-03-22 15:45:38] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:45:39] INFO "GET /admin/stores/store/add/ HTTP/1.1" 200 22672
+[2025-03-22 15:45:39] INFO "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[2025-03-22 15:45:39] INFO "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[2025-03-22 15:45:39] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:45:53] INFO "GET /admin/users/user/add/?_to_field=id&_popup=1 HTTP/1.1" 200 8964
+[2025-03-22 15:45:53] INFO "GET /static/admin/css/unusable_password_field.css HTTP/1.1" 200 663
+[2025-03-22 15:45:53] INFO "GET /static/admin/js/unusable_password_field.js HTTP/1.1" 200 1480
+[2025-03-22 15:45:53] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:08] INFO "POST /admin/users/user/add/?_to_field=id&_popup=1 HTTP/1.1" 200 9224
+[2025-03-22 15:46:08] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:10] INFO "GET /admin/users/user/add/?_to_field=id&_popup=1 HTTP/1.1" 200 8964
+[2025-03-22 15:46:15] INFO "GET /admin/users/user/1/change/?_to_field=id HTTP/1.1" 200 34296
+[2025-03-22 15:46:15] INFO "GET /static/admin/js/SelectBox.js HTTP/1.1" 304 0
+[2025-03-22 15:46:15] INFO "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 304 0
+[2025-03-22 15:46:16] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:16] INFO "GET /static/admin/img/icon-unknown-alt.svg HTTP/1.1" 304 0
+[2025-03-22 15:46:16] INFO "GET /static/admin/img/icon-unknown.svg HTTP/1.1" 304 0
+[2025-03-22 15:46:16] INFO "GET /static/admin/img/selector-icons.svg HTTP/1.1" 304 0
+[2025-03-22 15:46:29] INFO "POST /admin/users/user/1/change/?_to_field=id HTTP/1.1" 302 0
+[2025-03-22 15:46:29] INFO "GET /admin/users/user/ HTTP/1.1" 200 19660
+[2025-03-22 15:46:29] INFO "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+[2025-03-22 15:46:29] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:29] INFO "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+[2025-03-22 15:46:32] INFO "GET /admin/orders/orderrequest/ HTTP/1.1" 200 16642
+[2025-03-22 15:46:32] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:36] INFO "GET /admin/orders/orderrequest/add/ HTTP/1.1" 200 20621
+[2025-03-22 15:46:36] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:48] INFO "POST /admin/orders/orderrequest/add/ HTTP/1.1" 302 0
+[2025-03-22 15:46:48] INFO "GET /admin/orders/orderrequest/ HTTP/1.1" 200 19553
+[2025-03-22 15:46:48] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:52] INFO "GET /admin/stores/application/ HTTP/1.1" 200 16133
+[2025-03-22 15:46:52] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:46:54] INFO "GET /admin/products/productimage/add/ HTTP/1.1" 200 18323
+[2025-03-22 15:46:54] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:47:05] INFO "POST /admin/products/productimage/add/ HTTP/1.1" 302 0
+[2025-03-22 15:47:05] INFO "GET /admin/products/productimage/ HTTP/1.1" 200 17781
+[2025-03-22 15:47:05] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:47:26] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:47:26] INFO Watching for file changes with StatReloader
+[2025-03-22 15:49:11] WARNING Not Found: /
+[2025-03-22 15:49:11] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:49:15] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:49:15] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:49:15] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158146
+[2025-03-22 15:49:16] INFO "GET /admin/ HTTP/1.1" 200 17188
+[2025-03-22 15:49:19] INFO "GET /api/docs HTTP/1.1" 301 0
+[2025-03-22 15:49:19] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-22 15:49:19] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:49:19] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 157892
+[2025-03-22 15:49:26] WARNING Not Found: /
+[2025-03-22 15:49:26] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:49:32] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:49:32] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:49:32] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158146
+[2025-03-22 15:49:32] INFO - Broken pipe from ('127.0.0.1', 50956)
+[2025-03-22 15:49:32] INFO "GET /admin/ HTTP/1.1" 200 17188
+[2025-03-22 15:49:36] WARNING Not Found: /api/users
+[2025-03-22 15:49:36] WARNING "GET /api/users HTTP/1.1" 404 4142
+[2025-03-22 15:49:39] WARNING Not Found: /api/users/
+[2025-03-22 15:49:39] WARNING "GET /api/users/ HTTP/1.1" 404 6208
+[2025-03-22 15:49:51] INFO "GET /api/users/register HTTP/1.1" 301 0
+[2025-03-22 15:49:51] WARNING Method Not Allowed: /api/users/register/
+[2025-03-22 15:49:51] WARNING "GET /api/users/register/ HTTP/1.1" 405 9074
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/css/prettify.css HTTP/1.1" 200 817
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/css/bootstrap-tweaks.css HTTP/1.1" 200 3426
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/js/ajax-form.js HTTP/1.1" 200 3796
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/css/default.css HTTP/1.1" 200 1152
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/js/default.js HTTP/1.1" 200 1268
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/js/csrf.js HTTP/1.1" 200 1793
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/css/bootstrap.min.css HTTP/1.1" 200 121457
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/js/prettify-min.js HTTP/1.1" 200 13632
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/js/jquery-3.7.1.min.js HTTP/1.1" 200 87533
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/js/bootstrap.min.js HTTP/1.1" 200 39680
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/js/load-ajax-form.js HTTP/1.1" 200 59
+[2025-03-22 15:49:51] INFO "GET /static/rest_framework/img/grid.png HTTP/1.1" 200 1458
+[2025-03-22 15:50:15] INFO "OPTIONS /api/users/register/ HTTP/1.1" 200 12191
+[2025-03-22 15:50:34] INFO "OPTIONS /api/users/register/ HTTP/1.1" 200 12191
+[2025-03-22 15:50:35] INFO "OPTIONS /api/users/register/ HTTP/1.1" 200 12191
+[2025-03-22 15:50:35] INFO "OPTIONS /api/users/register/ HTTP/1.1" 200 12191
+[2025-03-22 15:51:43] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:51:44] INFO Watching for file changes with StatReloader
+[2025-03-22 15:51:44] WARNING Not Found: /
+[2025-03-22 15:51:44] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:51:47] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:51:47] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:51:47] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158889
+[2025-03-22 15:53:35] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:53:35] INFO Watching for file changes with StatReloader
+[2025-03-22 15:53:40] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:53:40] INFO Watching for file changes with StatReloader
+[2025-03-22 15:53:41] WARNING Not Found: /
+[2025-03-22 15:53:41] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:53:44] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:53:44] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:53:44] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158889
+[2025-03-22 15:54:48] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:54:49] INFO Watching for file changes with StatReloader
+[2025-03-22 15:55:04] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:55:05] INFO Watching for file changes with StatReloader
+[2025-03-22 15:55:14] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:55:14] INFO Watching for file changes with StatReloader
+[2025-03-22 15:55:27] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:55:27] INFO Watching for file changes with StatReloader
+[2025-03-22 15:55:34] WARNING Not Found: /
+[2025-03-22 15:55:34] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 15:55:37] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:55:37] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:55:37] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158282
+[2025-03-22 15:56:00] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 15:56:00] INFO Watching for file changes with StatReloader
+[2025-03-22 15:58:51] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 15:58:51] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 15:58:51] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158282
+[2025-03-22 15:58:53] INFO "GET /admin/ HTTP/1.1" 200 17188
+[2025-03-22 15:58:58] INFO "GET /admin/stores/application/ HTTP/1.1" 200 16133
+[2025-03-22 15:58:58] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:59:00] INFO "GET /admin/stores/application/add/ HTTP/1.1" 200 20847
+[2025-03-22 15:59:00] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:59:05] INFO "GET /admin/orders/orderrequest/ HTTP/1.1" 200 19243
+[2025-03-22 15:59:05] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:59:07] INFO "GET /admin/orders/orderrequest/add/ HTTP/1.1" 200 20621
+[2025-03-22 15:59:07] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:59:11] INFO "GET /admin/stores/application/ HTTP/1.1" 200 16133
+[2025-03-22 15:59:11] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 15:59:12] INFO "GET /admin/stores/application/add/ HTTP/1.1" 200 20847
+[2025-03-22 15:59:12] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 16:11:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 16:11:33] INFO Watching for file changes with StatReloader
+[2025-03-22 16:11:35] WARNING Not Found: /
+[2025-03-22 16:11:35] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 16:11:38] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 16:11:38] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 16:11:38] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 16:11:38] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 16:11:38] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 16:11:38] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 16:11:38] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 16:11:38] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 16:11:38] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 16:11:38] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158282
+[2025-03-22 17:29:14] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 17:29:14] INFO Watching for file changes with StatReloader
+[2025-03-22 17:29:30] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 17:29:30] INFO Watching for file changes with StatReloader
+[2025-03-22 17:29:36] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 17:29:37] INFO Watching for file changes with StatReloader
+[2025-03-22 17:29:46] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 17:29:46] INFO Watching for file changes with StatReloader
+[2025-03-22 17:29:47] WARNING Not Found: /
+[2025-03-22 17:29:47] WARNING "GET / HTTP/1.1" 404 4097
+[2025-03-22 17:29:47] WARNING Not Found: /favicon.ico
+[2025-03-22 17:29:47] WARNING "GET /favicon.ico HTTP/1.1" 404 4148
+[2025-03-22 17:29:52] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 17:29:52] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-22 17:29:52] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-22 17:29:52] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-22 17:29:52] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-22 17:29:52] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-22 17:29:52] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-22 17:29:52] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-22 17:29:52] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:29:52] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158839
+[2025-03-22 17:39:53] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/urls.py changed, reloading.
+[2025-03-22 17:39:53] INFO Watching for file changes with StatReloader
+[2025-03-22 17:39:54] WARNING Not Found: /
+[2025-03-22 17:39:54] WARNING "GET / HTTP/1.1" 404 3941
+[2025-03-22 17:39:57] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 17:39:57] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:39:57] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158752
+[2025-03-22 17:41:05] INFO Watching for file changes with StatReloader
+[2025-03-22 17:41:06] WARNING Not Found: /
+[2025-03-22 17:41:06] WARNING "GET / HTTP/1.1" 404 3941
+[2025-03-22 17:41:10] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 17:41:10] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:41:10] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158752
+[2025-03-22 17:42:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 17:42:21] INFO Watching for file changes with StatReloader
+[2025-03-22 17:42:23] WARNING Not Found: /
+[2025-03-22 17:42:23] WARNING "GET / HTTP/1.1" 404 3788
+[2025-03-22 17:42:27] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 17:42:27] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:42:27] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158827
+[2025-03-22 17:42:28] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 17:42:28] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:42:28] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158553
+[2025-03-22 17:43:30] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 17:43:31] INFO Watching for file changes with StatReloader
+[2025-03-22 17:50:56] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-22 17:50:57] INFO Watching for file changes with StatReloader
+[2025-03-22 17:52:34] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 17:52:35] INFO Watching for file changes with StatReloader
+[2025-03-22 17:52:36] WARNING Not Found: /
+[2025-03-22 17:52:36] WARNING "GET / HTTP/1.1" 404 3941
+[2025-03-22 17:52:40] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 17:52:40] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:52:40] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158478
+[2025-03-22 17:52:52] INFO Watching for file changes with StatReloader
+[2025-03-22 17:52:53] WARNING Not Found: /
+[2025-03-22 17:52:53] WARNING "GET / HTTP/1.1" 404 3941
+[2025-03-22 17:52:57] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 17:52:57] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 17:52:57] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158478
+[2025-03-22 17:55:44] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-03-22 17:55:44] INFO Watching for file changes with StatReloader
+[2025-03-22 17:55:56] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-03-22 17:55:56] INFO Watching for file changes with StatReloader
+[2025-03-22 17:56:04] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-03-22 17:56:04] INFO Watching for file changes with StatReloader
+[2025-03-22 17:59:32] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-22 17:59:32] INFO Watching for file changes with StatReloader
+[2025-03-22 18:00:15] INFO Watching for file changes with StatReloader
+[2025-03-22 18:01:46] INFO Watching for file changes with StatReloader
+[2025-03-22 18:01:47] WARNING Not Found: /
+[2025-03-22 18:01:47] WARNING "GET / HTTP/1.1" 404 3941
+[2025-03-22 18:01:52] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:01:52] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 18:01:52] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158752
+[2025-03-22 18:15:09] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 18:15:09] INFO Watching for file changes with StatReloader
+[2025-03-22 18:15:10] WARNING Not Found: /
+[2025-03-22 18:15:10] WARNING "GET / HTTP/1.1" 404 3642
+[2025-03-22 18:15:14] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:15:14] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 18:15:14] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158827
+[2025-03-22 18:15:22] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 18:15:22] INFO Watching for file changes with StatReloader
+[2025-03-22 18:15:23] WARNING Not Found: /
+[2025-03-22 18:15:23] WARNING "GET / HTTP/1.1" 404 3488
+[2025-03-22 18:15:26] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:15:26] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 18:15:26] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 151101
+[2025-03-22 18:15:37] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 18:15:37] INFO Watching for file changes with StatReloader
+[2025-03-22 18:15:38] WARNING Not Found: /
+[2025-03-22 18:15:38] WARNING "GET / HTTP/1.1" 404 3334
+[2025-03-22 18:15:40] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:15:40] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 7369
+[2025-03-22 18:15:42] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:15:42] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 7369
+[2025-03-22 18:15:55] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 18:15:55] INFO Watching for file changes with StatReloader
+[2025-03-22 18:15:56] WARNING Not Found: /
+[2025-03-22 18:15:56] WARNING "GET / HTTP/1.1" 404 3488
+[2025-03-22 18:15:58] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:15:58] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 11298
+[2025-03-22 18:16:00] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:16:00] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 11298
+[2025-03-22 18:16:07] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 18:16:07] INFO Watching for file changes with StatReloader
+[2025-03-22 18:16:08] WARNING Not Found: /
+[2025-03-22 18:16:08] WARNING "GET / HTTP/1.1" 404 3641
+[2025-03-22 18:16:10] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:16:11] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 16023
+[2025-03-22 18:17:11] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 18:17:11] INFO Watching for file changes with StatReloader
+[2025-03-22 18:17:24] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/urls.py changed, reloading.
+[2025-03-22 18:17:24] INFO Watching for file changes with StatReloader
+[2025-03-22 18:17:30] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-22 18:17:31] INFO Watching for file changes with StatReloader
+[2025-03-22 18:17:34] WARNING Not Found: /
+[2025-03-22 18:17:34] WARNING "GET / HTTP/1.1" 404 3797
+[2025-03-22 18:17:37] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:17:37] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 19343
+[2025-03-22 18:19:17] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:19:17] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-22 18:19:17] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 19343
+[2025-03-22 18:38:26] INFO Watching for file changes with StatReloader
+[2025-03-22 18:38:27] WARNING Not Found: /
+[2025-03-22 18:38:27] WARNING "GET / HTTP/1.1" 404 3797
+[2025-03-22 18:38:31] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:38:31] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 19343
+[2025-03-22 18:39:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-03-22 18:39:22] INFO Watching for file changes with StatReloader
+[2025-03-22 18:39:23] WARNING Not Found: /
+[2025-03-22 18:39:23] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-22 18:39:26] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:39:26] ERROR Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 45, in get_operation
+    responses = self.get_responses()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 182, in get_responses
+    responses=self.get_response_schemas(response_serializers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/inspectors/view.py", line 258, in get_response_schemas
+    serializer = force_serializer_instance(response.schema)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/drf_yasg/utils.py", line 327, in force_serializer_instance
+    assert isinstance(serializer, serializers.BaseSerializer), \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Serializer class or instance required, not str
+[2025-03-22 18:39:26] ERROR "GET /swagger/?format=openapi HTTP/1.1" 500 158283
+[2025-03-22 18:47:43] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py changed, reloading.
+[2025-03-22 18:47:43] INFO Watching for file changes with StatReloader
+[2025-03-22 18:47:44] WARNING Not Found: /
+[2025-03-22 18:47:44] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-22 18:47:49] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:47:49] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 22871
+[2025-03-22 18:47:50] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:47:50] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 22871
+[2025-03-22 18:56:54] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-22 18:56:54] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 22871
+[2025-03-22 18:56:55] INFO "GET /admin/ HTTP/1.1" 302 0
+[2025-03-22 18:56:55] INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4338
+[2025-03-22 18:56:55] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-22 18:56:55] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-22 18:56:55] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-22 18:56:55] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-22 18:56:55] INFO "GET /static/admin/css/login.css HTTP/1.1" 304 0
+[2025-03-22 18:56:55] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-22 18:56:55] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-22 18:57:07] INFO "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[2025-03-22 18:57:07] INFO "GET /admin/ HTTP/1.1" 200 17188
+[2025-03-22 18:57:07] INFO "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[2025-03-22 18:57:07] INFO "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[2025-03-22 18:57:07] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /admin/stores/application/ HTTP/1.1" 200 16133
+[2025-03-22 18:57:17] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 18:57:17] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-22 18:57:17] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-22 18:57:19] INFO "GET /admin/stores/application/add/ HTTP/1.1" 200 20847
+[2025-03-22 18:57:19] INFO "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[2025-03-22 18:57:19] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-22 18:57:19] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-22 18:57:19] INFO "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[2025-03-22 18:57:19] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 18:57:23] INFO "GET /admin/stores/store/ HTTP/1.1" 200 16708
+[2025-03-22 18:57:23] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-22 18:57:25] INFO "GET /admin/stores/store/add/ HTTP/1.1" 200 22672
+[2025-03-22 18:57:25] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546

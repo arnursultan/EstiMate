@@ -29,8 +29,17 @@ class ApplicationCreateAPIView(APIView):
             },
         ),
         responses={
-            201: openapi.Response("Заявка успешно создана", ApplicationSerializer),
-            400: openapi.Response("Ошибки валидации данных", openapi.TYPE_OBJECT),
+            201: ApplicationSerializer(),
+            400: openapi.Response(
+                description="Ошибки валидации данных",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING),
+                        'errors': openapi.Schema(type=openapi.TYPE_OBJECT)
+                    }
+                )
+            )
         }
     )
     def post(self, request, *args, **kwargs):
@@ -66,8 +75,11 @@ class ApplicationListAPIView(APIView):
     @swagger_auto_schema(
         operation_description="Получить заявки. Админ видит все, партнер — только свои.",
         responses={
-            200: openapi.Response("Список заявок", ApplicationSerializer(many=True)),
-            400: openapi.Response("Ошибки валидации данных", openapi.TYPE_OBJECT),
+            200: ApplicationSerializer(many=True),
+            400: openapi.Response(
+                description="Ошибки валидации данных",
+                schema=openapi.Schema(type=openapi.TYPE_OBJECT)
+            )
         }
     )
     def get(self, request, *args, **kwargs):
@@ -96,9 +108,42 @@ class ApplicationDeleteAPIView(APIView):
     @swagger_auto_schema(
         operation_description="Удалить заявку по ID. Только администратор или владелец заявки может удалить заявку.",
         responses={
-            204: openapi.Response("Заявка успешно удалена."),
-            404: openapi.Response("Заявка не найдена."),
-            401: openapi.Response("Не авторизован"),
+            204: openapi.Response(
+                description="Заявка успешно удалена.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            ),
+            404: openapi.Response(
+                description="Заявка не найдена.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            ),
+            401: openapi.Response(
+                description="Не авторизован",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            ),
+            403: openapi.Response(
+                description="Запрещено",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            )
         }
     )
     def delete(self, request, pk, *args, **kwargs):
@@ -129,39 +174,61 @@ class ApplicationActionAPIView(APIView):
     @swagger_auto_schema(
         operation_description="Подтвердить или отклонить заявку.",
         responses={
-            200: openapi.Response("Заявка успешно обработана", ApplicationSerializer),
-            404: openapi.Response("Заявка не найдена."),
-            401: openapi.Response("Не авторизован"),
+            200: ApplicationSerializer(),
+            404: openapi.Response(
+                description="Заявка не найдена.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            ),
+            401: openapi.Response(
+                description="Не авторизован",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            ),
+            400: openapi.Response(
+                description="Неверные параметры запроса",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING)
+                    }
+                )
+            )
         }
     )
-    def post(self, request, pk, action, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
         Подтвердить или отклонить заявку по ID (pk).
         """
+        pk = kwargs.get('pk')
+        action = kwargs.get('action')
+
+        if not pk or not action:
+            return Response({"detail": "Не переданы параметры."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             application = Application.objects.get(pk=pk)
             if action == 'approve':
                 store = application.move_to_store()
                 application.status = 'approved'
                 application.save()
+                return Response(ApplicationSerializer(application).data, status=status.HTTP_200_OK)
 
-                return Response(
-                    ApplicationSerializer(application).data,
-                    status=status.HTTP_200_OK
-                )
             elif action == 'reject':
-
                 application.status = 'rejected'
                 application.save()
+                return Response({"detail": "Заявка отклонена."}, status=status.HTTP_200_OK)
 
-                return Response(
-                    {"detail": "Заявка отклонена."},
-                    status=status.HTTP_200_OK
-                )
             else:
-                return Response(
-                    {"detail": "Неверное действие."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({"detail": "Неверное действие."}, status=status.HTTP_400_BAD_REQUEST)
+
         except Application.DoesNotExist:
             return Response({"detail": "Заявка не найдена."}, status=status.HTTP_404_NOT_FOUND)
