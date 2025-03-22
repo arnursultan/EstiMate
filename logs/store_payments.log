@@ -3219,3 +3219,5 @@ AssertionError: Serializer class or instance required, not str
 [2025-03-22 20:53:47] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 164379
 [2025-03-22 21:00:21] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\urls.py changed, reloading.
 [2025-03-22 21:00:23] INFO Watching for file changes with StatReloader
+[2025-03-22 21:01:37] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\chats\views.py changed, reloading.
+[2025-03-22 21:01:42] INFO Watching for file changes with StatReloader
