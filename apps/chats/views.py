@@ -4,16 +4,16 @@ from rest_framework.response import Response
 from .models import ChatRoom, Message
 from .serializers import ChatRoomSerializer, MessageSerializer
 from apps.users.models import User
+from rest_framework.permissions import IsAuthenticated
 
 class ChatRoomViewSet(viewsets.ModelViewSet):
-    queryset = ChatRoom.objects.all()
     serializer_class = ChatRoomSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        if User.role == "admin":
-            return ChatRoom.objects.all()
+        if user.is_anonymous:
+            return ChatRoom.objects.none()
         return ChatRoom.objects.filter(user=user)
 
     @action(detail=True, methods=["get"])
@@ -21,6 +21,7 @@ class ChatRoomViewSet(viewsets.ModelViewSet):
         chat = self.get_object()
         messages = chat.messages.all()
         return Response(MessageSerializer(messages, many=True).data)
+
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()

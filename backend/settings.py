@@ -13,7 +13,7 @@ print(f"DB_NAME = {os.getenv('DB_NAME')}")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = True
 # SERVER_IP = os.getenv("SERVER_IP", "123.456.78.90")
 # ALLOWED_HOSTS = [SERVER_IP, "127.0.0.1", "localhost"]
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
