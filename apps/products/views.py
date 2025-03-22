@@ -1,75 +1,78 @@
-from rest_framework import viewsets, permissions, filters
-from rest_framework.response import Response
+from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action
-from .models import Product, ProductImage, ProductCategory
-from .serializers import ProductSerializer, ProductImageSerializer
-from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError
-from django.db.models import Sum
+from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import F
+from .models import Product
+from .serializers import ProductSerializer, ProductAdminSerializer, ProductPartnerSerializer
+
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    """
+    Разрешение, позволяющее только администраторам изменять объекты.
+    Остальные пользователи имеют доступ только для чтения.
+    """
+
+    def has_permission(self, request, view):
+        # Разрешить GET, HEAD, OPTIONS всем пользователям
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        # Разрешить изменения только администраторам
+        return request.user and request.user.is_authenticated and request.user.role == 'admin'
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all().order_by("-created_at")
-    serializer_class = ProductSerializer
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
-    search_fields = ["name", "description", "category__name"]
-    ordering_fields = ["price", "created_at", "stock"]
+    """
+    API для управления товарами в каталоге.
+    Админы могут создавать, обновлять и удалять товары.
+    Партнеры имеют доступ только для чтения.
+    """
+    queryset = Product.objects.filter(is_active=True)
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['is_bonus']
+    search_fields = ['name', 'description']
+    ordering_fields = ['name', 'price', 'created_at']
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
 
-    def get_permissions(self):
-        if self.action in ["create", "update", "partial_update", "destroy"]:
-            return [permissions.IsAdminUser()]
-        return [permissions.AllowAny()]
-
-    def perform_create(self, serializer):
-        user = self.request.user
-
-        category_id = self.request.data.get("category")
-        category = get_object_or_404(ProductCategory, id=category_id) if category_id else None
-
-        if user.is_staff:
-            stock = serializer.validated_data.get("stock", 0)
-            total_stock = Product.objects.filter(name=serializer.validated_data["name"]).aggregate(total_stock=Sum("stock"))[
-                "total_stock"] or 0
-            if total_stock + stock > 5000:
-                raise ValidationError("Администратор не может добавить более 5000 единиц одного товара.")
-
-        serializer.save(owner=user, category=category)
-
-    def perform_update(self, serializer):
-        category_id = self.request.data.get("category")
-        category = get_object_or_404(ProductCategory, id=category_id) if category_id else None
-        serializer.save(category=category)
-
-    @action(detail=False, methods=["GET"], permission_classes=[permissions.AllowAny])
-    def bonus(self, request):
-        queryset = self.get_queryset().filter(bonus=True)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class ProductImageViewSet(viewsets.ModelViewSet):
-    queryset = ProductImage.objects.all()
-    serializer_class = ProductImageSerializer
-    permission_classes = [permissions.IsAdminUser]
+    def get_serializer_class(self):
+        if self.request.user.role == 'admin':
+            return ProductAdminSerializer
+        return ProductPartnerSerializer
 
     def perform_create(self, serializer):
-        instance = serializer.save()
+        serializer.save()
 
-        if instance.is_main:
-            ProductImage.objects.filter(product=instance.product, is_main=True).exclude(id=instance.id).update(
-                is_main=False)
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def update_quantity(self, request, pk=None):
+        """
+        Обновление количества товара на складе (только для админов).
+        """
+        if request.user.role != 'admin':
+            return Response(
+                {"error": "Только администратор может обновлять количество товаров"},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
-            instance.product.main_image = instance.image
-            instance.product.save()
+        product = self.get_object()
+        quantity = request.data.get('quantity')
 
-    def perform_update(self, serializer):
-        instance = serializer.save()
+        try:
+            quantity = int(quantity)
+            if quantity < 0:
+                return Response(
+                    {"error": "Количество не может быть отрицательным"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        if instance.is_main:
-            ProductImage.objects.filter(product=instance.product, is_main=True).exclude(id=instance.id).update(
-                is_main=False)
+            product.quantity = quantity
+            product.save()
 
-            instance.product.main_image = instance.image
-            instance.product.save()
-
-
+            return Response(
+                {"message": f"Количество товара '{product.name}' обновлено до {quantity}"},
+                status=status.HTTP_200_OK
+            )
+        except (ValueError, TypeError):
+            return Response(
+                {"error": "Количество должно быть целым числом"},
+                status=status.HTTP_400_BAD_REQUEST
+            )

@@ -1,46 +1,40 @@
 from django.contrib import admin
-from django.utils.html import format_html
-from .models import ProductCategory, Product, ProductImage
+from .models import Product, ProductImage
 
 
-@admin.register(ProductCategory)
-class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
-    search_fields = ("name",)
-    ordering = ("id",)
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 1
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "category", "price", "stock", "bonus", "status", "owner", "created_at")
-    list_filter = ("category", "status", "bonus")
-    search_fields = ("name", "category__name", "owner__email")
-    ordering = ("-created_at",)
-    readonly_fields = ("created_at", "updated_at", "bonus")
-    list_editable = ("price", "stock", "status")
+    list_display = ('name', 'price', 'quantity', 'is_bonus', 'is_active', 'created_at')
+    list_filter = ('is_bonus', 'is_active', 'created_at')
+    search_fields = ('name', 'description')
+    readonly_fields = ('created_at', 'updated_at')
     fieldsets = (
-        ("Основная информация", {
-            "fields": ("name", "description", "category", "price", "currency", "status", "stock", "owner")
+        (None, {
+            'fields': ('name', 'description', 'price', 'is_bonus')
         }),
-        ("Дополнительно", {
-            "fields": ("created_at", "updated_at", "bonus"),
-            "classes": ("collapse",),
+        ('Характеристики', {
+            'fields': ('weight', 'expiry_months', 'quantity')
+        }),
+        ('Изображение', {
+            'fields': ('image',)
+        }),
+        ('Статус', {
+            'fields': ('is_active',)
+        }),
+        ('Информация', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
         }),
     )
-    list_per_page = 20
-    autocomplete_fields = ("category", "owner")
+    inlines = [ProductImageInline]
 
 
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ("id", "product", "is_main", "image_preview")
-    list_filter = ("is_main", "product__category")
-    search_fields = ("product__name",)
-    ordering = ("-id",)
-
-    def image_preview(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', obj.image.url)
-        return "Нет изображения"
-
-    image_preview.short_description = "Превью"
+    list_display = ('product', 'order')
+    list_filter = ('product',)
