@@ -4,16 +4,16 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ("id", "email", "phone", "role", "is_active", "is_staff")
-    list_filter = ("role", "is_active", "is_staff")
-    search_fields = ("email", "phone", "login")
+    list_display = ("id", "email", "phone", "role", "is_active", "is_staff", "status")
+    list_filter = ("role", "is_active", "is_staff","status")
+    search_fields = ("email", "phone")
     ordering = ("email",)
     readonly_fields = ("last_login",)
 
     fieldsets = (
-        ("Основная информация", {"fields": ("email", "login", "phone", "first_name", "last_name", "role")}),
+        ("Основная информация", {"fields": ("email", "phone", "first_name", "last_name", "role")}),
         ("Безопасность", {"fields": ("password",)}),
-        ("Статус", {"fields": ("is_active", "is_staff", "is_superuser", "last_login")}),
+        ("Статус", {"fields": ("is_active", "is_staff", "is_superuser", "last_login","status")}),
         ("Группы и разрешения", {"fields": ("groups", "user_permissions")}),
     )
 

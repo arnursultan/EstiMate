@@ -101,12 +101,12 @@ class ApplicationListAPIView(APIView):
 class ApplicationDeleteAPIView(APIView):
     """
     Удаление заявки.
-    Только админ или владелец заявки может удалить заявку.
+    Только админ может удалить заявку.
     """
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="Удалить заявку по ID. Только администратор или владелец заявки может удалить заявку.",
+        operation_description="Удалить заявку по ID. Только администратор может удалить заявку.",
         responses={
             204: openapi.Response(
                 description="Заявка успешно удалена.",
@@ -153,7 +153,7 @@ class ApplicationDeleteAPIView(APIView):
         try:
             application = Application.objects.get(pk=pk)
 
-            if application.owner != request.user and not request.user.is_staff:
+            if  not request.user.is_staff:
                 return Response({"detail": "У вас нет прав для удаления этой заявки."},
                                 status=status.HTTP_403_FORBIDDEN)
 
