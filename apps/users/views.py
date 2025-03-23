@@ -180,7 +180,7 @@ class AdminUserDetailAPIView(APIView):
         return Response(UserDetailSerializer(user).data, status=status.HTTP_200_OK)
 
 class UserDeleteAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
 
     def get_object(self, pk):
         return get_object_or_404(User, pk=pk)
@@ -195,7 +195,7 @@ class UserDeleteAPIView(APIView):
     def delete(self, request, pk):
         user = self.get_object(pk)
 
-        if not request.user.is_staff and request.user != user:
+        if not request.user.is_staff :
             return Response(
                 {"detail": "Нет прав на удаление этого пользователя"},
                 status=status.HTTP_403_FORBIDDEN
@@ -205,6 +205,31 @@ class UserDeleteAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+
+
+class DeactivateOwnAccountAPIView(APIView):
+    """
+    Деактивация собственного аккаунта (установка is_active=False).
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Пользователь деактивирует свой аккаунт. После этого он не сможет войти.",
+        responses={
+            200: openapi.Response(description="Аккаунт успешно деактивирован"),
+            403: openapi.Response(description="Уже деактивирован"),
+        }
+    )
+    def post(self, request):
+        user = request.user
+
+        if not user.is_active:
+            return Response({"detail": "Аккаунт уже деактивирован."}, status=status.HTTP_403_FORBIDDEN)
+
+        user.is_active = False
+        user.save()
+
+        return Response({"detail": "Ваш аккаунт успешно деактивирован."}, status=status.HTTP_200_OK)
 
 
 
@@ -397,11 +422,9 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            # Проверяем, что пользователь аутентифицирован
             if not request.user or not request.user.is_authenticated:
                 return Response({"error": "Вы не авторизованы"}, status=status.HTTP_401_UNAUTHORIZED)
 
-            # Опционально получаем refresh-токен
             refresh_token = request.data.get("refresh")
 
             if refresh_token:

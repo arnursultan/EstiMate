@@ -15,6 +15,7 @@ from .views import (
     UserUnblockAPIView,
     RejectUserAPIView,
     ApproveUserAPIView,
+    DeactivateOwnAccountAPIView,
 )
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     path("profile/delete/<int:pk>/", UserDeleteAPIView.as_view(), name="delete"),
     path("profile/reject/<int:pk>/", RejectUserAPIView.as_view(), name="reject"),
     path("profile/approve/<int:pk>/", ApproveUserAPIView.as_view(), name="approve"),
+    path("profile/deactivate/", DeactivateOwnAccountAPIView.as_view(), name="deactivate"),
     path("admin/", AdminUserAPIView.as_view(), name="admin"),
     path("admin/<int:pk>/", AdminUserDetailAPIView.as_view(), name="admin_detail"),
     path("admin/block/<int:pk>/", UserBlockAPIView.as_view(), name="block"),
