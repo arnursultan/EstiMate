@@ -1,3 +1,6 @@
+import os
+import time
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.db import models
@@ -28,7 +31,6 @@ class UserManager(BaseUserManager):
     def validate_email(email):
         email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
         return len(email) <= 50 and re.match(email_regex, email)
-
 
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
@@ -61,10 +63,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         ],
         verbose_name="Фамилия"
     )
-
+    photo = models.ImageField(upload_to='users/photos/',default= "users/photos/default.jpg", blank=True, null=True, verbose_name="Фото профиля")
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="partner", verbose_name="Роль")
     token_reset = models.CharField(max_length=5, blank=True, null=True, verbose_name="Токен сброса пароля")
-    is_reset_verified = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending", verbose_name="Статус аккаунта")
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     is_staff = models.BooleanField(default=False, verbose_name="Сотрудник")

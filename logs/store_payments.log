@@ -3290,3 +3290,354 @@ AssertionError: Ошибка авторизации, неверный тип п�
 [2025-03-23 08:33:16] WARNING "POST /api/users/login/ HTTP/1.1" 400 98
 [2025-03-23 08:36:07] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
 [2025-03-23 08:36:08] INFO Watching for file changes with StatReloader
+[2025-03-23 08:57:58] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 08:57:59] INFO Watching for file changes with StatReloader
+[2025-03-23 08:58:20] INFO Watching for file changes with StatReloader
+[2025-03-23 08:58:24] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-23 08:58:25] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 28229
+[2025-03-23 09:15:05] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-23 09:15:43] INFO "DELETE /api/users/profile/delete/6/ HTTP/1.1" 204 0
+[2025-03-23 09:16:51] INFO "POST /api/users/register/ HTTP/1.1" 201 149
+[2025-03-23 09:17:50] INFO "DELETE /api/users/profile/delete/7/ HTTP/1.1" 204 0
+[2025-03-23 09:18:03] INFO "POST /api/users/register/ HTTP/1.1" 201 145
+[2025-03-23 09:19:11] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 09:19:12] INFO Watching for file changes with StatReloader
+[2025-03-23 09:20:55] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 09:20:56] INFO Watching for file changes with StatReloader
+[2025-03-23 09:21:15] WARNING Not Found: /api/users/password-reset/
+[2025-03-23 09:21:15] WARNING "POST /api/users/password-reset/ HTTP/1.1" 404 54
+[2025-03-23 09:22:54] WARNING Not Found: /api/users/password-reset/
+[2025-03-23 09:22:54] WARNING "POST /api/users/password-reset/ HTTP/1.1" 404 54
+[2025-03-23 09:23:04] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 09:24:11] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 09:29:41] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 09:32:23] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\__init__.py changed, reloading.
+[2025-03-23 09:32:24] INFO Watching for file changes with StatReloader
+[2025-03-23 09:34:25] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 09:38:35] INFO "POST /api/users/password-reset/verify/ HTTP/1.1" 200 43
+[2025-03-23 09:39:00] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-23 09:39:00] WARNING "POST /api/users/password-reset/confirm/ HTTP/1.1" 400 91
+[2025-03-23 09:39:18] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-23 09:39:18] WARNING "POST /api/users/password-reset/confirm/ HTTP/1.1" 400 49
+[2025-03-23 09:39:25] INFO "POST /api/users/password-reset/confirm/ HTTP/1.1" 200 56
+[2025-03-23 10:07:32] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 10:07:34] INFO Watching for file changes with StatReloader
+[2025-03-23 14:54:23] INFO Watching for file changes with StatReloader
+[2025-03-23 15:26:51] INFO Watching for file changes with StatReloader
+[2025-03-23 15:28:53] INFO "GET /admin/products/product/ HTTP/1.1" 302 0
+[2025-03-23 15:28:53] INFO "GET /admin/login/?next=/admin/products/product/ HTTP/1.1" 200 4372
+[2025-03-23 15:28:54] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-23 15:28:54] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-23 15:28:54] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-23 15:28:54] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-23 15:28:54] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-23 15:28:54] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-23 15:28:54] INFO "GET /static/admin/css/login.css HTTP/1.1" 200 951
+[2025-03-23 15:28:54] WARNING Not Found: /favicon.ico
+[2025-03-23 15:28:54] WARNING "GET /favicon.ico HTTP/1.1" 404 4002
+[2025-03-23 15:29:06] INFO "POST /admin/login/?next=/admin/products/product/ HTTP/1.1" 302 0
+[2025-03-23 15:29:06] INFO "GET /admin/products/product/ HTTP/1.1" 200 17007
+[2025-03-23 15:29:06] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-23 15:29:06] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-23 15:29:06] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-23 15:29:06] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-23 15:29:06] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-23 15:29:06] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-23 15:29:06] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-23 15:29:06] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-23 15:29:07] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-23 15:29:07] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-23 15:29:07] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-23 15:29:07] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 15:29:07] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-23 15:29:07] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-23 15:29:07] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-23 15:35:36] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-23 15:35:37] INFO Watching for file changes with StatReloader
+[2025-03-23 15:36:39] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-23 15:36:40] INFO Watching for file changes with StatReloader
+[2025-03-23 15:41:00] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 15:41:01] INFO Watching for file changes with StatReloader
+[2025-03-23 15:41:27] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 15:41:28] INFO Watching for file changes with StatReloader
+[2025-03-23 15:44:02] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 15:44:03] INFO Watching for file changes with StatReloader
+[2025-03-23 15:45:09] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 15:45:11] INFO Watching for file changes with StatReloader
+[2025-03-23 15:50:41] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\urls.py changed, reloading.
+[2025-03-23 15:50:42] INFO Watching for file changes with StatReloader
+[2025-03-23 15:50:52] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-23 15:50:53] INFO Watching for file changes with StatReloader
+[2025-03-23 15:51:09] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-23 15:51:09] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 29206
+[2025-03-23 15:52:08] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-23 15:53:38] INFO "POST /api/users/profile/approve/8/ HTTP/1.1" 200 146
+[2025-03-23 15:54:18] WARNING Bad Request: /api/users/login/
+[2025-03-23 15:54:18] WARNING "POST /api/users/login/ HTTP/1.1" 400 68
+[2025-03-23 15:54:23] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-23 15:54:44] INFO "POST /api/users/profile/reject/8/ HTTP/1.1" 200 146
+[2025-03-23 15:54:55] WARNING Bad Request: /api/users/login/
+[2025-03-23 15:54:55] WARNING "POST /api/users/login/ HTTP/1.1" 400 106
+[2025-03-23 15:57:06] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 15:57:07] INFO Watching for file changes with StatReloader
+[2025-03-23 16:00:21] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 16:00:22] INFO Watching for file changes with StatReloader
+[2025-03-23 16:03:20] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 16:03:22] INFO Watching for file changes with StatReloader
+[2025-03-23 16:04:53] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 16:04:54] INFO Watching for file changes with StatReloader
+[2025-03-23 16:06:16] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 16:06:17] INFO Watching for file changes with StatReloader
+[2025-03-23 16:18:08] INFO "POST /api/users/register/ HTTP/1.1" 201 152
+[2025-03-23 16:21:58] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 16:21:59] INFO Watching for file changes with StatReloader
+[2025-03-23 16:22:36] WARNING Bad Request: /api/users/register/
+[2025-03-23 16:22:36] WARNING "POST /api/users/register/ HTTP/1.1" 400 145
+[2025-03-23 16:22:48] WARNING Bad Request: /api/users/register/
+[2025-03-23 16:22:48] WARNING "POST /api/users/register/ HTTP/1.1" 400 145
+[2025-03-23 16:23:56] WARNING Bad Request: /api/users/register/
+[2025-03-23 16:23:56] WARNING "POST /api/users/register/ HTTP/1.1" 400 87
+[2025-03-23 16:24:07] INFO "POST /api/users/register/ HTTP/1.1" 201 152
+[2025-03-23 16:29:18] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-23 16:29:20] INFO Watching for file changes with StatReloader
+[2025-03-23 16:31:12] INFO Watching for file changes with StatReloader
+[2025-03-23 16:31:49] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-23 16:31:50] INFO Watching for file changes with StatReloader
+[2025-03-23 16:34:55] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 16:34:56] INFO Watching for file changes with StatReloader
+[2025-03-23 16:35:15] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 16:35:16] INFO Watching for file changes with StatReloader
+[2025-03-23 16:41:09] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 16:41:10] INFO Watching for file changes with StatReloader
+[2025-03-23 16:42:04] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 16:44:11] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-23 16:44:11] WARNING "POST /api/users/password-reset/verify/ HTTP/1.1" 400 62
+[2025-03-23 16:44:20] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 16:44:57] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-23 16:44:57] WARNING "POST /api/users/password-reset/verify/ HTTP/1.1" 400 62
+[2025-03-23 16:45:14] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-23 16:45:14] WARNING "POST /api/users/password-reset/verify/ HTTP/1.1" 400 62
+[2025-03-23 16:45:39] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 16:45:40] INFO Watching for file changes with StatReloader
+[2025-03-23 16:45:47] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-23 16:45:48] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 29206
+[2025-03-23 16:46:11] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 16:46:38] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-23 16:46:38] WARNING "POST /api/users/password-reset/verify/ HTTP/1.1" 400 62
+[2025-03-23 16:48:55] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 16:48:56] INFO Watching for file changes with StatReloader
+[2025-03-23 16:49:04] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 16:49:32] INFO "POST /api/users/password-reset/verify/ HTTP/1.1" 200 43
+[2025-03-23 16:50:02] INFO "POST /api/users/password-reset/confirm/ HTTP/1.1" 200 56
+[2025-03-23 16:50:14] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 16:53:14] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-23 16:53:14] WARNING "POST /api/users/password-reset/verify/ HTTP/1.1" 400 62
+[2025-03-23 16:53:28] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-23 16:53:28] WARNING "POST /api/users/password-reset/confirm/ HTTP/1.1" 400 62
+[2025-03-23 16:55:10] INFO "POST /api/users/password-reset/ HTTP/1.1" 200 50
+[2025-03-23 16:56:00] INFO "POST /api/users/password-reset/verify/ HTTP/1.1" 200 43
+[2025-03-23 16:56:15] INFO "POST /api/users/password-reset/confirm/ HTTP/1.1" 200 56
+[2025-03-23 17:00:14] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-23 17:00:16] INFO Watching for file changes with StatReloader
+[2025-03-23 17:03:36] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\models.py changed, reloading.
+[2025-03-23 17:03:38] INFO Watching for file changes with StatReloader
+[2025-03-23 17:04:08] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\models.py changed, reloading.
+[2025-03-23 17:04:09] INFO Watching for file changes with StatReloader
+[2025-03-23 17:04:21] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\models.py changed, reloading.
+[2025-03-23 17:04:22] INFO Watching for file changes with StatReloader
+[2025-03-23 17:08:45] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\models.py changed, reloading.
+[2025-03-23 17:08:47] INFO Watching for file changes with StatReloader
+[2025-03-23 17:09:28] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-23 17:40:47] INFO Watching for file changes with StatReloader
+[2025-03-23 17:40:52] INFO "GET /admin/products/product/ HTTP/1.1" 200 17007
+[2025-03-23 17:40:54] INFO "GET /admin/products/product/ HTTP/1.1" 200 17007
+[2025-03-23 17:40:54] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:40:59] INFO "GET /admin/users/user/ HTTP/1.1" 200 21489
+[2025-03-23 17:40:59] INFO "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+[2025-03-23 17:40:59] INFO "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+[2025-03-23 17:40:59] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:40:59] INFO "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+[2025-03-23 17:41:11] INFO "GET /admin/users/user/10/change/ HTTP/1.1" 200 34165
+[2025-03-23 17:41:11] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-23 17:41:11] INFO "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[2025-03-23 17:41:11] INFO "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+[2025-03-23 17:41:11] INFO "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15502
+[2025-03-23 17:41:11] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-23 17:41:11] INFO "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[2025-03-23 17:41:11] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:41:11] INFO "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+[2025-03-23 17:41:11] INFO "GET /static/admin/img/icon-unknown.svg HTTP/1.1" 200 655
+[2025-03-23 17:41:11] INFO "GET /static/admin/img/icon-unknown-alt.svg HTTP/1.1" 200 655
+[2025-03-23 17:43:02] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\admin.py changed, reloading.
+[2025-03-23 17:43:03] INFO Watching for file changes with StatReloader
+[2025-03-23 17:43:06] INFO "GET /admin/users/user/10/change/ HTTP/1.1" 200 35103
+[2025-03-23 17:43:06] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:43:08] ERROR Internal Server Error: /media/users/photos/default.jpg
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\static.py", line 45, in serve
+    fullpath = Path(safe_join(document_root, path))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\utils\_os.py", line 17, in safe_join
+    final_path = abspath(join(base, *paths))
+                         ^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not tuple
+[2025-03-23 17:43:08] ERROR "GET /media/users/photos/default.jpg HTTP/1.1" 500 80829
+[2025-03-23 17:43:12] INFO "GET /admin/users/user/10/change/ HTTP/1.1" 200 35103
+[2025-03-23 17:44:11] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\admin.py changed, reloading.
+[2025-03-23 17:44:12] INFO Watching for file changes with StatReloader
+[2025-03-23 17:44:15] INFO "GET /admin/users/user/10/change/ HTTP/1.1" 200 24738
+[2025-03-23 17:44:16] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:46:11] INFO "GET /admin/users/user/ HTTP/1.1" 200 21489
+[2025-03-23 17:46:16] INFO "GET /admin/users/user/8/change/ HTTP/1.1" 200 24706
+[2025-03-23 17:46:16] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:46:31] INFO "POST /admin/users/user/8/change/ HTTP/1.1" 302 0
+[2025-03-23 17:46:31] INFO "GET /admin/users/user/ HTTP/1.1" 200 21772
+[2025-03-23 17:46:31] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:47:15] INFO "GET /admin/users/user/8/change/ HTTP/1.1" 200 24742
+[2025-03-23 17:47:15] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:47:28] INFO "POST /admin/users/user/8/change/ HTTP/1.1" 302 0
+[2025-03-23 17:47:28] INFO "GET /admin/users/user/ HTTP/1.1" 200 21770
+[2025-03-23 17:47:28] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:47:43] INFO "POST /api/users/login/ HTTP/1.1" 200 483
+[2025-03-23 17:48:22] WARNING Forbidden: /api/users/admin/
+[2025-03-23 17:48:22] WARNING "GET /api/users/admin/ HTTP/1.1" 403 117
+[2025-03-23 17:48:30] INFO "GET /admin/users/user/8/change/ HTTP/1.1" 200 24742
+[2025-03-23 17:48:30] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:48:36] INFO "POST /admin/users/user/8/change/ HTTP/1.1" 302 0
+[2025-03-23 17:48:37] INFO "GET /admin/users/user/8/change/ HTTP/1.1" 200 25086
+[2025-03-23 17:48:37] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:48:43] ERROR Internal Server Error: /api/users/admin/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py", line 132, in get
+    return Response(serializer.data, status=status.HTTP_200_OK)
+                    ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 523, in to_representation
+    for field in fields:
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 384, in _readable_fields
+    for field in self.fields.values():
+                 ^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 373, in fields
+    fields[key] = value
+    ~~~~~~^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\utils\serializer_helpers.py", line 167, in __setitem__
+    field.bind(field_name=key, parent=self.serializer)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\fields.py", line 358, in bind
+    assert self.source != field_name, (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: It is redundant to specify `source='photo'` on field 'ImageField' in serializer 'UserDetailSerializer', because it is the same as the field name. Remove the `source` keyword argument.
+[2025-03-23 17:48:43] ERROR "GET /api/users/admin/ HTTP/1.1" 500 24001
+[2025-03-23 17:49:27] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 17:49:28] INFO Watching for file changes with StatReloader
+[2025-03-23 17:49:35] ERROR Internal Server Error: /api/users/admin/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py", line 132, in get
+    return Response(serializer.data, status=status.HTTP_200_OK)
+                    ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 523, in to_representation
+    for field in fields:
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 384, in _readable_fields
+    for field in self.fields.values():
+                 ^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 373, in fields
+    fields[key] = value
+    ~~~~~~^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\utils\serializer_helpers.py", line 167, in __setitem__
+    field.bind(field_name=key, parent=self.serializer)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\fields.py", line 358, in bind
+    assert self.source != field_name, (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: It is redundant to specify `source='photo'` on field 'ImageField' in serializer 'UserDetailSerializer', because it is the same as the field name. Remove the `source` keyword argument.
+[2025-03-23 17:49:35] ERROR "GET /api/users/admin/ HTTP/1.1" 500 24001
+[2025-03-23 17:50:07] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 17:50:08] INFO Watching for file changes with StatReloader
+[2025-03-23 17:50:13] INFO "GET /api/users/admin/ HTTP/1.1" 200 559
+[2025-03-23 17:51:09] INFO "POST /admin/users/user/8/change/ HTTP/1.1" 302 0
+[2025-03-23 17:51:09] INFO "GET /admin/users/user/8/change/ HTTP/1.1" 200 25030
+[2025-03-23 17:51:09] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-23 17:51:17] WARNING Forbidden: /api/users/admin/
+[2025-03-23 17:51:17] WARNING "GET /api/users/admin/ HTTP/1.1" 403 117
+[2025-03-23 17:53:02] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 17:53:03] INFO Watching for file changes with StatReloader

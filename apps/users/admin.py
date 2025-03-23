@@ -11,10 +11,9 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ("last_login",)
 
     fieldsets = (
-        ("Основная информация", {"fields": ("email", "phone", "first_name", "last_name", "role")}),
+        ("Основная информация", {"fields": ("photo","email", "phone", "first_name", "last_name", "role")}),
         ("Безопасность", {"fields": ("password",)}),
         ("Статус", {"fields": ("is_active", "is_staff", "is_superuser", "last_login","status")}),
-        ("Группы и разрешения", {"fields": ("groups", "user_permissions")}),
     )
 
     add_fieldsets = (
@@ -27,4 +26,3 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    filter_horizontal = ("groups", "user_permissions")

@@ -7,6 +7,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+allowed_domains = ["gmail.com", "mail.ru", "yahoo.com", "yandex.ru", "outlook.com"]
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "UserUserSerializer"
@@ -19,12 +21,22 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate_email(self, value):
+
         if len(value) > 50:
             raise serializers.ValidationError("Email не должен превышать 50 символов.")
-        if value.count("@") != 1:
-            raise serializers.ValidationError("Email должен содержать ровно один '@'.")
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Пользователь с таким email уже зарегистрирован.")
+
+        email_pattern = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+        if not re.match(email_pattern, value) or ".." in value:
+            raise serializers.ValidationError("Некорректный формат email.")
+
+        domain = value.split("@")[-1].lower()
+        if domain not in allowed_domains:
+            raise serializers.ValidationError(f"Регистрация разрешена только для доменов: {', '.join(allowed_domains)}")
+
+        qs = User.objects.exclude(pk=self.instance.pk) if self.instance else User.objects.all()
+        if qs.filter(email=value).exists():
+            raise serializers.ValidationError("Пользователь с таким email уже существует.")
+
         return value
 
     def validate_phone(self, value):
@@ -48,6 +60,13 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Фамилия должна быть от 2 до 24 символов.")
         return value.capitalize()
 
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError("Пароль должен быть не менее 8 символов.")
+        if not re.search(r"[a-zA-Z]", value) or not re.search(r"\d", value):
+            raise serializers.ValidationError("Пароль должен содержать буквы и цифры.")
+        return value
+
     def create(self, validated_data):
         password = validated_data.pop("password")
         user = User.objects.create_user(**validated_data)
@@ -62,7 +81,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         ref_name = "UserUpdateSerializer"
         model = User
-        fields = ["email", "phone", "first_name", "last_name", "password"]
+        fields = ["email", "phone", "first_name", "last_name", "password","photo"]
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "email": {"required": False},
@@ -74,10 +93,19 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         if len(value) > 50:
             raise serializers.ValidationError("Email не должен превышать 50 символов.")
-        if value.count("@") != 1:
-            raise serializers.ValidationError("Email должен содержать ровно один '@'.")
-        if User.objects.exclude(pk=self.instance.pk).filter(email=value).exists():
+
+        email_pattern = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+        if not re.match(email_pattern, value) or ".." in value:
+            raise serializers.ValidationError("Некорректный формат email.")
+
+        domain = value.split("@")[-1].lower()
+        if domain not in allowed_domains:
+            raise serializers.ValidationError(f"Регистрация разрешена только для доменов: {', '.join(allowed_domains)}")
+
+        qs = User.objects.exclude(pk=self.instance.pk) if self.instance else User.objects.all()
+        if qs.filter(email=value).exists():
             raise serializers.ValidationError("Пользователь с таким email уже существует.")
+
         return value
 
     def validate_phone(self, value):
@@ -109,6 +137,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Пароль должен содержать буквы и цифры.")
         return value
 
+    def validate_photo(self, value):
+        max_size_mb = 5
+        if value.size > max_size_mb * 1024 * 1024:
+            raise serializers.ValidationError(f"Размер фото не должен превышать {max_size_mb}MB.")
+        if not value.content_type.startswith("image/"):
+            raise serializers.ValidationError("Файл должен быть изображением (jpeg, png и др.).")
+        return value
+
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
 
@@ -122,10 +158,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(read_only=True)
     class Meta:
         ref_name = "UserDetailSerializer"
         model = User
-        fields = ["id", "email", "phone", "role", "first_name", "last_name", "status"]
+        fields = ["id", "email", "phone", "role", "first_name", "last_name", "status","photo"]
 
 
 
@@ -142,10 +179,10 @@ class LoginSerializer(serializers.Serializer):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError("Неверный email или пароль.")
+            raise serializers.ValidationError("Неверный email")
 
         if not check_password(password, user.password):
-            raise serializers.ValidationError("Неверный email или пароль.")
+            raise serializers.ValidationError("Неверный пароль.")
 
         if not user.is_active:
             raise serializers.ValidationError("Ваш аккаунт заблокирован или неактивен.")
@@ -158,3 +195,20 @@ class LoginSerializer(serializers.Serializer):
 
         data['user'] = user
         return data
+
+
+class UserPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["photo"]
+
+    def validate_photo(self, value):
+
+        if value.size > 5 * 1024 * 1024:
+            raise serializers.ValidationError("Размер фото не должен превышать 5MB.")
+
+        allowed_types = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]
+        if value.content_type not in allowed_types:
+            raise serializers.ValidationError("Недопустимый формат изображения. Разрешены: JPEG, PNG, WEBP, HEIC.")
+
+        return value

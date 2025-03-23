@@ -1,5 +1,8 @@
+import re
+
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -258,9 +261,9 @@ class PasswordResetView(APIView):
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['email_or_phone'],
+            required=['email'],
             properties={
-                'email_or_phone': openapi.Schema(type=openapi.TYPE_STRING, description='Email или телефон пользователя'),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description='Email'),
             },
         ),
         responses={
@@ -273,9 +276,8 @@ class PasswordResetView(APIView):
         }
     )
     def post(self, request):
-        email_or_phone = request.data.get("email_or_phone")
-        user = User.objects.filter(email=email_or_phone).first() or \
-               User.objects.filter(phone=email_or_phone).first()
+        email = request.data.get("email")
+        user = User.objects.filter(email=email).first()
 
         if not user:
             return Response({"error": "Пользователь не найден"}, status=status.HTTP_404_NOT_FOUND)
@@ -283,7 +285,7 @@ class PasswordResetView(APIView):
         reset_token = str(random.randint(10000, 99999))
         user.token_reset = reset_token
         user.save()
-
+        cache.set(f"reset_token_valid:{reset_token}", True, timeout=120)
         if user.email:
             send_reset_email.delay(user.email, reset_token)
             return Response({"message": "Код отправлен на email"}, status=status.HTTP_200_OK)
@@ -319,11 +321,12 @@ class PasswordResetVerifyView(APIView):
 
         user = User.objects.filter(token_reset=reset_token).first()
 
-        if not user:
-            return Response({"error": "Неверный код подтверждения"}, status=status.HTTP_400_BAD_REQUEST)
+        if not cache.get(f"reset_token_valid:{reset_token}"):
+            return Response({"error": "Срок действия токена истёк."}, status=400)
 
-        # Сохраняем факт подтверждения кода
-        user.is_reset_verified = True
+        if not user:
+            return Response({"error": "Неверный токен."}, status=400)
+
         user.save()
 
         return Response({"message": "Код подтверждён"}, status=status.HTTP_200_OK)
@@ -333,15 +336,16 @@ class PasswordResetVerifyView(APIView):
 
 class PasswordResetConfirmView(APIView):
     """
-    Установка нового пароля после успешного подтверждения кода.
+    Установка нового пароля по коду подтверждения (token_reset).
     """
     permission_classes = [permissions.AllowAny]
 
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['new_password', 'confirm_password'],
+            required=['token', 'new_password', 'confirm_password'],
             properties={
+                'token': openapi.Schema(type=openapi.TYPE_STRING, description='Код подтверждения (token_reset)'),
                 'new_password': openapi.Schema(type=openapi.TYPE_STRING, description='Новый пароль'),
                 'confirm_password': openapi.Schema(type=openapi.TYPE_STRING, description='Подтверждение пароля'),
             },
@@ -356,21 +360,33 @@ class PasswordResetConfirmView(APIView):
         }
     )
     def post(self, request):
+        token = request.data.get("token")
         new_password = request.data.get("new_password")
         confirm_password = request.data.get("confirm_password")
 
-        if new_password != confirm_password:
-            return Response({"error": "Пароли не совпадают"}, status=status.HTTP_400_BAD_REQUEST)
+        if not token:
+            return Response({"error": "Токен подтверждения обязателен."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Получаем пользователя, который уже подтвердил код
-        user = User.objects.filter(is_reset_verified=True).first()
+        if new_password != confirm_password:
+            return Response({"error": "Пароли не совпадают."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(token_reset=token).first()
+
+        if not cache.get(f"reset_token_valid:{token}"):
+            return Response({"error": "Срок действия токена истёк."}, status=400)
 
         if not user:
-            return Response({"error": "Ошибка при смене пароля"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Неверный токен."}, status=400)
+
+        if user.check_password(new_password):
+            return Response({"error": "Новый пароль не должен совпадать с текущим."}, status=status.HTTP_400_BAD_REQUEST)
+        if len(new_password) < 8:
+            return Response({"error": "Пароль должен быть не менее 8 символов."}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.search(r"[a-zA-Z]", new_password) or not re.search(r"\d", new_password):
+            return Response({"error": "Пароль должен содержать буквы и цифры."}, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(new_password)
-        user.token_reset = None  # Очистка кода
-        user.is_reset_verified = False  # Сбрасываем флаг подтверждения
+        user.token_reset = None
         user.save()
 
         return Response({"message": "Пароль успешно изменён"}, status=status.HTTP_200_OK)
@@ -402,6 +418,46 @@ class LogoutView(APIView):
             print(f"❌ Ошибка при выходе: {str(e)}")
             return Response({"error": "Ошибка при выходе"}, status=status.HTTP_400_BAD_REQUEST)
 
+class ApproveUserAPIView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    @swagger_auto_schema(
+        operation_description="Одобрить заявку партнёра",
+        responses={
+            200: UserDetailSerializer(),
+            400: "Пользователь уже одобрен",
+            404: "Пользователь не найден"
+        }
+    )
+    def post(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        if user.status == "approved":
+            return Response({"detail": "Пользователь уже одобрен."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.status = "approved"
+        user.save()
+        return Response(UserDetailSerializer(user).data, status=status.HTTP_200_OK)
+
+
+class RejectUserAPIView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    @swagger_auto_schema(
+        operation_description="Отклонить заявку партнёра",
+        responses={
+            200: UserDetailSerializer(),
+            400: "Пользователь уже отклонён",
+            404: "Пользователь не найден"
+        }
+    )
+    def post(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        if user.status == "rejected":
+            return Response({"detail": "Пользователь уже отклонён."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.status = "rejected"
+        user.save()
+        return Response(UserDetailSerializer(user).data, status=status.HTTP_200_OK)
 
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
