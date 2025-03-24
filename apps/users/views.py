@@ -1,20 +1,20 @@
 import re
-
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
-from .serializers import UserSerializer, LoginSerializer, UserDetailSerializer, UserUpdateSerializer
+from .serializers import UserSerializer, LoginSerializer, UserDetailSerializer, UserUpdateSerializer,UserPutSerializer
 from apps.users.tasks import send_reset_email
 from rest_framework_simplejwt.views import TokenRefreshView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+import random
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-import random
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class RegisterView(generics.CreateAPIView):
@@ -85,20 +85,22 @@ class PartnerProfileAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=UserUpdateSerializer,
+                         consumes=["multipart/form-data"],
                          responses={200: UserDetailSerializer,
                                     400: 'Ошибка валидации данных'})
     def patch(self, request):
         serializer = UserUpdateSerializer(instance=request.user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(UserDetailSerializer(request.user).data, status=200)
+        return Response(UserDetailSerializer(request.user).data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
-        request_body=UserUpdateSerializer,
+        request_body=UserPutSerializer,
+        consumes=["multipart/form-data"],
         responses={200: UserDetailSerializer()}
     )
     def put(self, request):
-        serializer = UserUpdateSerializer(instance=request.user, data=request.data)
+        serializer = UserPutSerializer(instance=request.user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(UserDetailSerializer(request.user).data, status=200)
@@ -150,7 +152,8 @@ class AdminUserDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
-        request_body=UserUpdateSerializer,
+        request_body=UserPutSerializer,
+        consumes=["multipart/form-data"],
         responses={
             200: UserDetailSerializer(),
             400: 'Ошибка валидации данных',
@@ -159,13 +162,14 @@ class AdminUserDetailAPIView(APIView):
     )
     def put(self, request, pk):
         user = self.get_object(pk)
-        serializer = UserUpdateSerializer(instance=user, data=request.data)
+        serializer = UserPutSerializer(instance=user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(UserDetailSerializer(user).data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         request_body=UserUpdateSerializer,
+        consumes=["multipart/form-data"],
         responses={
             200: UserDetailSerializer(),
             400: 'Ошибка валидации данных',
@@ -418,28 +422,25 @@ class PasswordResetConfirmView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response({"error": "Вы не авторизованы"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response({"error": "Refresh-токен обязателен"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            if not request.user or not request.user.is_authenticated:
-                return Response({"error": "Вы не авторизованы"}, status=status.HTTP_401_UNAUTHORIZED)
-
-            refresh_token = request.data.get("refresh")
-
-            if refresh_token:
-                try:
-                    token = RefreshToken(refresh_token)
-                    token.blacklist()
-                except Exception as e:
-                    print(f"Ошибка при блокировке токена: {str(e)}")
-                    return Response({"error": "Неверный refresh-токен"}, status=status.HTTP_400_BAD_REQUEST)
-
-            return Response({"message": "Вы успешно вышли"}, status=status.HTTP_200_OK)
-
+            token = RefreshToken(refresh_token)
+            token.blacklist()
         except Exception as e:
-            print(f"❌ Ошибка при выходе: {str(e)}")
-            return Response({"error": "Ошибка при выходе"}, status=status.HTTP_400_BAD_REQUEST)
+            print(f"Ошибка при блокировке токена: {str(e)}")
+            return Response({"error": "Неверный refresh-токен"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"message": "Вы успешно вышли"}, status=status.HTTP_200_OK)
+
 
 class ApproveUserAPIView(APIView):
     permission_classes = [permissions.IsAdminUser]

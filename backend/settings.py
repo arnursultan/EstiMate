@@ -11,8 +11,6 @@ load_dotenv(dotenv_path)
 print(f"DEBUG = {os.getenv('DEBUG')}")
 print(f"DB_NAME = {os.getenv('DB_NAME')}")
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
 DEBUG = True
 # SERVER_IP = os.getenv("SERVER_IP", "123.456.78.90")
@@ -202,8 +200,9 @@ SECURE_HSTS_PRELOAD = False
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR, "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+SWAGGER_USE_COMPAT_RENDERERS = False
 SWAGGER_SETTINGS = {
     "DEFAULT_INFO": "backend.urls.schema_view",
     "USE_SESSION_AUTH": False,  # Отключаем Basic Auth (чтобы не было полей username/password)

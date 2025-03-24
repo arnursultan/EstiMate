@@ -69,4 +69,7 @@ wcwidth==0.2.13
 yarl==1.18.3
 zope.interface==7.2
 django-redis==5.4.0
+pytest==8.3.5
+pytest-django==4.10.0
+coverage==7.7.1
 
