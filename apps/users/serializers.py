@@ -138,12 +138,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def validate_photo(self, value):
-        max_size_mb = 5
-        if value.size > max_size_mb * 1024 * 1024:
-            raise serializers.ValidationError(f"Размер фото не должен превышать {max_size_mb}MB.")
-        if not value.content_type.startswith("image/"):
-            raise serializers.ValidationError("Файл должен быть изображением (jpeg, png и др.).")
-        return value
+
+        if value.size > 5 * 1024 * 1024:
+            raise serializers.ValidationError("Размер фото не должен превышать 5MB.")
+
+        allowed_types = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]
+        if value.content_type not in allowed_types:
+            raise serializers.ValidationError("Недопустимый формат изображения. Разрешены: JPEG, PNG, WEBP, HEIC.")
 
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
@@ -197,18 +198,3 @@ class LoginSerializer(serializers.Serializer):
         return data
 
 
-class UserPhotoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["photo"]
-
-    def validate_photo(self, value):
-
-        if value.size > 5 * 1024 * 1024:
-            raise serializers.ValidationError("Размер фото не должен превышать 5MB.")
-
-        allowed_types = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]
-        if value.content_type not in allowed_types:
-            raise serializers.ValidationError("Недопустимый формат изображения. Разрешены: JPEG, PNG, WEBP, HEIC.")
-
-        return value

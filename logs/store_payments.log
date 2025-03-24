@@ -3669,3 +3669,31 @@ AssertionError: It is redundant to specify `source='photo'` on field 'ImageField
 [2025-03-23 20:21:08] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
 [2025-03-23 20:21:09] INFO Watching for file changes with StatReloader
 [2025-03-23 20:21:12] INFO "POST /api/users/profile/deactivate/ HTTP/1.1" 200 77
+[2025-03-23 20:23:17] WARNING Bad Request: /api/users/login/
+[2025-03-23 20:23:17] WARNING "POST /api/users/login/ HTTP/1.1" 400 98
+[2025-03-23 20:25:17] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-23 20:25:18] INFO Watching for file changes with StatReloader
+[2025-03-24 10:14:32] INFO Watching for file changes with StatReloader
+[2025-03-24 10:15:24] INFO "GET /admin/users/user/8/change/ HTTP/1.1" 200 24698
+[2025-03-24 10:15:24] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[2025-03-24 10:15:24] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-24 10:15:24] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-24 10:15:24] WARNING Not Found: /favicon.ico
+[2025-03-24 10:15:24] WARNING "GET /favicon.ico HTTP/1.1" 404 4002
