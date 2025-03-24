@@ -180,3 +180,16 @@ def test_put_profile_missing_required(auth_client):
     assert "email" in response.data
 
 
+# ✅ Деактивация аккаунта
+@pytest.mark.django_db
+def test_deactivate_account_success(auth_client, user):
+    url = reverse("deactivate")  # Убедись, что в urls.py name="deactivate"
+    response = auth_client.post(url)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["detail"] == "Ваш аккаунт успешно деактивирован."
+
+    user.refresh_from_db()
+    assert user.is_active is False
+
+
+

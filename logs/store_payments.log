@@ -4242,3 +4242,63 @@ TypeError: _path_normpath: path should be string, bytes or os.PathLike, not tupl
 [2025-03-24 14:51:25] WARNING Bad Request: /api/users/register/
 [2025-03-24 14:51:25] WARNING Bad Request: /api/users/register/
 [2025-03-24 14:51:25] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:03:13] WARNING Forbidden: /api/users/admin/
+[2025-03-24 15:03:15] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 15:03:16] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 15:03:21] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 15:03:23] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 15:03:25] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 15:03:25] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 15:03:28] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-24 15:03:29] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-24 15:03:31] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-24 15:03:32] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-24 15:03:34] WARNING Bad Request: /api/users/profile/approve/36/
+[2025-03-24 15:03:37] WARNING Bad Request: /api/users/profile/reject/40/
+[2025-03-24 15:03:38] WARNING Forbidden: /api/users/profile/approve/41/
+[2025-03-24 15:03:38] WARNING Forbidden: /api/users/profile/reject/42/
+[2025-03-24 15:03:39] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-24 15:03:40] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-24 15:03:41] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:42] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:44] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:45] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:46] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:46] WARNING Unauthorized: /api/users/logout/
+[2025-03-24 15:03:47] WARNING Bad Request: /api/users/logout/
+[2025-03-24 15:03:48] WARNING Bad Request: /api/users/logout/
+[2025-03-24 15:03:50] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-24 15:03:51] WARNING Not Found: /api/users/password-reset/
+[2025-03-24 15:03:51] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-24 15:03:55] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-24 15:03:55] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 15:03:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:03:58] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:01] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:02] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:05] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:06] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:06] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:06] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:10:54] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 15:10:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:10:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:11:00] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:11:01] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:11:03] WARNING Bad Request: /api/users/profile/
