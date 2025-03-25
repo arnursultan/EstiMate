@@ -1,8 +1,8 @@
+from django_celery_beat.utils import now
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
 from .models import ProductRequest
 from .serializers import (
     ProductRequestSerializer,
@@ -14,7 +14,7 @@ from .serializers import (
 
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user and request.user.is_staff
+        return bool(request.user and request.user.is_staff)
 
 
 class ProductRequestViewSet(viewsets.ModelViewSet):

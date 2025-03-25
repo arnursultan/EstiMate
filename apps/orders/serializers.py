@@ -35,6 +35,11 @@ class ProductRequestSerializer(serializers.ModelSerializer):
 
         return data
 
+    def validate_quantity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Количество должно быть больше нуля.")
+        return value
+
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
