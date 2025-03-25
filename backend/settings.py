@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_path = os.path.join(BASE_DIR, ".env")  # Явный путь
 load_dotenv(dotenv_path)
+from celery.schedules import crontab
 
 print(f"DEBUG = {os.getenv('DEBUG')}")
 print(f"DB_NAME = {os.getenv('DB_NAME')}")
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
     "django_filters",
     "channels",
     "corsheaders",
+    'django_celery_beat',
 
     "apps.users",
     "apps.products",
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     "apps.orders",
     "apps.finance",
     "apps.chats",
+    "apps.notifications",
 ]
 
 MIDDLEWARE = [
@@ -96,7 +99,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [("localhost", 6379)],
         },
     },
 }
@@ -157,6 +160,12 @@ CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
+CELERY_BEAT_SCHEDULE = {
+    'generate-daily-finance': {
+        'task': 'apps.finance.tasks.run_daily_finance_statistics',
+        'schedule': crontab(hour=0, minute=5),
+    },
+}
 
 CACHES = {
     "default": {
