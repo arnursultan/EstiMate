@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import PartnerFinanceStat, StoreFinanceStat, FinanceEntry
+from ..stores.models import City
 
 
 class PartnerFinanceStatSerializer(serializers.ModelSerializer):
@@ -21,6 +22,21 @@ class FinanceEntrySerializer(serializers.ModelSerializer):
         model = FinanceEntry
         fields = ['id', 'user', 'date', 'income', 'expense', 'profit', 'city', 'note']
         read_only_fields = ['user']
+
+    def validate_income(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Доход не может быть отрицательным.")
+        return value
+
+    def validate_expense(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Расход не может быть отрицательным.")
+        return value
+
+    def validate_profit(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Прибыль не может быть отрицательной.")
+        return value
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user

@@ -30,7 +30,7 @@ class StoreFinanceStat(models.Model):
 
 class FinanceEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='manual_finance_entries')
-    date = models.DateField()
+    date = models.DateField(blank=False,null=False)
     income = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     expense = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     profit = models.DecimalField(max_digits=12, decimal_places=2, default=0)

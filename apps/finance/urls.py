@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import MyFinanceStatView, StoreFinanceView, ManualFinanceEntryView
+app_name = 'finance'
 
 urlpatterns = [
     path('my/', MyFinanceStatView.as_view(), name='my-finance'),
