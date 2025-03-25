@@ -1745,3 +1745,145 @@ redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. По
 [2025-03-26 03:14:32] WARNING Bad Request: /api/users/register/
 [2025-03-26 03:14:32] WARNING Bad Request: /api/users/register/
 [2025-03-26 03:14:32] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:19:48] WARNING Not Found: /api/messages/
+[2025-03-26 03:19:49] WARNING Not Found: /api/messages/
+[2025-03-26 03:19:51] WARNING Not Found: /api/messages/
+[2025-03-26 03:19:52] WARNING Not Found: /api/messages/
+[2025-03-26 03:19:53] WARNING Not Found: /api/messages/
+[2025-03-26 03:19:54] WARNING Not Found: /api/messages/
+[2025-03-26 03:22:49] WARNING Not Found: /messages
+[2025-03-26 03:22:50] WARNING Not Found: /messages
+[2025-03-26 03:22:51] WARNING Not Found: /messages
+[2025-03-26 03:22:53] WARNING Not Found: /messages
+[2025-03-26 03:22:53] WARNING Not Found: /messages
+[2025-03-26 03:22:55] WARNING Not Found: /messages
+[2025-03-26 03:25:29] WARNING Not Found: /messages-list
+[2025-03-26 03:25:30] WARNING Not Found: /messages-list
+[2025-03-26 03:25:31] WARNING Not Found: /messages-list
+[2025-03-26 03:25:33] WARNING Not Found: /messages-list
+[2025-03-26 03:25:33] WARNING Not Found: /messages-list
+[2025-03-26 03:25:35] WARNING Not Found: /messages-list
+[2025-03-26 03:28:50] WARNING Unauthorized: /api/chats/messages/
+[2025-03-26 03:31:30] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\chats\serializers.py changed, reloading.
+[2025-03-26 03:31:31] INFO Watching for file changes with StatReloader
+[2025-03-26 03:31:39] WARNING Unauthorized: /api/chats/messages/
+[2025-03-26 03:32:29] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\chats\serializers.py changed, reloading.
+[2025-03-26 03:32:30] INFO Watching for file changes with StatReloader
+[2025-03-26 03:32:41] WARNING Unauthorized: /api/chats/messages/
+[2025-03-26 03:32:45] WARNING Bad Request: /api/chats/messages/
+[2025-03-26 03:33:55] WARNING Unauthorized: /api/chats/messages/
+[2025-03-26 03:33:59] WARNING Bad Request: /api/chats/messages/
+[2025-03-26 03:34:20] WARNING Unauthorized: /api/chats/messages/
+[2025-03-26 03:34:26] WARNING Bad Request: /api/chats/messages/
+[2025-03-26 03:35:47] WARNING Unauthorized: /api/chats/messages/
+[2025-03-26 03:35:51] WARNING Bad Request: /api/chats/messages/
+[2025-03-26 03:35:53] WARNING Unauthorized: /api/finance/my/
+[2025-03-26 03:35:56] WARNING Forbidden: /api/finance/stores/
+[2025-03-26 03:35:58] WARNING Unauthorized: /api/finance/manual/
+[2025-03-26 03:36:00] WARNING Bad Request: /api/finance/manual/
+[2025-03-26 03:36:02] WARNING Bad Request: /api/finance/manual/
+[2025-03-26 03:36:08] WARNING Not Found: /api/notifications/notifications/12/mark_read/
+[2025-03-26 03:36:10] WARNING Not Found: /api/notifications/notifications/9999/mark_read/
+[2025-03-26 03:36:12] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 03:36:13] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 03:36:19] WARNING Forbidden: /api/orders/product-requests/12/update_status/
+[2025-03-26 03:36:20] WARNING Forbidden: /api/orders/product-requests/13/mark_received/
+[2025-03-26 03:36:21] WARNING Bad Request: /api/orders/product-requests/14/report_damaged/
+[2025-03-26 03:36:22] WARNING Bad Request: /api/orders/product-requests/15/report_damaged/
+[2025-03-26 03:36:22] WARNING Bad Request: /api/orders/product-requests/16/mark_received/
+[2025-03-26 03:36:23] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 03:36:23] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 03:36:23] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 03:36:25] WARNING Not Found: /api/orders/product-requests/17/mark_received/
+[2025-03-26 03:36:27] WARNING Forbidden: /api/products/categories/
+[2025-03-26 03:36:27] WARNING Bad Request: /api/products/categories/
+[2025-03-26 03:36:29] WARNING Bad Request: /api/products/categories/
+[2025-03-26 03:36:30] WARNING Bad Request: /api/products/categories/
+[2025-03-26 03:36:30] WARNING Forbidden: /api/products/categories/27/
+[2025-03-26 03:36:32] WARNING Forbidden: /api/products/categories/29/
+[2025-03-26 03:36:35] WARNING Forbidden: /api/products/products/
+[2025-03-26 03:36:36] WARNING Not Found: /api/products/products/999/
+[2025-03-26 03:36:39] WARNING Bad Request: /api/products/products/24/add_quantity/
+[2025-03-26 03:36:39] WARNING Bad Request: /api/products/products/24/add_quantity/
+[2025-03-26 03:36:39] WARNING Forbidden: /api/products/products/25/add_quantity/
+[2025-03-26 03:36:42] WARNING Bad Request: /api/products/products/
+[2025-03-26 03:36:43] WARNING Bad Request: /api/products/products/
+[2025-03-26 03:36:43] WARNING Bad Request: /api/products/products/
+[2025-03-26 03:36:44] WARNING Bad Request: /api/products/products/
+[2025-03-26 03:36:44] WARNING Unauthorized: /api/stores/cities/
+[2025-03-26 03:36:46] WARNING Forbidden: /api/stores/cities/
+[2025-03-26 03:36:46] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 03:36:50] WARNING Forbidden: /api/stores/cities/22/
+[2025-03-26 03:36:50] WARNING Forbidden: /api/stores/cities/22/
+[2025-03-26 03:36:50] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 03:36:51] WARNING Forbidden: /api/stores/cities/24/
+[2025-03-26 03:36:51] WARNING Forbidden: /api/stores/cities/24/
+[2025-03-26 03:36:51] WARNING Forbidden: /api/stores/cities/24/
+[2025-03-26 03:36:58] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-26 03:36:59] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 03:37:00] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 03:37:00] WARNING Bad Request: /api/stores/store-debts/7/mark-as-paid/
+[2025-03-26 03:37:01] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-26 03:37:02] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-26 03:37:03] WARNING Forbidden: /api/stores/stores/
+[2025-03-26 03:37:05] WARNING Bad Request: /api/stores/stores/15/update_status/
+[2025-03-26 03:37:06] WARNING Bad Request: /api/stores/stores/17/activate/
+[2025-03-26 03:37:09] WARNING Method Not Allowed: /api/stores/stores/25/
+[2025-03-26 03:37:10] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 03:37:10] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 03:37:11] WARNING Bad Request: /api/stores/stores/27/activate/
+[2025-03-26 03:37:12] WARNING Bad Request: /api/stores/stores/28/deactivate/
+[2025-03-26 03:37:15] WARNING Forbidden: /api/users/admin/
+[2025-03-26 03:37:17] WARNING Not Found: /api/users/admin/99999/
+[2025-03-26 03:37:17] WARNING Forbidden: /api/users/admin/143/
+[2025-03-26 03:37:23] WARNING Bad Request: /api/users/admin/149/
+[2025-03-26 03:37:24] WARNING Bad Request: /api/users/admin/152/
+[2025-03-26 03:37:26] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-26 03:37:27] WARNING Forbidden: /api/users/profile/delete/156/
+[2025-03-26 03:37:29] WARNING Bad Request: /api/users/admin/block/160/
+[2025-03-26 03:37:30] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-26 03:37:32] WARNING Bad Request: /api/users/admin/unblock/165/
+[2025-03-26 03:37:33] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-26 03:37:35] WARNING Bad Request: /api/users/profile/approve/170/
+[2025-03-26 03:37:38] WARNING Bad Request: /api/users/profile/reject/174/
+[2025-03-26 03:37:38] WARNING Forbidden: /api/users/profile/approve/175/
+[2025-03-26 03:37:39] WARNING Forbidden: /api/users/profile/reject/176/
+[2025-03-26 03:37:40] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-26 03:37:40] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-26 03:37:42] WARNING Bad Request: /api/users/login/
+[2025-03-26 03:37:43] WARNING Bad Request: /api/users/login/
+[2025-03-26 03:37:44] WARNING Bad Request: /api/users/login/
+[2025-03-26 03:37:45] WARNING Bad Request: /api/users/login/
+[2025-03-26 03:37:47] WARNING Bad Request: /api/users/login/
+[2025-03-26 03:37:47] WARNING Unauthorized: /api/users/logout/
+[2025-03-26 03:37:47] WARNING Bad Request: /api/users/logout/
+[2025-03-26 03:37:49] WARNING Bad Request: /api/users/logout/
+[2025-03-26 03:37:50] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-26 03:37:51] WARNING Not Found: /api/users/password-reset/
+[2025-03-26 03:37:51] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-26 03:37:54] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-26 03:37:54] WARNING Unauthorized: /api/users/profile/
+[2025-03-26 03:37:57] WARNING Bad Request: /api/users/profile/
+[2025-03-26 03:37:58] WARNING Bad Request: /api/users/profile/
+[2025-03-26 03:38:01] WARNING Bad Request: /api/users/profile/
+[2025-03-26 03:38:01] WARNING Bad Request: /api/users/profile/
+[2025-03-26 03:38:04] WARNING Bad Request: /api/users/profile/
+[2025-03-26 03:38:06] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:06] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:06] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:06] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:06] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:06] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:06] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:07] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:10] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:10] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:10] WARNING Bad Request: /api/users/register/
+[2025-03-26 03:38:10] WARNING Bad Request: /api/users/register/
