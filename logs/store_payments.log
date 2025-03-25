@@ -3697,6 +3697,611 @@ AssertionError: It is redundant to specify `source='photo'` on field 'ImageField
 [2025-03-24 10:15:24] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
 [2025-03-24 10:15:24] WARNING Not Found: /favicon.ico
 [2025-03-24 10:15:24] WARNING "GET /favicon.ico HTTP/1.1" 404 4002
+[2025-03-24 11:12:11] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 11:12:14] INFO Watching for file changes with StatReloader
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:10] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:13] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:13] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:13] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:37:13] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:44] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:44] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:44] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:44] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:44] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:44] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:44] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:45] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:48] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:48] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:48] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:39:48] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:41] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-24 11:42:42] INFO Watching for file changes with StatReloader
+[2025-03-24 11:42:53] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:53] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:53] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:54] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:58] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:58] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:58] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:42:58] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:45:44] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:45:45] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:45:47] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:45:48] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:45:49] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:49:25] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:49:26] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:49:28] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:49:29] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:49:30] WARNING Bad Request: /api/users/login/
+[2025-03-24 11:50:18] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:18] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:18] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:19] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:23] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:23] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:23] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:50:23] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:09] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:12] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:12] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:12] WARNING Bad Request: /api/users/register/
+[2025-03-24 11:53:12] WARNING Bad Request: /api/users/register/
+[2025-03-24 12:07:09] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 12:07:10] INFO Watching for file changes with StatReloader
+[2025-03-24 12:08:03] WARNING Unauthorized: /api/users/logout/
+[2025-03-24 12:08:04] WARNING Bad Request: /api/users/logout/
+[2025-03-24 12:08:05] WARNING Bad Request: /api/users/logout/
+[2025-03-24 12:09:31] WARNING Unauthorized: /api/users/logout/
+[2025-03-24 12:09:31] WARNING Bad Request: /api/users/logout/
+[2025-03-24 12:09:33] WARNING Bad Request: /api/users/logout/
+[2025-03-24 12:14:29] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 12:16:11] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 12:16:13] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:16:14] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:20:53] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 12:20:56] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:20:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:20:59] ERROR Internal Server Error: /api/users/profile/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py", line 93, in patch
+    serializer.save()
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 203, in save
+    self.instance = self.update(self.instance, validated_data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py", line 157, in update
+    instance.save()
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\contrib\auth\base_user.py", line 62, in save
+    super().save(*args, **kwargs)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1125, in _save_table
+    (getattr(self, f.attname) if raw else f.pre_save(self, False)),
+                                          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\fields\files.py", line 338, in pre_save
+    file.save(file.name, file.file, save=False)
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\db\models\fields\files.py", line 99, in save
+    self.name = self.storage.save(name, content, max_length=self.field.max_length)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\files\storage\base.py", line 44, in save
+    name = self.get_available_name(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\files\storage\base.py", line 93, in get_available_name
+    while not self.is_name_available(name, max_length=max_length):
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\files\storage\filesystem.py", line 198, in is_name_available
+    return super().is_name_available(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\files\storage\base.py", line 56, in is_name_available
+    return not self.exists(name) and not exceeds_max_length
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\files\storage\filesystem.py", line 206, in exists
+    return os.path.lexists(self.path(name))
+                           ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\files\storage\filesystem.py", line 220, in path
+    return safe_join(self.location, name)
+                     ^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\EstiMate(demo2)\.venv\Lib\site-packages\django\core\files\storage\filesystem.py", line 60, in location
+    return os.path.abspath(self.base_location)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 591, in abspath
+TypeError: _path_normpath: path should be string, bytes or os.PathLike, not tuple
+[2025-03-24 12:21:00] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:21:01] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:23:17] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-24 12:23:18] INFO Watching for file changes with StatReloader
+[2025-03-24 12:24:22] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\backend\settings.py changed, reloading.
+[2025-03-24 12:24:23] INFO Watching for file changes with StatReloader
+[2025-03-24 12:25:10] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 12:25:12] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:25:13] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:25:16] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:25:17] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:26:57] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 12:26:59] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:27:00] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:27:03] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:27:04] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:35:31] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 12:35:32] INFO Watching for file changes with StatReloader
+[2025-03-24 12:35:53] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 12:35:55] INFO Watching for file changes with StatReloader
+[2025-03-24 12:36:02] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 12:36:03] INFO Watching for file changes with StatReloader
+[2025-03-24 12:36:11] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 12:36:12] INFO Watching for file changes with StatReloader
+[2025-03-24 12:37:18] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 12:37:19] INFO Watching for file changes with StatReloader
+[2025-03-24 12:38:35] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 12:38:38] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:38:38] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:38:42] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:38:42] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:38:45] WARNING Bad Request: /api/users/profile/
+[2025-03-24 12:50:23] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 12:50:24] INFO Watching for file changes with StatReloader
+[2025-03-24 12:58:29] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 12:58:30] INFO Watching for file changes with StatReloader
+[2025-03-24 13:10:01] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:12:53] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:15:52] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:15:54] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:15:54] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:16:34] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:16:34] INFO Watching for file changes with StatReloader
+[2025-03-24 13:17:37] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:17:38] INFO Watching for file changes with StatReloader
+[2025-03-24 13:20:28] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:20:30] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:20:31] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:21:37] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:21:39] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:21:39] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:21:42] WARNING Bad Request: /api/users/admin/13/
+[2025-03-24 13:21:44] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 13:24:22] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:24:23] INFO Watching for file changes with StatReloader
+[2025-03-24 13:24:24] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-24 13:24:24] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-24 13:24:24] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-24 13:24:24] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-24 13:24:24] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-24 13:24:24] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-24 13:24:24] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-24 13:24:24] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-24 13:24:25] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-24 13:24:25] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 30560
+[2025-03-24 13:25:09] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:25:11] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:25:12] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:25:14] WARNING Bad Request: /api/users/admin/13/
+[2025-03-24 13:25:16] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 13:26:47] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 13:26:48] INFO Watching for file changes with StatReloader
+[2025-03-24 13:28:53] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:28:54] INFO Watching for file changes with StatReloader
+[2025-03-24 13:29:25] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:29:26] INFO Watching for file changes with StatReloader
+[2025-03-24 13:29:40] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:29:41] INFO Watching for file changes with StatReloader
+[2025-03-24 13:30:30] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:30:31] INFO Watching for file changes with StatReloader
+[2025-03-24 13:30:34] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-24 13:30:35] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 30560
+[2025-03-24 13:32:35] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 13:32:36] INFO Watching for file changes with StatReloader
+[2025-03-24 13:32:39] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-24 13:32:39] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 30560
+[2025-03-24 13:34:49] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 13:34:50] INFO Watching for file changes with StatReloader
+[2025-03-24 13:34:55] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 13:34:56] INFO Watching for file changes with StatReloader
+[2025-03-24 13:35:17] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 13:35:18] INFO Watching for file changes with StatReloader
+[2025-03-24 13:35:22] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 13:35:23] INFO Watching for file changes with StatReloader
+[2025-03-24 13:35:25] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-24 13:35:25] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 30522
+[2025-03-24 13:37:13] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 13:37:14] INFO Watching for file changes with StatReloader
+[2025-03-24 13:37:17] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-24 13:37:18] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 30522
+[2025-03-24 13:37:53] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 13:37:56] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:37:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:38:00] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:38:00] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:38:01] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:38:02] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:40:03] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 13:40:06] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:40:06] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:40:10] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:40:10] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:40:12] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:40:25] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:40:27] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:40:27] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:40:30] WARNING Bad Request: /api/users/admin/13/
+[2025-03-24 13:40:32] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 13:46:57] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:46:59] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:47:00] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:47:02] WARNING Bad Request: /api/users/admin/13/
+[2025-03-24 13:47:05] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 13:49:12] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:49:13] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:49:14] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:49:16] WARNING Bad Request: /api/users/admin/13/
+[2025-03-24 13:49:19] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 13:50:43] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:50:45] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:50:45] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:50:48] WARNING Bad Request: /api/users/admin/13/
+[2025-03-24 13:50:50] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 13:51:34] INFO Watching for file changes with StatReloader
+[2025-03-24 13:51:37] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-24 13:51:37] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 30522
+[2025-03-24 13:55:23] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 13:55:26] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:55:27] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:55:30] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:55:31] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:55:32] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:56:33] WARNING Forbidden: /api/users/admin/
+[2025-03-24 13:56:35] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 13:56:36] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 13:56:40] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 13:58:41] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 13:58:43] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:58:44] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:58:47] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:58:48] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:58:48] WARNING Bad Request: /api/users/profile/
+[2025-03-24 13:58:49] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:00:22] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 14:00:23] INFO Watching for file changes with StatReloader
+[2025-03-24 14:00:26] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 14:00:29] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:00:29] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:00:32] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:00:33] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:00:35] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:01:05] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:01:07] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:01:08] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:01:13] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:07:38] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:07:40] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:07:41] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:07:47] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:07:48] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:10:52] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:10:54] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:10:55] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:11:00] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:11:02] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:11:03] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 14:11:04] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 14:12:00] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\views.py changed, reloading.
+[2025-03-24 14:12:01] INFO Watching for file changes with StatReloader
+[2025-03-24 14:13:22] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:13:24] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:13:25] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:13:31] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:13:32] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:13:34] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 14:13:35] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 14:15:43] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:15:45] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:15:46] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:15:52] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:15:53] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:15:55] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 14:15:56] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 14:15:59] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-24 14:16:00] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-24 14:16:02] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-24 14:16:03] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-24 14:21:15] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:21:16] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:21:17] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:21:23] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:21:24] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:21:26] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 14:21:26] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 14:21:29] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-24 14:21:30] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-24 14:21:32] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-24 14:21:33] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-24 14:21:34] WARNING Bad Request: /api/users/profile/approve/34/
+[2025-03-24 14:21:35] WARNING Bad Request: /api/users/profile/approve/36/
+[2025-03-24 14:21:38] WARNING Bad Request: /api/users/profile/reject/40/
+[2025-03-24 14:21:39] WARNING Forbidden: /api/users/profile/approve/41/
+[2025-03-24 14:21:39] WARNING Forbidden: /api/users/profile/reject/42/
+[2025-03-24 14:21:40] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-24 14:21:40] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-24 14:26:11] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:26:13] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:26:13] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:26:19] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:26:20] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:26:22] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 14:26:23] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 14:26:25] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-24 14:26:26] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-24 14:26:28] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-24 14:26:29] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-24 14:26:32] WARNING Bad Request: /api/users/profile/approve/36/
+[2025-03-24 14:26:34] WARNING Bad Request: /api/users/profile/reject/40/
+[2025-03-24 14:26:35] WARNING Forbidden: /api/users/profile/approve/41/
+[2025-03-24 14:26:35] WARNING Forbidden: /api/users/profile/reject/42/
+[2025-03-24 14:26:36] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-24 14:26:37] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-24 14:32:34] WARNING Not Found: /api/users/password-reset/
+[2025-03-24 14:32:34] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-24 14:34:26] WARNING Not Found: /api/users/password-reset/
+[2025-03-24 14:34:27] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-24 14:34:30] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-24 14:35:20] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-24 14:35:21] WARNING Not Found: /api/users/password-reset/
+[2025-03-24 14:35:21] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-24 14:35:24] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-24 14:39:07] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:39:09] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:39:10] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:39:16] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:39:17] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:39:19] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 14:39:19] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 14:39:22] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-24 14:39:23] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-24 14:39:25] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-24 14:39:26] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-24 14:39:28] WARNING Bad Request: /api/users/profile/approve/36/
+[2025-03-24 14:39:31] WARNING Bad Request: /api/users/profile/reject/40/
+[2025-03-24 14:39:32] WARNING Forbidden: /api/users/profile/approve/41/
+[2025-03-24 14:39:32] WARNING Forbidden: /api/users/profile/reject/42/
+[2025-03-24 14:39:33] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-24 14:39:34] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-24 14:39:35] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:39:36] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:39:38] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:39:39] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:39:40] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:39:40] WARNING Unauthorized: /api/users/logout/
+[2025-03-24 14:39:41] WARNING Bad Request: /api/users/logout/
+[2025-03-24 14:39:42] WARNING Bad Request: /api/users/logout/
+[2025-03-24 14:39:43] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-24 14:39:44] WARNING Not Found: /api/users/password-reset/
+[2025-03-24 14:39:45] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-24 14:39:48] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-24 14:39:48] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 14:39:50] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:39:51] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:39:54] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:39:55] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:39:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:39:59] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:39:59] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:39:59] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:39:59] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:39:59] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:39:59] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:39:59] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:00] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:03] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:03] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:03] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:40:03] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:50:03] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\users\serializers.py changed, reloading.
+[2025-03-24 14:50:04] INFO Watching for file changes with StatReloader
+[2025-03-24 14:50:27] WARNING Forbidden: /api/users/admin/
+[2025-03-24 14:50:29] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 14:50:30] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 14:50:35] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 14:50:37] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 14:50:39] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 14:50:39] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 14:50:42] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-24 14:50:42] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-24 14:50:45] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-24 14:50:46] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-24 14:50:48] WARNING Bad Request: /api/users/profile/approve/36/
+[2025-03-24 14:50:51] WARNING Bad Request: /api/users/profile/reject/40/
+[2025-03-24 14:50:52] WARNING Forbidden: /api/users/profile/approve/41/
+[2025-03-24 14:50:53] WARNING Forbidden: /api/users/profile/reject/42/
+[2025-03-24 14:50:53] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-24 14:50:54] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-24 14:50:56] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:50:58] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:50:59] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:51:01] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:51:02] WARNING Bad Request: /api/users/login/
+[2025-03-24 14:51:02] WARNING Unauthorized: /api/users/logout/
+[2025-03-24 14:51:03] WARNING Bad Request: /api/users/logout/
+[2025-03-24 14:51:04] WARNING Bad Request: /api/users/logout/
+[2025-03-24 14:51:05] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-24 14:51:06] WARNING Not Found: /api/users/password-reset/
+[2025-03-24 14:51:07] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-24 14:51:10] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-24 14:51:10] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 14:51:12] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:51:13] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:51:16] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:51:17] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:51:19] WARNING Bad Request: /api/users/profile/
+[2025-03-24 14:51:21] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:21] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:21] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:21] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:21] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:21] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:21] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:22] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:25] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:25] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:25] WARNING Bad Request: /api/users/register/
+[2025-03-24 14:51:25] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:03:13] WARNING Forbidden: /api/users/admin/
+[2025-03-24 15:03:15] WARNING Not Found: /api/users/admin/99999/
+[2025-03-24 15:03:16] WARNING Forbidden: /api/users/admin/9/
+[2025-03-24 15:03:21] WARNING Bad Request: /api/users/admin/15/
+[2025-03-24 15:03:23] WARNING Bad Request: /api/users/admin/18/
+[2025-03-24 15:03:25] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-24 15:03:25] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-24 15:03:28] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-24 15:03:29] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-24 15:03:31] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-24 15:03:32] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-24 15:03:34] WARNING Bad Request: /api/users/profile/approve/36/
+[2025-03-24 15:03:37] WARNING Bad Request: /api/users/profile/reject/40/
+[2025-03-24 15:03:38] WARNING Forbidden: /api/users/profile/approve/41/
+[2025-03-24 15:03:38] WARNING Forbidden: /api/users/profile/reject/42/
+[2025-03-24 15:03:39] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-24 15:03:40] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-24 15:03:41] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:42] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:44] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:45] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:46] WARNING Bad Request: /api/users/login/
+[2025-03-24 15:03:46] WARNING Unauthorized: /api/users/logout/
+[2025-03-24 15:03:47] WARNING Bad Request: /api/users/logout/
+[2025-03-24 15:03:48] WARNING Bad Request: /api/users/logout/
+[2025-03-24 15:03:50] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-24 15:03:51] WARNING Not Found: /api/users/password-reset/
+[2025-03-24 15:03:51] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-24 15:03:55] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-24 15:03:55] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 15:03:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:03:58] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:01] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:02] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:05] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:04:06] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:06] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:06] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:07] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:08] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:04:11] WARNING Bad Request: /api/users/register/
+[2025-03-24 15:10:54] WARNING Unauthorized: /api/users/profile/
+[2025-03-24 15:10:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:10:57] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:11:00] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:11:01] WARNING Bad Request: /api/users/profile/
+[2025-03-24 15:11:03] WARNING Bad Request: /api/users/profile/
 [2025-03-25 08:38:29] INFO Watching for file changes with StatReloader
 [2025-03-25 09:13:19] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
 [2025-03-25 09:13:19] INFO Watching for file changes with StatReloader
@@ -5060,3 +5665,24 @@ LINE 1: SELECT COUNT(*) AS "__count" FROM "orders_productrequest"
 [2025-03-25 15:33:18] INFO Watching for file changes with StatReloader
 [2025-03-25 15:33:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
 [2025-03-25 15:33:33] INFO Watching for file changes with StatReloader
+[2025-03-25 19:19:20] INFO Watching for file changes with StatReloader
+[2025-03-25 19:20:01] INFO Watching for file changes with StatReloader
+[2025-03-25 19:25:09] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\admin.py changed, reloading.
+[2025-03-25 19:25:11] INFO Watching for file changes with StatReloader
+[2025-03-25 19:25:19] INFO Watching for file changes with StatReloader
+[2025-03-25 19:27:35] INFO C:\Users\nooke\PycharmProjects\EstiMate(demo2)\apps\stores\admin.py changed, reloading.
+[2025-03-25 19:27:36] INFO Watching for file changes with StatReloader
+[2025-03-25 19:27:40] WARNING Not Found: /
+[2025-03-25 19:27:40] WARNING "GET / HTTP/1.1" 404 4108
+[2025-03-25 19:27:40] WARNING Not Found: /favicon.ico
+[2025-03-25 19:27:40] WARNING "GET /favicon.ico HTTP/1.1" 404 4159
+[2025-03-25 19:27:44] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-25 19:27:44] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-25 19:27:44] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-25 19:27:44] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-25 19:27:44] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-25 19:27:44] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-25 19:27:44] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-25 19:27:44] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-25 19:27:45] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-25 19:27:45] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 48688
