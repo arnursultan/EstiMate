@@ -1,8 +1,12 @@
-from django.urls import path
-from .views import ApplicationCreateAPIView, ApplicationActionAPIView, ApplicationListAPIView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import CityViewSet, StoreViewSet, StoreDebtViewSet
+
+router = DefaultRouter()
+router.register(r'cities', CityViewSet)
+router.register(r'stores', StoreViewSet)
+router.register(r'store-debts', StoreDebtViewSet)
 
 urlpatterns = [
-    path('applications/', ApplicationCreateAPIView.as_view(), name='application-create'),
-    path('applications/list/', ApplicationListAPIView.as_view(), name='application-list'),
-    path('applications/<int:pk>/<str:action>/', ApplicationActionAPIView.as_view(), name='application-action'),
+    path('', include(router.urls)),
 ]

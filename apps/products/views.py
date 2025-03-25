@@ -1,78 +1,129 @@
-from rest_framework import viewsets, permissions, filters, status
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import F
-from .models import Product
-from .serializers import ProductSerializer, ProductAdminSerializer, ProductPartnerSerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from .models import Category, Product
+from .serializers import CategorySerializer, ProductSerializer
 
 
-class IsAdminOrReadOnly(permissions.BasePermission):
-    """
-    Разрешение, позволяющее только администраторам изменять объекты.
-    Остальные пользователи имеют доступ только для чтения.
-    """
-
+class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        # Разрешить GET, HEAD, OPTIONS всем пользователям
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        # Разрешить изменения только администраторам
-        return request.user and request.user.is_authenticated and request.user.role == 'admin'
+        return request.user and request.user.is_staff
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+
+    @swagger_auto_schema(
+        operation_description="Получить список всех категорий",
+        responses={200: CategorySerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Создать новую категорию (только администратор)",
+        request_body=CategorySerializer,
+        responses={201: CategorySerializer}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    """
-    API для управления товарами в каталоге.
-    Админы могут создавать, обновлять и удалять товары.
-    Партнеры имеют доступ только для чтения.
-    """
-    queryset = Product.objects.filter(is_active=True)
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['is_bonus']
+    filterset_fields = ['category']
     search_fields = ['name', 'description']
-    ordering_fields = ['name', 'price', 'created_at']
-    permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
+    ordering_fields = ['name', 'price', 'quantity', 'created_at']
 
-    def get_serializer_class(self):
-        if self.request.user.role == 'admin':
-            return ProductAdminSerializer
-        return ProductPartnerSerializer
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
-    def perform_create(self, serializer):
-        serializer.save()
+    @swagger_auto_schema(
+        operation_description="Получить список всех продуктов",
+        responses={200: ProductSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def update_quantity(self, request, pk=None):
-        """
-        Обновление количества товара на складе (только для админов).
-        """
-        if request.user.role != 'admin':
-            return Response(
-                {"error": "Только администратор может обновлять количество товаров"},
-                status=status.HTTP_403_FORBIDDEN
-            )
+    @swagger_auto_schema(
+        operation_description="Создать новый продукт (только администратор)",
+        request_body=ProductSerializer,
+        responses={201: ProductSerializer}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        operation_description="Получить детали продукта по ID",
+        responses={200: ProductSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Обновить продукт (только администратор)",
+        request_body=ProductSerializer,
+        responses={200: ProductSerializer}
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Частично обновить продукт (только администратор)",
+        request_body=ProductSerializer,
+        responses={200: ProductSerializer}
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Удалить продукт (только администратор)",
+        responses={204: "Продукт успешно удален"}
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        method='post',
+        operation_description="Добавить количество товара на склад (только администратор)",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['quantity_to_add'],
+            properties={
+                'quantity_to_add': openapi.Schema(type=openapi.TYPE_INTEGER, description='Количество товара для добавления')
+            }
+        ),
+        responses={200: ProductSerializer}
+    )
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
+    def add_quantity(self, request, pk=None):
         product = self.get_object()
-        quantity = request.data.get('quantity')
+        quantity_to_add = request.data.get('quantity_to_add', 0)
 
         try:
-            quantity = int(quantity)
-            if quantity < 0:
-                return Response(
-                    {"error": "Количество не может быть отрицательным"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+            quantity_to_add = int(quantity_to_add)
+            if quantity_to_add <= 0:
+                return Response({"error": "Количество добавляемого товара должно быть положительным числом"}, status=status.HTTP_400_BAD_REQUEST)
 
-            product.quantity = quantity
+            product.quantity += quantity_to_add
             product.save()
 
-            return Response(
-                {"message": f"Количество товара '{product.name}' обновлено до {quantity}"},
-                status=status.HTTP_200_OK
-            )
-        except (ValueError, TypeError):
-            return Response(
-                {"error": "Количество должно быть целым числом"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response(ProductSerializer(product).data)
+
+        except ValueError:
+            return Response({"error": "Некорректное значение для количества товара"}, status=status.HTTP_400_BAD_REQUEST)

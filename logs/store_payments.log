@@ -3697,3 +3697,1366 @@ AssertionError: It is redundant to specify `source='photo'` on field 'ImageField
 [2025-03-24 10:15:24] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
 [2025-03-24 10:15:24] WARNING Not Found: /favicon.ico
 [2025-03-24 10:15:24] WARNING "GET /favicon.ico HTTP/1.1" 404 4002
+[2025-03-25 08:38:29] INFO Watching for file changes with StatReloader
+[2025-03-25 09:13:19] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
+[2025-03-25 09:13:19] INFO Watching for file changes with StatReloader
+[2025-03-25 09:13:57] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/admin.py changed, reloading.
+[2025-03-25 09:13:57] INFO Watching for file changes with StatReloader
+[2025-03-25 09:21:23] INFO Watching for file changes with StatReloader
+[2025-03-25 09:21:24] WARNING Not Found: /
+[2025-03-25 09:21:24] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 09:21:28] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 09:21:28] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 38066
+[2025-03-25 09:24:10] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-25 09:24:11] INFO Watching for file changes with StatReloader
+[2025-03-25 09:24:12] WARNING Not Found: /
+[2025-03-25 09:24:12] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 09:24:14] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 09:24:14] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 38066
+[2025-03-25 09:24:17] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 09:24:17] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 38066
+[2025-03-25 09:25:46] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
+[2025-03-25 09:25:47] INFO Watching for file changes with StatReloader
+[2025-03-25 09:26:01] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
+[2025-03-25 09:26:01] INFO Watching for file changes with StatReloader
+[2025-03-25 09:26:17] INFO Watching for file changes with StatReloader
+[2025-03-25 09:26:19] WARNING Not Found: /
+[2025-03-25 09:26:19] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 09:26:22] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 09:26:22] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 38066
+[2025-03-25 09:26:23] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 09:26:23] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 38066
+[2025-03-25 09:28:06] INFO Watching for file changes with StatReloader
+[2025-03-25 09:28:06] INFO "GET /admin/ HTTP/1.1" 302 0
+[2025-03-25 09:28:06] INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4338
+[2025-03-25 09:28:06] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-25 09:28:06] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-25 09:28:06] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-25 09:28:06] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-25 09:28:06] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-25 09:28:06] INFO "GET /static/admin/css/login.css HTTP/1.1" 304 0
+[2025-03-25 09:28:06] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-25 09:28:08] WARNING Not Found: /
+[2025-03-25 09:28:08] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 09:28:16] INFO "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4588
+[2025-03-25 09:28:25] INFO "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4588
+[2025-03-25 09:29:06] INFO Watching for file changes with StatReloader
+[2025-03-25 09:29:08] WARNING Not Found: /
+[2025-03-25 09:29:08] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 09:29:12] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 09:29:12] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 38066
+[2025-03-25 09:29:12] INFO "GET /admin/ HTTP/1.1" 302 0
+[2025-03-25 09:29:12] INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4338
+[2025-03-25 09:29:31] INFO "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[2025-03-25 09:29:31] INFO "GET /admin/ HTTP/1.1" 200 16151
+[2025-03-25 09:29:31] INFO "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[2025-03-25 09:29:31] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-25 09:29:31] INFO "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[2025-03-25 09:29:48] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 09:29:48] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 38066
+[2025-03-25 09:29:48] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /admin/users/user/ HTTP/1.1" 200 22657
+[2025-03-25 09:29:57] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/img/icon-no.svg HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 09:29:57] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-25 09:29:57] INFO "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+[2025-03-25 09:30:58] INFO "POST /api/users/login/ HTTP/1.1" 200 486
+[2025-03-25 09:31:58] WARNING Unauthorized: /api/users/profile/approve/6/
+[2025-03-25 09:31:58] WARNING "POST /api/users/profile/approve/6/ HTTP/1.1" 401 82
+[2025-03-25 09:32:17] INFO "POST /api/users/profile/approve/6/ HTTP/1.1" 200 184
+[2025-03-25 09:32:22] INFO "GET /admin/users/user/ HTTP/1.1" 200 22640
+[2025-03-25 09:32:22] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 09:32:40] ERROR Internal Server Error: /admin/users/user/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column stores_application.full_name does not exist
+LINE 1: SELECT "stores_application"."id", "stores_application"."full...
+                                          ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 2032, in changelist_view
+    response = self.response_action(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1664, in response_action
+    response = func(self, request, queryset)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/actions.py", line 39, in delete_selected
+    ) = modeladmin.get_deleted_objects(queryset, request)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 2174, in get_deleted_objects
+    return get_deleted_objects(objs, request, self.admin_site)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/utils.py", line 138, in get_deleted_objects
+    collector.collect(objs)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/utils.py", line 205, in collect
+    return super().collect(objs, source_attr=source_attr, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/deletion.py", line 344, in collect
+    if getattr(on_delete, "lazy_sub_objs", False) or sub_objs:
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 414, in __bool__
+    self._fetch_all()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1574, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column stores_application.full_name does not exist
+LINE 1: SELECT "stores_application"."id", "stores_application"."full...
+                                          ^
+
+[2025-03-25 09:32:40] ERROR "POST /admin/users/user/ HTTP/1.1" 500 206189
+[2025-03-25 09:33:11] INFO "GET /admin/users/user/ HTTP/1.1" 200 22640
+[2025-03-25 09:33:13] ERROR Internal Server Error: /admin/stores/store/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column stores_store.inn does not exist
+LINE 1: ...ELECT "stores_store"."id", "stores_store"."name", "stores_st...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 2119, in changelist_view
+    media = self.media + formset.media
+                         ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/forms/formsets.py", line 521, in media
+    if self.forms:
+       ^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/forms/formsets.py", line 207, in forms
+    for i in range(self.total_form_count())
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/forms/formsets.py", line 182, in total_form_count
+    initial_forms = self.initial_form_count()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/forms/models.py", line 697, in initial_form_count
+    return len(self.get_queryset())
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 382, in __len__
+    self._fetch_all()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1574, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column stores_store.inn does not exist
+LINE 1: ...ELECT "stores_store"."id", "stores_store"."name", "stores_st...
+                                                             ^
+
+[2025-03-25 09:33:13] ERROR "GET /admin/stores/store/ HTTP/1.1" 500 194237
+[2025-03-25 09:33:17] INFO "GET /admin/users/user/ HTTP/1.1" 200 22640
+[2025-03-25 09:33:20] INFO "GET /admin/users/user/ HTTP/1.1" 200 22640
+[2025-03-25 09:33:20] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 09:33:22] INFO "GET /admin/products/category/ HTTP/1.1" 200 15607
+[2025-03-25 09:33:22] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 09:33:24] INFO "GET /admin/products/product/ HTTP/1.1" 200 15589
+[2025-03-25 09:33:24] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 09:33:27] ERROR Internal Server Error: /admin/stores/application/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column stores_application.full_name does not exist
+LINE 1: SELECT "stores_application"."id", "stores_application"."full...
+                                          ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 2138, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 382, in __len__
+    self._fetch_all()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1574, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column stores_application.full_name does not exist
+LINE 1: SELECT "stores_application"."id", "stores_application"."full...
+                                          ^
+
+[2025-03-25 09:33:27] ERROR "GET /admin/stores/application/ HTTP/1.1" 500 168196
+[2025-03-25 09:33:31] INFO "GET /admin/products/product/ HTTP/1.1" 200 15589
+[2025-03-25 09:34:22] INFO "POST /api/users/register/ HTTP/1.1" 201 137
+[2025-03-25 09:34:49] INFO "POST /api/users/profile/approve/11/ HTTP/1.1" 200 180
+[2025-03-25 09:35:43] INFO "POST /api/users/login/ HTTP/1.1" 200 486
+[2025-03-25 09:36:49] WARNING Unauthorized: /api/products/categories/
+[2025-03-25 09:36:49] WARNING "POST /api/products/categories/ HTTP/1.1" 401 82
+[2025-03-25 09:37:02] WARNING Forbidden: /api/products/categories/
+[2025-03-25 09:37:02] WARNING "POST /api/products/categories/ HTTP/1.1" 403 117
+[2025-03-25 09:37:48] INFO "POST /api/users/login/ HTTP/1.1" 200 486
+[2025-03-25 09:38:05] WARNING Bad Request: /api/products/categories/
+[2025-03-25 09:38:05] WARNING "POST /api/products/categories/ HTTP/1.1" 400 47
+[2025-03-25 09:38:30] INFO "POST /api/products/categories/ HTTP/1.1" 201 24
+[2025-03-25 10:45:16] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/models.py changed, reloading.
+[2025-03-25 10:45:17] INFO Watching for file changes with StatReloader
+[2025-03-25 10:46:01] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-25 10:46:01] INFO Watching for file changes with StatReloader
+[2025-03-25 10:46:12] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/urls.py changed, reloading.
+[2025-03-25 10:46:12] INFO Watching for file changes with StatReloader
+[2025-03-25 10:48:31] INFO Watching for file changes with StatReloader
+[2025-03-25 10:48:32] WARNING Not Found: /
+[2025-03-25 10:48:32] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 10:48:35] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 10:48:35] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 10:49:13] WARNING Unauthorized: /api/stores/cities/
+[2025-03-25 10:49:13] WARNING "POST /api/stores/cities/ HTTP/1.1" 401 82
+[2025-03-25 10:49:33] INFO "POST /api/stores/cities/ HTTP/1.1" 201 21
+[2025-03-25 10:49:41] WARNING Unauthorized: /api/stores/cities/
+[2025-03-25 10:49:41] WARNING "GET /api/stores/cities/ HTTP/1.1" 401 82
+[2025-03-25 10:49:51] WARNING Bad Request: /api/stores/cities/
+[2025-03-25 10:49:51] WARNING "POST /api/stores/cities/ HTTP/1.1" 400 96
+[2025-03-25 10:50:08] INFO "GET /api/stores/cities/ HTTP/1.1" 200 23
+[2025-03-25 10:51:10] WARNING Unauthorized: /api/stores/stores/
+[2025-03-25 10:51:10] WARNING "POST /api/stores/stores/ HTTP/1.1" 401 82
+[2025-03-25 10:51:37] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 10:51:37] WARNING "POST /api/stores/stores/ HTTP/1.1" 403 110
+[2025-03-25 10:52:38] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 10:52:38] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 10:52:39] INFO "GET /admin/ HTTP/1.1" 200 16767
+[2025-03-25 10:52:43] INFO "GET /admin/users/user/ HTTP/1.1" 200 23766
+[2025-03-25 10:52:43] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 10:53:06] WARNING Not Found: /
+[2025-03-25 10:53:06] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 10:53:09] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 10:53:09] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 10:53:09] INFO "GET /admin/ HTTP/1.1" 200 16767
+[2025-03-25 10:53:11] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 10:53:11] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 10:53:29] INFO "POST /api/users/login/ HTTP/1.1" 200 486
+[2025-03-25 10:53:52] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 10:53:52] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 10:53:53] INFO "GET /admin/ HTTP/1.1" 200 16767
+[2025-03-25 10:53:59] INFO "GET /admin/users/user/ HTTP/1.1" 200 23766
+[2025-03-25 10:53:59] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 10:54:11] WARNING Bad Request: /api/stores/stores/
+[2025-03-25 10:54:11] WARNING "POST /api/stores/stores/ HTTP/1.1" 400 81
+[2025-03-25 10:54:31] INFO "POST /api/stores/stores/ HTTP/1.1" 201 248
+[2025-03-25 10:54:49] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 10:54:49] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 10:55:37] INFO "GET /admin/products/product/ HTTP/1.1" 200 16032
+[2025-03-25 10:55:37] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 10:55:40] INFO "GET /admin/stores/store/ HTTP/1.1" 200 20858
+[2025-03-25 10:55:40] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 10:55:44] INFO "GET /admin/stores/store/1/change/ HTTP/1.1" 200 23076
+[2025-03-25 10:55:44] INFO "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[2025-03-25 10:55:44] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-25 10:55:44] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-25 10:55:44] INFO "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[2025-03-25 10:55:44] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 10:57:33] WARNING Unauthorized: /api/stores/stores/
+[2025-03-25 10:57:33] WARNING "GET /api/stores/stores/ HTTP/1.1" 401 82
+[2025-03-25 10:57:47] INFO "GET /api/stores/stores/ HTTP/1.1" 200 2
+[2025-03-25 10:58:04] INFO "GET /admin/ HTTP/1.1" 200 16767
+[2025-03-25 10:58:06] WARNING Not Found: /
+[2025-03-25 10:58:06] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 10:58:08] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 10:58:08] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 10:58:44] INFO "POST /api/users/login/ HTTP/1.1" 200 486
+[2025-03-25 10:59:34] WARNING Unauthorized: /api/stores/stores/
+[2025-03-25 10:59:34] WARNING "GET /api/stores/stores/ HTTP/1.1" 401 82
+[2025-03-25 10:59:41] INFO "GET /api/stores/stores/ HTTP/1.1" 200 250
+[2025-03-25 11:00:55] WARNING Unauthorized: /api/stores/stores/1/update_status/
+[2025-03-25 11:00:55] WARNING "POST /api/stores/stores/1/update_status/ HTTP/1.1" 401 82
+[2025-03-25 11:01:24] ERROR Internal Server Error: /api/stores/stores/1/update_status/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py", line 158, in update_status
+    return Response(StoreDetailSerializer(store).data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/serializers.py", line 571, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+           ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/serializers.py", line 59, in get_total_debt
+    total=models.Sum('amount')
+          ^^^^^^
+NameError: name 'models' is not defined
+[2025-03-25 11:01:24] ERROR "POST /api/stores/stores/1/update_status/ HTTP/1.1" 500 122839
+[2025-03-25 11:03:53] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 11:03:53] WARNING "POST /api/stores/stores/ HTTP/1.1" 403 110
+[2025-03-25 11:03:59] INFO "GET /api/stores/stores/ HTTP/1.1" 200 251
+[2025-03-25 11:04:09] INFO "GET /api/stores/stores/ HTTP/1.1" 200 251
+[2025-03-25 11:04:51] WARNING Bad Request: /api/stores/stores/1/update_status/
+[2025-03-25 11:04:51] WARNING "POST /api/stores/stores/1/update_status/ HTTP/1.1" 400 122
+[2025-03-25 11:05:34] WARNING Unauthorized: /api/stores/stores/
+[2025-03-25 11:05:34] WARNING "POST /api/stores/stores/ HTTP/1.1" 401 82
+[2025-03-25 11:05:58] INFO "POST /api/stores/stores/ HTTP/1.1" 201 251
+[2025-03-25 11:06:05] ERROR Internal Server Error: /api/stores/stores/2/update_status/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py", line 158, in update_status
+    return Response(StoreDetailSerializer(store).data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/serializers.py", line 571, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+           ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/serializers.py", line 59, in get_total_debt
+    total=models.Sum('amount')
+          ^^^^^^
+NameError: name 'models' is not defined
+[2025-03-25 11:06:06] ERROR "POST /api/stores/stores/2/update_status/ HTTP/1.1" 500 122878
+[2025-03-25 11:06:21] INFO "GET /api/stores/stores/ HTTP/1.1" 200 504
+[2025-03-25 11:11:28] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/serializers.py changed, reloading.
+[2025-03-25 11:11:28] INFO Watching for file changes with StatReloader
+[2025-03-25 11:11:41] WARNING Not Found: /
+[2025-03-25 11:11:41] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 11:13:01] INFO "POST /api/stores/stores/ HTTP/1.1" 201 252
+[2025-03-25 11:13:16] INFO "POST /api/stores/stores/3/update_status/ HTTP/1.1" 200 310
+[2025-03-25 11:17:12] INFO "GET /admin/users/user/ HTTP/1.1" 200 23766
+[2025-03-25 11:17:12] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:17:19] INFO "GET /admin/products/productrequest/ HTTP/1.1" 200 17767
+[2025-03-25 11:17:19] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:17:20] INFO "GET /admin/products/productrequest/add/ HTTP/1.1" 200 26867
+[2025-03-25 11:17:20] INFO "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 304 0
+[2025-03-25 11:17:20] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:17:41] INFO "GET /admin/products/product/add/?_to_field=id&_popup=1 HTTP/1.1" 200 10404
+[2025-03-25 11:17:41] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:17:47] INFO "GET /admin/products/category/add/?_to_field=id&_popup=1 HTTP/1.1" 200 4503
+[2025-03-25 11:17:47] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:17:49] INFO "POST /admin/products/category/add/?_to_field=id&_popup=1 HTTP/1.1" 200 409
+[2025-03-25 11:17:49] INFO "GET /static/admin/js/popup_response.js HTTP/1.1" 304 0
+[2025-03-25 11:18:11] ERROR Internal Server Error: /admin/products/product/add/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1959, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1818, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1869, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1292, in save_model
+    obj.save()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1835, in execute_sql
+    for sql, params in self.as_sql():
+                       ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1758, in as_sql
+    value_rows = [
+                 ^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1759, in <listcomp>
+    [
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1760, in <listcomp>
+    self.prepare_value(field, self.pre_save_val(field, obj))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1708, in pre_save_val
+    return field.pre_save(obj, add=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/fields/files.py", line 338, in pre_save
+    file.save(file.name, file.file, save=False)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/fields/files.py", line 99, in save
+    self.name = self.storage.save(name, content, max_length=self.field.max_length)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 44, in save
+    name = self.get_available_name(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 93, in get_available_name
+    while not self.is_name_available(name, max_length=max_length):
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 198, in is_name_available
+    return super().is_name_available(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 56, in is_name_available
+    return not self.exists(name) and not exceeds_max_length
+               ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 206, in exists
+    return os.path.lexists(self.path(name))
+                           ^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 220, in path
+    return safe_join(self.location, name)
+                     ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 60, in location
+    return os.path.abspath(self.base_location)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 399, in abspath
+TypeError: expected str, bytes or os.PathLike object, not tuple
+[2025-03-25 11:18:11] ERROR "POST /admin/products/product/add/?_to_field=id&_popup=1 HTTP/1.1" 500 229003
+[2025-03-25 11:18:27] INFO "GET /admin/products/category/add/ HTTP/1.1" 200 16590
+[2025-03-25 11:18:27] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:18:28] INFO "GET /admin/products/category/ HTTP/1.1" 200 18090
+[2025-03-25 11:18:28] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:18:30] INFO "GET /admin/products/product/ HTTP/1.1" 200 16777
+[2025-03-25 11:18:30] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:18:35] INFO "GET /admin/products/product/add/ HTTP/1.1" 200 22531
+[2025-03-25 11:18:35] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:19:00] ERROR Internal Server Error: /admin/products/product/add/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1959, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1818, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1869, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1292, in save_model
+    obj.save()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1835, in execute_sql
+    for sql, params in self.as_sql():
+                       ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1758, in as_sql
+    value_rows = [
+                 ^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1759, in <listcomp>
+    [
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1760, in <listcomp>
+    self.prepare_value(field, self.pre_save_val(field, obj))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1708, in pre_save_val
+    return field.pre_save(obj, add=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/fields/files.py", line 338, in pre_save
+    file.save(file.name, file.file, save=False)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/fields/files.py", line 99, in save
+    self.name = self.storage.save(name, content, max_length=self.field.max_length)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 44, in save
+    name = self.get_available_name(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 93, in get_available_name
+    while not self.is_name_available(name, max_length=max_length):
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 198, in is_name_available
+    return super().is_name_available(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 56, in is_name_available
+    return not self.exists(name) and not exceeds_max_length
+               ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 206, in exists
+    return os.path.lexists(self.path(name))
+                           ^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 220, in path
+    return safe_join(self.location, name)
+                     ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 60, in location
+    return os.path.abspath(self.base_location)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 399, in abspath
+TypeError: expected str, bytes or os.PathLike object, not tuple
+[2025-03-25 11:19:00] ERROR "POST /admin/products/product/add/ HTTP/1.1" 500 227726
+[2025-03-25 11:20:19] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 11:20:19] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 11:20:50] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 11:20:51] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 11:20:52] INFO "GET /admin/ HTTP/1.1" 200 17173
+[2025-03-25 11:20:59] INFO "GET /admin/products/product/ HTTP/1.1" 200 16777
+[2025-03-25 11:20:59] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:21:02] INFO "GET /admin/products/product/add/ HTTP/1.1" 200 22531
+[2025-03-25 11:21:02] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:21:33] ERROR Internal Server Error: /admin/products/product/add/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1959, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1818, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1869, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1292, in save_model
+    obj.save()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1835, in execute_sql
+    for sql, params in self.as_sql():
+                       ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1758, in as_sql
+    value_rows = [
+                 ^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1759, in <listcomp>
+    [
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1760, in <listcomp>
+    self.prepare_value(field, self.pre_save_val(field, obj))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1708, in pre_save_val
+    return field.pre_save(obj, add=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/fields/files.py", line 338, in pre_save
+    file.save(file.name, file.file, save=False)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/fields/files.py", line 99, in save
+    self.name = self.storage.save(name, content, max_length=self.field.max_length)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 44, in save
+    name = self.get_available_name(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 93, in get_available_name
+    while not self.is_name_available(name, max_length=max_length):
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 198, in is_name_available
+    return super().is_name_available(name, max_length=max_length)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/base.py", line 56, in is_name_available
+    return not self.exists(name) and not exceeds_max_length
+               ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 206, in exists
+    return os.path.lexists(self.path(name))
+                           ^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 220, in path
+    return safe_join(self.location, name)
+                     ^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/files/storage/filesystem.py", line 60, in location
+    return os.path.abspath(self.base_location)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 399, in abspath
+TypeError: expected str, bytes or os.PathLike object, not tuple
+[2025-03-25 11:21:33] ERROR "POST /admin/products/product/add/ HTTP/1.1" 500 227607
+[2025-03-25 11:23:50] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-03-25 11:23:51] INFO Watching for file changes with StatReloader
+[2025-03-25 11:23:54] INFO "GET /admin/products/product/add/ HTTP/1.1" 200 22531
+[2025-03-25 11:23:59] ERROR Internal Server Error: /admin/products/product/add/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: null value in column "damaged_quantity" of relation "products_product" violates not-null constraint
+DETAIL:  Failing row contains (1, sdnla,das, sad,mads,amdlm, 7899.00, 1000, products/Picture1.jpg, 2025-03-25 08:23:59.240132+00, 2025-03-25 08:23:59.240148+00, null, 1).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1959, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1818, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1869, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1292, in save_model
+    obj.save()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: null value in column "damaged_quantity" of relation "products_product" violates not-null constraint
+DETAIL:  Failing row contains (1, sdnla,das, sad,mads,amdlm, 7899.00, 1000, products/Picture1.jpg, 2025-03-25 08:23:59.240132+00, 2025-03-25 08:23:59.240148+00, null, 1).
+
+[2025-03-25 11:23:59] ERROR "POST /admin/products/product/add/ HTTP/1.1" 500 203750
+[2025-03-25 11:24:19] ERROR Internal Server Error: /admin/products/product/add/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: null value in column "damaged_quantity" of relation "products_product" violates not-null constraint
+DETAIL:  Failing row contains (2, прикол, ыфдловрыфд/врфотывлвртдлжтыфолдв..., 6900.00, 2000, products/Picture1_2SRVEVW.jpg, 2025-03-25 08:24:19.316551+00, 2025-03-25 08:24:19.316599+00, null, 1).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1959, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1818, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1869, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1292, in save_model
+    obj.save()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: null value in column "damaged_quantity" of relation "products_product" violates not-null constraint
+DETAIL:  Failing row contains (2, прикол, ыфдловрыфд/врфотывлвртдлжтыфолдв..., 6900.00, 2000, products/Picture1_2SRVEVW.jpg, 2025-03-25 08:24:19.316551+00, 2025-03-25 08:24:19.316599+00, null, 1).
+
+[2025-03-25 11:24:19] ERROR "POST /admin/products/product/add/ HTTP/1.1" 500 204998
+[2025-03-25 11:26:44] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
+[2025-03-25 11:26:44] INFO Watching for file changes with StatReloader
+[2025-03-25 11:28:05] INFO Watching for file changes with StatReloader
+[2025-03-25 11:28:12] WARNING Not Found: /
+[2025-03-25 11:28:12] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 11:28:18] INFO "POST /admin/products/product/add/ HTTP/1.1" 200 23654
+[2025-03-25 11:28:18] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:28:45] INFO "GET /admin/products/category/add/?_to_field=id&_popup=1 HTTP/1.1" 200 4503
+[2025-03-25 11:28:45] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:28:48] INFO "POST /admin/products/category/add/?_to_field=id&_popup=1 HTTP/1.1" 200 397
+[2025-03-25 11:28:53] INFO "POST /admin/products/product/add/ HTTP/1.1" 302 0
+[2025-03-25 11:28:53] INFO "GET /admin/products/product/ HTTP/1.1" 200 19849
+[2025-03-25 11:28:53] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:29:03] INFO "GET /admin/products/productrequest/add/ HTTP/1.1" 200 26907
+[2025-03-25 11:29:03] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:29:20] INFO "POST /admin/products/productrequest/add/ HTTP/1.1" 302 0
+[2025-03-25 11:29:21] INFO "GET /admin/products/productrequest/ HTTP/1.1" 200 22204
+[2025-03-25 11:29:21] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:29:27] INFO "GET /admin/products/productrequest/1/change/ HTTP/1.1" 200 27320
+[2025-03-25 11:29:27] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:29:33] INFO "POST /admin/products/productrequest/1/change/ HTTP/1.1" 302 0
+[2025-03-25 11:29:33] INFO "GET /admin/products/productrequest/ HTTP/1.1" 200 22209
+[2025-03-25 11:29:34] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:29:47] INFO "GET /admin/products/productrequest/1/change/ HTTP/1.1" 200 27320
+[2025-03-25 11:29:47] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:30:21] INFO "GET /admin/products/product/ HTTP/1.1" 200 19629
+[2025-03-25 11:30:21] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:30:24] INFO "GET /admin/products/product/ HTTP/1.1" 200 19629
+[2025-03-25 11:30:24] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:40:29] INFO Watching for file changes with StatReloader
+[2025-03-25 11:40:30] WARNING Not Found: /
+[2025-03-25 11:40:30] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 11:40:31] WARNING Not Found: /favicon.ico
+[2025-03-25 11:40:31] WARNING "GET /favicon.ico HTTP/1.1" 404 4002
+[2025-03-25 11:40:39] WARNING Not Found: /
+[2025-03-25 11:40:39] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 11:40:41] WARNING Not Found: /
+[2025-03-25 11:40:41] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 11:41:54] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 11:41:54] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-03-25 11:41:54] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-03-25 11:41:54] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-03-25 11:41:54] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-03-25 11:41:54] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-03-25 11:41:54] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-03-25 11:41:54] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-03-25 11:41:54] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 47175
+[2025-03-25 11:41:55] INFO "GET /admin/ HTTP/1.1" 200 17095
+[2025-03-25 11:41:55] INFO "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[2025-03-25 11:41:55] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /admin/stores/city/ HTTP/1.1" 200 17989
+[2025-03-25 11:42:01] INFO "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:01] INFO "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[2025-03-25 11:42:01] INFO "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+[2025-03-25 11:42:04] INFO "GET /admin/stores/storedebt/ HTTP/1.1" 200 18111
+[2025-03-25 11:42:05] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:05] INFO "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+[2025-03-25 11:42:06] INFO "GET /admin/products/product/ HTTP/1.1" 200 19626
+[2025-03-25 11:42:06] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:09] INFO "GET /admin/products/category/ HTTP/1.1" 200 18079
+[2025-03-25 11:42:09] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:10] INFO "GET /admin/products/productrequest/ HTTP/1.1" 200 21903
+[2025-03-25 11:42:10] INFO "GET /static/admin/img/icon-no.svg HTTP/1.1" 304 0
+[2025-03-25 11:42:10] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:14] INFO "GET /admin/users/user/ HTTP/1.1" 200 23763
+[2025-03-25 11:42:14] INFO "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+[2025-03-25 11:42:14] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:21] INFO "GET /admin/users/user/11/change/ HTTP/1.1" 200 25613
+[2025-03-25 11:42:21] INFO "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[2025-03-25 11:42:21] INFO "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[2025-03-25 11:42:21] INFO "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[2025-03-25 11:42:21] INFO "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[2025-03-25 11:42:21] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:32] INFO "POST /admin/users/user/11/change/ HTTP/1.1" 302 0
+[2025-03-25 11:42:32] INFO "GET /admin/users/user/ HTTP/1.1" 200 24011
+[2025-03-25 11:42:32] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:52] INFO "GET /admin/users/user/ HTTP/1.1" 200 23763
+[2025-03-25 11:42:52] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:42:56] INFO "GET /admin/stores/store/ HTTP/1.1" 200 22262
+[2025-03-25 11:42:56] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:43:36] INFO "GET /admin/products/category/ HTTP/1.1" 200 18079
+[2025-03-25 11:43:36] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:43:38] INFO "GET /admin/products/product/ HTTP/1.1" 200 19626
+[2025-03-25 11:43:38] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:43:40] INFO "GET /admin/products/productrequest/ HTTP/1.1" 200 21903
+[2025-03-25 11:43:40] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:43:44] INFO "GET /admin/products/productrequest/?o=7.-11 HTTP/1.1" 200 22644
+[2025-03-25 11:43:44] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 11:49:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
+[2025-03-25 11:49:22] INFO Watching for file changes with StatReloader
+[2025-03-25 12:03:12] INFO Watching for file changes with StatReloader
+[2025-03-25 12:03:16] INFO "GET /admin/ HTTP/1.1" 200 16784
+[2025-03-25 12:03:21] INFO "GET /admin/products/product/ HTTP/1.1" 200 19118
+[2025-03-25 12:03:21] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:03:24] INFO "GET /admin/products/category/ HTTP/1.1" 200 17571
+[2025-03-25 12:03:24] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:03:26] INFO "GET /admin/products/product/ HTTP/1.1" 200 19118
+[2025-03-25 12:03:26] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:03:31] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 12:03:31] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 41860
+[2025-03-25 12:07:36] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-25 12:07:36] INFO Watching for file changes with StatReloader
+[2025-03-25 12:07:40] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-25 12:07:40] INFO Watching for file changes with StatReloader
+[2025-03-25 12:08:56] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/serializers.py changed, reloading.
+[2025-03-25 12:08:56] INFO Watching for file changes with StatReloader
+[2025-03-25 12:23:02] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/models.py changed, reloading.
+[2025-03-25 12:23:02] INFO Watching for file changes with StatReloader
+[2025-03-25 12:26:22] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/admin.py changed, reloading.
+[2025-03-25 12:26:23] INFO Watching for file changes with StatReloader
+[2025-03-25 12:26:38] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-25 12:26:39] INFO Watching for file changes with StatReloader
+[2025-03-25 12:26:59] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/urls.py changed, reloading.
+[2025-03-25 12:27:00] INFO Watching for file changes with StatReloader
+[2025-03-25 12:27:15] INFO Watching for file changes with StatReloader
+[2025-03-25 12:27:29] INFO Watching for file changes with StatReloader
+[2025-03-25 12:27:57] INFO Watching for file changes with StatReloader
+[2025-03-25 12:28:01] INFO "GET /admin/products/product/ HTTP/1.1" 200 19101
+[2025-03-25 12:28:01] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:28:03] ERROR Internal Server Error: /admin/orders/productrequest/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "orders_productrequest" does not exist
+LINE 1: SELECT COUNT(*) AS "__count" FROM "orders_productrequest"
+                                          ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 718, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 241, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 1999, in changelist_view
+    cl = self.get_changelist_instance(request)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/options.py", line 866, in get_changelist_instance
+    return ChangeList(
+           ^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+                   ^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+           ^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/query.py", line 620, in count
+    return self.query.get_count(using=self.db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/query.py", line 630, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/query.py", line 616, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1574, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "orders_productrequest" does not exist
+LINE 1: SELECT COUNT(*) AS "__count" FROM "orders_productrequest"
+                                          ^
+
+[2025-03-25 12:28:03] ERROR "GET /admin/orders/productrequest/ HTTP/1.1" 500 189520
+[2025-03-25 12:33:23] INFO Watching for file changes with StatReloader
+[2025-03-25 12:33:24] WARNING Not Found: /
+[2025-03-25 12:33:24] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 12:33:29] WARNING Not Found: /admin/products/productrequest/
+[2025-03-25 12:33:29] WARNING "GET /admin/products/productrequest/?o=7.-11 HTTP/1.1" 404 8644
+[2025-03-25 12:33:37] INFO "GET /admin/ HTTP/1.1" 200 16771
+[2025-03-25 12:33:38] INFO "GET /admin/orders/productrequest/ HTTP/1.1" 200 17177
+[2025-03-25 12:33:39] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:33:44] INFO "GET /admin/orders/productrequest/add/ HTTP/1.1" 200 26668
+[2025-03-25 12:33:44] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:34:19] INFO "POST /admin/orders/productrequest/add/ HTTP/1.1" 302 0
+[2025-03-25 12:34:19] INFO "GET /admin/orders/productrequest/ HTTP/1.1" 200 21796
+[2025-03-25 12:34:19] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:34:24] INFO "GET /admin/orders/productrequest/1/change/ HTTP/1.1" 200 27074
+[2025-03-25 12:34:24] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:36:08] INFO "POST /admin/orders/productrequest/1/change/ HTTP/1.1" 302 0
+[2025-03-25 12:36:08] INFO "GET /admin/orders/productrequest/ HTTP/1.1" 200 21799
+[2025-03-25 12:36:08] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 12:36:12] INFO "GET /admin/orders/productrequest/1/change/ HTTP/1.1" 200 27075
+[2025-03-25 12:36:26] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 12:36:26] INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 304 0
+[2025-03-25 12:36:27] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 43215
+[2025-03-25 12:38:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-25 12:38:33] INFO Watching for file changes with StatReloader
+[2025-03-25 12:38:42] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 12:38:42] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 43215
+[2025-03-25 13:05:53] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-25 13:05:53] INFO Watching for file changes with StatReloader
+[2025-03-25 13:10:53] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-25 13:10:54] INFO Watching for file changes with StatReloader
+[2025-03-25 13:11:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-25 13:11:21] INFO Watching for file changes with StatReloader
+[2025-03-25 13:11:43] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-25 13:11:44] INFO Watching for file changes with StatReloader
+[2025-03-25 13:17:48] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py changed, reloading.
+[2025-03-25 13:17:49] INFO Watching for file changes with StatReloader
+[2025-03-25 13:18:04] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py changed, reloading.
+[2025-03-25 13:18:05] INFO Watching for file changes with StatReloader
+[2025-03-25 13:20:58] WARNING Not Found: /
+[2025-03-25 13:20:58] WARNING "GET / HTTP/1.1" 404 3951
+[2025-03-25 13:21:00] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-25 13:21:00] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 46246
+[2025-03-25 13:21:02] INFO "GET /admin/ HTTP/1.1" 200 17650
+[2025-03-25 13:21:09] INFO "GET /admin/stores/store/ HTTP/1.1" 200 21642
+[2025-03-25 13:21:10] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 13:21:13] INFO "GET /admin/stores/store/?_facets=True HTTP/1.1" 200 22137
+[2025-03-25 13:21:13] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 13:21:13] INFO "GET /static/admin/img/icon-hidelink.svg HTTP/1.1" 200 784
+[2025-03-25 13:21:14] INFO "GET /admin/stores/store/? HTTP/1.1" 200 21642
+[2025-03-25 13:21:14] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 13:21:27] INFO "GET /admin/stores/storedebt/ HTTP/1.1" 200 17586
+[2025-03-25 13:21:27] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 13:21:33] INFO "GET /admin/stores/storedebt/?is_paid__exact=0 HTTP/1.1" 200 17988
+[2025-03-25 13:21:33] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 13:21:34] INFO "GET /admin/stores/storedebt/?is_paid__exact=1 HTTP/1.1" 200 17988
+[2025-03-25 13:21:34] INFO "GET /admin/jsi18n/ HTTP/1.1" 200 17546
+[2025-03-25 13:31:04] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/models.py changed, reloading.
+[2025-03-25 13:31:04] INFO Watching for file changes with StatReloader
+[2025-03-25 15:33:05] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/models.py changed, reloading.
+[2025-03-25 15:33:05] INFO Watching for file changes with StatReloader
+[2025-03-25 15:33:12] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/admin.py changed, reloading.
+[2025-03-25 15:33:13] INFO Watching for file changes with StatReloader
+[2025-03-25 15:33:18] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/serializers.py changed, reloading.
+[2025-03-25 15:33:18] INFO Watching for file changes with StatReloader
+[2025-03-25 15:33:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-03-25 15:33:33] INFO Watching for file changes with StatReloader

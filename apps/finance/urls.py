@@ -1,10 +1,8 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import FinanceSummaryView
-
-router = DefaultRouter()
+from django.urls import path
+from .views import MyFinanceStatView, StoreFinanceView, ManualFinanceEntryView
 
 urlpatterns = [
-    path("", include(router.urls)),
-    path("summary/", FinanceSummaryView.as_view(), name="finance-summary"),  # ✅ Теперь View подключен правильно
+    path('my/', MyFinanceStatView.as_view(), name='my-finance'),
+    path('stores/', StoreFinanceView.as_view(), name='store-finance'),
+    path('manual/', ManualFinanceEntryView.as_view(), name='manual-finance'),
 ]
