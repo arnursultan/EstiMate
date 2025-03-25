@@ -1,77 +1,79 @@
-import logging
 from django.db import models
-from django.conf import settings
-from django.core.exceptions import ValidationError
+from apps.users.models import User
+from apps.products.models import Product
 from apps.stores.models import Store
+from decimal import Decimal
 
-logger = logging.getLogger(__name__)
 
-def validate_inn(value):
-    if not value.isdigit():
-        raise ValidationError("ИНН должен содержать только цифры.")
-    if not (10 <= len(value) <= 14):
-        raise ValidationError("ИНН должен быть от 10 до 14 символов.")
+class ProductRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'В ожидании'),
+        ('approved', 'Подтвержден'),
+        ('rejected', 'Отклонен'),
+        ('received', 'Получен'),
+    )
 
-class OrderRequest(models.Model):
-    STATUS_CHOICES = [
-        ("pending", "В ожидании"),
-        ("approved", "Подтверждена"),
-        ("rejected", "Отклонена"),
-    ]
+    PAYMENT_METHOD_CHOICES = (
+        ('cash', 'Наличными'),
+        ('debt', 'В долг'),
+    )
 
-    ORDER_TYPE_CHOICES = [
-        ("self", "Для себя"),
-        ("store", "Для магазина"),
-    ]
-
-    order_type = models.CharField(
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='requests',
+        verbose_name="Продукт"
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='product_requests',
+        verbose_name="Партнёр"
+    )
+    quantity = models.PositiveIntegerField(verbose_name="Запрошенное количество")
+    bonus_quantity = models.PositiveIntegerField(default=0, verbose_name="Бонусное количество")
+    damaged_quantity = models.PositiveIntegerField(default=0, verbose_name="Количество бракованных товаров")
+    payment_method = models.CharField(
         max_length=10,
-        choices=ORDER_TYPE_CHOICES,
-        default="self",
-        verbose_name="Тип заказа",
+        choices=PAYMENT_METHOD_CHOICES,
+        default='cash',
+        verbose_name="Метод оплаты"
     )
-
-    partner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Партнёр")
-    store_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Название магазина")
-    inn = models.CharField(
-        max_length=14, unique=True, blank=True, null=True,
-        validators=[validate_inn], verbose_name="ИНН"
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name="Статус"
     )
-    city = models.CharField(
-        max_length=50, choices=[("Ош", "Ош"), ("Джалал-Абад", "Джалал-Абад"), ("Баткен", "Баткен")],
-        blank=True, null=True, verbose_name="Город"
+    for_store = models.BooleanField(default=False, verbose_name="Для магазина")
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='product_requests',
+        verbose_name="Магазин"
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending", verbose_name="Статус")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата подачи")
-    def approve(self):
-        logger.info(f"✅ Подтверждаем заявку: {self.store_name} (ИНН: {self.inn})")
-        if self.pk is None:
-            self.save()
+    total_price = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name="Общая сумма"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата запроса")
 
-        store, created = Store.objects.get_or_create(
-            inn=self.inn,
-            defaults={
-                "name": self.store_name,
-                "city": self.city,
-                "owner": self.partner,
-                "status": "active",
-                "debt": 0.00,
-                "payment": 0.00,
-                "order": self
-            }
-        )
+    previous_status = None  # для отслеживания изменения статуса
 
-        if created:
-            logger.info(f"✅ Магазин {store.name} успешно создан и привязан к заявке {self.id}!")
-        else:
-            logger.warning(f"⚠ Магазин с ИНН {self.inn} уже существует!")
+    class Meta:
+        verbose_name = "Запрос на товар"
+        verbose_name_plural = "Запросы на товары"
+        ordering = ['-created_at']
 
-        self.status = "approved"
-        self.save()
-        logger.info(f"✅ Заявка {self.store_name} (ИНН: {self.inn}) подтверждена!")
+    def save(self, *args, **kwargs):
+        self.bonus_quantity = self.quantity // 21
+        actual_qty = max(self.quantity - self.bonus_quantity - self.damaged_quantity, 0)
+        self.total_price = actual_qty * self.product.price
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Заявка {self.store_name or self.partner} - {self.get_status_display()}"
-    class Meta:
-        verbose_name = "Заявка на регистрацию магазина"
-        verbose_name_plural = "Заявки на регистрацию магазинов"
+        return f"{self.product.name} — {self.quantity} шт. от {self.user}"

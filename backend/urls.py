@@ -27,14 +27,12 @@ urlpatterns = [
     path("api/orders/", include("apps.orders.urls")),
     path("api/finance/", include("apps.finance.urls")),
     path("api/chats/", include("apps.chats.urls")),
+    path('notifications/', include('apps.notifications.urls')),
 
-    re_path(r"ws/", include(websocket_urlpatterns)),
-]
-
-if settings.DEBUG or os.getenv("ENABLE_SWAGGER", "False") == "True":
-    urlpatterns += [
-        path("api/docs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
-        path("api/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    # re_path(r"ws/", include(websocket_urlpatterns)),
+    path("api/docs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
+    path("api/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path('swagger/',schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui' ),
     ]
 
 if settings.DEBUG:
