@@ -2,6 +2,7 @@ import re
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny
 from .models import User
 from .serializers import UserSerializer, LoginSerializer, UserDetailSerializer, UserUpdateSerializer,UserPutSerializer
@@ -75,6 +76,7 @@ class LoginView(APIView):
 
 class PartnerProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     @swagger_auto_schema(responses={
         200: openapi.Response("Данные пользователя", UserDetailSerializer),
@@ -136,6 +138,7 @@ class AdminUserAPIView(APIView):
 
 class AdminUserDetailAPIView(APIView):
     permission_classes = [permissions.IsAdminUser]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self, pk):
         return get_object_or_404(User, pk=pk)
