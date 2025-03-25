@@ -10,7 +10,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user)
+        return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
 
     @action(detail=False, methods=['post'])
     def mark_all_read(self, request):
@@ -23,3 +23,9 @@ class NotificationViewSet(viewsets.ModelViewSet):
         notification.is_read = True
         notification.save()
         return Response({"detail": "Уведомление отмечено как прочитанное"})
+
+    @action(detail=False, methods=['post'])
+    def mark_all_read(self, request):
+        updated = self.get_queryset().filter(is_read=False).update(is_read=True)
+        return Response({"detail": f"{updated} уведомлений отмечено как прочитанные"})
+

@@ -1449,3 +1449,117 @@ redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. По
 [2025-03-26 01:42:49] WARNING Bad Request: /api/users/register/
 [2025-03-26 01:42:49] WARNING Bad Request: /api/users/register/
 [2025-03-26 01:42:49] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:01:58] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\notifications\views.py changed, reloading.
+[2025-03-26 02:02:00] INFO Watching for file changes with StatReloader
+[2025-03-26 02:02:45] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\notifications\views.py changed, reloading.
+[2025-03-26 02:02:46] INFO Watching for file changes with StatReloader
+[2025-03-26 02:10:03] WARNING Unauthorized: /api/notifications/notifications/
+[2025-03-26 02:11:00] WARNING Not Found: /api/notifications/notifications/12/mark_read/
+[2025-03-26 02:11:02] WARNING Not Found: /api/notifications/notifications/9999/mark_read/
+[2025-03-26 02:12:12] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-26 02:12:13] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 51851
+[2025-03-26 02:13:10] WARNING Not Found: /api/notifications/notifications/12/mark_read/
+[2025-03-26 02:13:12] WARNING Not Found: /api/notifications/notifications/9999/mark_read/
+[2025-03-26 02:13:15] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 02:13:16] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 02:13:23] WARNING Forbidden: /api/orders/product-requests/12/update_status/
+[2025-03-26 02:13:24] WARNING Forbidden: /api/orders/product-requests/13/mark_received/
+[2025-03-26 02:13:25] WARNING Bad Request: /api/orders/product-requests/14/report_damaged/
+[2025-03-26 02:13:25] WARNING Bad Request: /api/orders/product-requests/15/report_damaged/
+[2025-03-26 02:13:26] WARNING Bad Request: /api/orders/product-requests/16/mark_received/
+[2025-03-26 02:13:27] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 02:13:27] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 02:13:27] WARNING Bad Request: /api/orders/product-requests/
+[2025-03-26 02:13:29] WARNING Not Found: /api/orders/product-requests/17/mark_received/
+[2025-03-26 02:13:30] WARNING Forbidden: /api/products/categories/
+[2025-03-26 02:13:31] WARNING Bad Request: /api/products/categories/
+[2025-03-26 02:13:33] WARNING Bad Request: /api/products/categories/
+[2025-03-26 02:13:34] WARNING Bad Request: /api/products/categories/
+[2025-03-26 02:13:34] WARNING Forbidden: /api/products/categories/27/
+[2025-03-26 02:13:36] WARNING Forbidden: /api/products/categories/29/
+[2025-03-26 02:13:39] WARNING Forbidden: /api/products/products/
+[2025-03-26 02:13:40] WARNING Not Found: /api/products/products/999/
+[2025-03-26 02:13:43] WARNING Bad Request: /api/products/products/24/add_quantity/
+[2025-03-26 02:13:43] WARNING Bad Request: /api/products/products/24/add_quantity/
+[2025-03-26 02:13:43] WARNING Forbidden: /api/products/products/25/add_quantity/
+[2025-03-26 02:13:46] WARNING Bad Request: /api/products/products/
+[2025-03-26 02:13:47] WARNING Bad Request: /api/products/products/
+[2025-03-26 02:13:47] WARNING Bad Request: /api/products/products/
+[2025-03-26 02:13:48] WARNING Bad Request: /api/products/products/
+[2025-03-26 02:13:48] WARNING Unauthorized: /api/stores/cities/
+[2025-03-26 02:13:50] WARNING Forbidden: /api/stores/cities/
+[2025-03-26 02:13:51] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 02:13:54] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 02:13:54] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 02:13:55] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 02:13:55] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 02:13:55] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 02:13:55] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 02:14:03] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-26 02:14:04] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 02:14:04] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 02:14:05] WARNING Bad Request: /api/stores/store-debts/7/mark-as-paid/
+[2025-03-26 02:14:06] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-26 02:14:07] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-26 02:14:08] WARNING Forbidden: /api/stores/stores/
+[2025-03-26 02:14:09] WARNING Bad Request: /api/stores/stores/14/update_status/
+[2025-03-26 02:14:11] WARNING Bad Request: /api/stores/stores/16/activate/
+[2025-03-26 02:14:14] WARNING Method Not Allowed: /api/stores/stores/24/
+[2025-03-26 02:14:15] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 02:14:16] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 02:14:17] WARNING Bad Request: /api/stores/stores/26/activate/
+[2025-03-26 02:14:17] WARNING Bad Request: /api/stores/stores/27/deactivate/
+[2025-03-26 02:14:21] WARNING Forbidden: /api/users/admin/
+[2025-03-26 02:14:23] WARNING Not Found: /api/users/admin/99999/
+[2025-03-26 02:14:24] WARNING Forbidden: /api/users/admin/118/
+[2025-03-26 02:14:30] WARNING Bad Request: /api/users/admin/124/
+[2025-03-26 02:14:31] WARNING Bad Request: /api/users/admin/127/
+[2025-03-26 02:14:33] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-26 02:14:33] WARNING Forbidden: /api/users/profile/delete/131/
+[2025-03-26 02:14:36] WARNING Bad Request: /api/users/admin/block/135/
+[2025-03-26 02:14:37] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-26 02:14:39] WARNING Bad Request: /api/users/admin/unblock/140/
+[2025-03-26 02:14:40] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-26 02:14:42] WARNING Bad Request: /api/users/profile/approve/145/
+[2025-03-26 02:14:45] WARNING Bad Request: /api/users/profile/reject/149/
+[2025-03-26 02:14:45] WARNING Forbidden: /api/users/profile/approve/150/
+[2025-03-26 02:14:46] WARNING Forbidden: /api/users/profile/reject/151/
+[2025-03-26 02:14:47] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-26 02:14:47] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-26 02:14:49] WARNING Bad Request: /api/users/login/
+[2025-03-26 02:14:50] WARNING Bad Request: /api/users/login/
+[2025-03-26 02:14:51] WARNING Bad Request: /api/users/login/
+[2025-03-26 02:14:53] WARNING Bad Request: /api/users/login/
+[2025-03-26 02:14:54] WARNING Bad Request: /api/users/login/
+[2025-03-26 02:14:54] WARNING Unauthorized: /api/users/logout/
+[2025-03-26 02:14:55] WARNING Bad Request: /api/users/logout/
+[2025-03-26 02:14:56] WARNING Bad Request: /api/users/logout/
+[2025-03-26 02:14:57] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-26 02:14:58] WARNING Not Found: /api/users/password-reset/
+[2025-03-26 02:14:58] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-26 02:15:02] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-26 02:15:02] WARNING Unauthorized: /api/users/profile/
+[2025-03-26 02:15:04] WARNING Bad Request: /api/users/profile/
+[2025-03-26 02:15:05] WARNING Bad Request: /api/users/profile/
+[2025-03-26 02:15:08] WARNING Bad Request: /api/users/profile/
+[2025-03-26 02:15:09] WARNING Bad Request: /api/users/profile/
+[2025-03-26 02:15:11] WARNING Bad Request: /api/users/profile/
+[2025-03-26 02:15:13] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:13] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:13] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:14] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:14] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:14] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:14] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:15] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:18] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:18] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:18] WARNING Bad Request: /api/users/register/
+[2025-03-26 02:15:18] WARNING Bad Request: /api/users/register/
