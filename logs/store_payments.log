@@ -580,3 +580,707 @@ django.core.exceptions.FieldError: Cannot resolve keyword 'storedebts' into fiel
 [2025-03-25 23:20:23] WARNING Bad Request: /api/users/register/
 [2025-03-25 23:20:23] WARNING Bad Request: /api/users/register/
 [2025-03-25 23:20:23] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:34:13] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-25 23:34:14] INFO Watching for file changes with StatReloader
+[2025-03-25 23:35:55] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-25 23:35:56] INFO Watching for file changes with StatReloader
+[2025-03-25 23:40:40] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\urls.py changed, reloading.
+[2025-03-25 23:40:42] INFO Watching for file changes with StatReloader
+[2025-03-25 23:42:09] WARNING Forbidden: /api/products/categories/
+[2025-03-25 23:42:09] WARNING Bad Request: /api/products/categories/
+[2025-03-25 23:44:31] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-25 23:44:32] INFO Watching for file changes with StatReloader
+[2025-03-25 23:44:44] WARNING Forbidden: /api/products/categories/
+[2025-03-25 23:44:45] WARNING Bad Request: /api/products/categories/
+[2025-03-25 23:48:29] WARNING Forbidden: /api/products/categories/
+[2025-03-25 23:48:29] WARNING Bad Request: /api/products/categories/
+[2025-03-25 23:48:31] WARNING Bad Request: /api/products/categories/
+[2025-03-25 23:48:33] WARNING Forbidden: /api/products/categories/11/
+[2025-03-25 23:48:34] WARNING Forbidden: /api/products/categories/13/
+[2025-03-25 23:50:43] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\models.py changed, reloading.
+[2025-03-25 23:50:44] INFO Watching for file changes with StatReloader
+[2025-03-25 23:50:50] WARNING Forbidden: /api/products/categories/
+[2025-03-25 23:50:50] WARNING Bad Request: /api/products/categories/
+[2025-03-25 23:50:52] WARNING Bad Request: /api/products/categories/
+[2025-03-25 23:50:53] WARNING Bad Request: /api/products/categories/
+[2025-03-25 23:50:54] WARNING Forbidden: /api/products/categories/10/
+[2025-03-25 23:50:55] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:01:46] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:01:47] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:01:49] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:01:49] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:01:50] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:01:51] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:07:23] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:07:23] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:07:25] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:07:26] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:07:26] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:07:28] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:11:42] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\models.py changed, reloading.
+[2025-03-26 00:11:43] INFO Watching for file changes with StatReloader
+[2025-03-26 00:13:55] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-26 00:13:59] INFO Watching for file changes with StatReloader
+[2025-03-26 00:14:05] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-26 00:14:07] INFO Watching for file changes with StatReloader
+[2025-03-26 00:14:16] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-26 00:14:17] INFO Watching for file changes with StatReloader
+[2025-03-26 00:16:03] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-26 00:16:05] INFO Watching for file changes with StatReloader
+[2025-03-26 00:16:21] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-26 00:16:22] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 32, in get_operation
+    body = self.get_request_body_parameters(consumes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 71, in get_request_body_parameters
+    serializer = self.get_request_serializer()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 118, in get_request_serializer
+    body_override = self._get_request_body_override()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 104, in _get_request_body_override
+    raise SwaggerGenerationError("request_body can only be applied to (" + ','.join(self.body_methods) +
+drf_yasg.errors.SwaggerGenerationError: request_body can only be applied to (PUT,PATCH,POST,DELETE); are you looking for query_serializer or manual_parameters?
+[2025-03-26 00:16:22] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 157691
+[2025-03-26 00:21:52] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-26 00:21:54] INFO Watching for file changes with StatReloader
+[2025-03-26 00:21:58] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-26 00:21:58] ERROR Internal Server Error: /api/docs/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\views.py", line 112, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 32, in get_operation
+    body = self.get_request_body_parameters(consumes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\drf_yasg\inspectors\view.py", line 81, in get_request_body_parameters
+    raise SwaggerGenerationError("form request body cannot be a Schema")
+drf_yasg.errors.SwaggerGenerationError: form request body cannot be a Schema
+[2025-03-26 00:21:58] ERROR "GET /api/docs/?format=openapi HTTP/1.1" 500 147797
+[2025-03-26 00:23:35] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\views.py changed, reloading.
+[2025-03-26 00:23:36] INFO Watching for file changes with StatReloader
+[2025-03-26 00:23:40] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-26 00:23:40] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 52112
+[2025-03-26 00:28:08] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\models.py changed, reloading.
+[2025-03-26 00:28:11] INFO Watching for file changes with StatReloader
+[2025-03-26 00:28:20] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:28:20] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:28:22] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:28:23] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:28:23] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:28:25] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:29:05] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:29:06] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:29:08] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:29:09] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:29:09] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:29:10] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:31:45] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:31:46] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:31:48] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:31:49] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:31:49] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:31:50] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:32:44] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:32:44] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:32:46] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:32:47] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:32:48] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:32:49] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:32:51] WARNING Unauthorized: /api/stores/cities/
+[2025-03-26 00:32:53] WARNING Forbidden: /api/stores/cities/
+[2025-03-26 00:32:54] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 00:32:57] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 00:32:57] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 00:32:58] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 00:32:58] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:32:58] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:32:58] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:33:07] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-26 00:33:07] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 00:33:08] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 00:33:08] WARNING Bad Request: /api/stores/store-debts/7/mark-as-paid/
+[2025-03-26 00:33:09] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-26 00:33:10] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-26 00:33:12] WARNING Forbidden: /api/stores/stores/
+[2025-03-26 00:33:13] WARNING Bad Request: /api/stores/stores/14/update_status/
+[2025-03-26 00:33:14] WARNING Bad Request: /api/stores/stores/16/activate/
+[2025-03-26 00:33:18] WARNING Method Not Allowed: /api/stores/stores/24/
+[2025-03-26 00:33:19] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 00:33:19] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 00:33:20] WARNING Bad Request: /api/stores/stores/26/activate/
+[2025-03-26 00:33:21] WARNING Bad Request: /api/stores/stores/27/deactivate/
+[2025-03-26 00:33:25] WARNING Forbidden: /api/users/admin/
+[2025-03-26 00:33:27] WARNING Not Found: /api/users/admin/99999/
+[2025-03-26 00:33:28] WARNING Forbidden: /api/users/admin/66/
+[2025-03-26 00:33:34] WARNING Bad Request: /api/users/admin/72/
+[2025-03-26 00:33:36] WARNING Bad Request: /api/users/admin/75/
+[2025-03-26 00:33:38] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-26 00:33:38] WARNING Forbidden: /api/users/profile/delete/79/
+[2025-03-26 00:33:41] WARNING Bad Request: /api/users/admin/block/83/
+[2025-03-26 00:33:42] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-26 00:33:44] WARNING Bad Request: /api/users/admin/unblock/88/
+[2025-03-26 00:33:45] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-26 00:33:47] WARNING Bad Request: /api/users/profile/approve/93/
+[2025-03-26 00:33:50] WARNING Bad Request: /api/users/profile/reject/97/
+[2025-03-26 00:33:50] WARNING Forbidden: /api/users/profile/approve/98/
+[2025-03-26 00:33:51] WARNING Forbidden: /api/users/profile/reject/99/
+[2025-03-26 00:33:52] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-26 00:33:52] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-26 00:33:54] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:33:55] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:33:56] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:33:58] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:33:59] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:33:59] WARNING Unauthorized: /api/users/logout/
+[2025-03-26 00:33:59] WARNING Bad Request: /api/users/logout/
+[2025-03-26 00:34:01] WARNING Bad Request: /api/users/logout/
+[2025-03-26 00:34:02] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-26 00:34:07] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 81, in set
+    return self.client.set(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 185, in set
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\users\views.py", line 317, in post
+    cache.set(f"reset_token_valid:{reset_token}", True, timeout=120)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 175, in set
+    return bool(client.set(nkey, nvalue, nx=nx, px=timeout, xx=xx))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\commands\core.py", line 2335, in set
+    return self.execute_command("SET", *pieces, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 1422, in get_connection
+    connection.connect()
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+[2025-03-26 00:34:08] WARNING Not Found: /api/users/password-reset/
+[2025-03-26 00:34:17] ERROR Internal Server Error: /api/users/password-reset/verify/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\users\views.py", line 353, in post
+    if not cache.get(f"reset_token_valid:{reset_token}"):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 258, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\commands\core.py", line 1822, in get
+    return self.execute_command("GET", name, keys=[name])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 1422, in get_connection
+    connection.connect()
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+[2025-03-26 00:34:43] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:34:44] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:34:46] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:34:46] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:34:47] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:34:48] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:37:16] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:37:16] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:37:18] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:37:19] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:37:19] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:37:21] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:39:00] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:39:00] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:39:02] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:39:03] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:39:04] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:39:05] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:39:08] WARNING Forbidden: /api/products/products/
+[2025-03-26 00:39:09] WARNING Not Found: /api/products/products/999/
+[2025-03-26 00:39:12] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:39:12] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:39:13] WARNING Forbidden: /api/products/products/8/add_quantity/
+[2025-03-26 00:39:16] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:39:17] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:40:10] WARNING Forbidden: /api/products/products/
+[2025-03-26 00:40:11] WARNING Not Found: /api/products/products/999/
+[2025-03-26 00:40:14] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:40:14] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:40:14] WARNING Forbidden: /api/products/products/8/add_quantity/
+[2025-03-26 00:40:17] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:40:19] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:42:14] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\products\serializers.py changed, reloading.
+[2025-03-26 00:42:15] INFO Watching for file changes with StatReloader
+[2025-03-26 00:42:31] WARNING Forbidden: /api/products/products/
+[2025-03-26 00:42:33] WARNING Not Found: /api/products/products/999/
+[2025-03-26 00:42:35] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:42:35] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:42:36] WARNING Forbidden: /api/products/products/8/add_quantity/
+[2025-03-26 00:42:38] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:42:39] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:42:40] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:42:40] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:43:42] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:43:42] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:43:44] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:43:45] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:43:46] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:43:47] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:43:50] WARNING Forbidden: /api/products/products/
+[2025-03-26 00:43:51] WARNING Not Found: /api/products/products/999/
+[2025-03-26 00:43:54] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:43:54] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:43:54] WARNING Forbidden: /api/products/products/8/add_quantity/
+[2025-03-26 00:43:57] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:43:58] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:43:58] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:43:59] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:45:40] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:45:41] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:45:43] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:45:44] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:45:44] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:45:46] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:45:49] WARNING Forbidden: /api/products/products/
+[2025-03-26 00:45:50] WARNING Not Found: /api/products/products/999/
+[2025-03-26 00:45:52] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:45:52] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:45:53] WARNING Forbidden: /api/products/products/8/add_quantity/
+[2025-03-26 00:45:56] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:45:56] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:45:57] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:45:58] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:45:58] WARNING Unauthorized: /api/stores/cities/
+[2025-03-26 00:46:00] WARNING Forbidden: /api/stores/cities/
+[2025-03-26 00:46:00] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 00:46:03] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 00:46:03] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 00:46:04] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 00:46:05] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:46:05] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:46:05] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:46:12] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-26 00:46:13] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 00:46:13] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 00:46:14] WARNING Bad Request: /api/stores/store-debts/7/mark-as-paid/
+[2025-03-26 00:46:15] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-26 00:46:16] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-26 00:46:17] WARNING Forbidden: /api/stores/stores/
+[2025-03-26 00:46:18] WARNING Bad Request: /api/stores/stores/14/update_status/
+[2025-03-26 00:46:20] WARNING Bad Request: /api/stores/stores/16/activate/
+[2025-03-26 00:46:23] WARNING Method Not Allowed: /api/stores/stores/24/
+[2025-03-26 00:46:24] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 00:46:24] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 00:46:25] WARNING Bad Request: /api/stores/stores/26/activate/
+[2025-03-26 00:46:25] WARNING Bad Request: /api/stores/stores/27/deactivate/
+[2025-03-26 00:46:29] WARNING Forbidden: /api/users/admin/
+[2025-03-26 00:46:30] WARNING Not Found: /api/users/admin/99999/
+[2025-03-26 00:46:31] WARNING Forbidden: /api/users/admin/83/
+[2025-03-26 00:46:37] WARNING Bad Request: /api/users/admin/89/
+[2025-03-26 00:46:38] WARNING Bad Request: /api/users/admin/92/
+[2025-03-26 00:46:40] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-26 00:46:40] WARNING Forbidden: /api/users/profile/delete/96/
+[2025-03-26 00:46:43] WARNING Bad Request: /api/users/admin/block/100/
+[2025-03-26 00:46:43] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-26 00:46:46] WARNING Bad Request: /api/users/admin/unblock/105/
+[2025-03-26 00:46:47] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-26 00:46:49] WARNING Bad Request: /api/users/profile/approve/110/
+[2025-03-26 00:46:52] WARNING Bad Request: /api/users/profile/reject/114/
+[2025-03-26 00:46:52] WARNING Forbidden: /api/users/profile/approve/115/
+[2025-03-26 00:46:53] WARNING Forbidden: /api/users/profile/reject/116/
+[2025-03-26 00:46:53] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-26 00:46:54] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-26 00:46:55] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:46:57] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:46:58] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:46:59] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:47:00] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:47:00] WARNING Unauthorized: /api/users/logout/
+[2025-03-26 00:47:01] WARNING Bad Request: /api/users/logout/
+[2025-03-26 00:47:02] WARNING Bad Request: /api/users/logout/
+[2025-03-26 00:47:03] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-26 00:47:08] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 81, in set
+    return self.client.set(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 185, in set
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\users\views.py", line 317, in post
+    cache.set(f"reset_token_valid:{reset_token}", True, timeout=120)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 175, in set
+    return bool(client.set(nkey, nvalue, nx=nx, px=timeout, xx=xx))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\commands\core.py", line 2335, in set
+    return self.execute_command("SET", *pieces, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 1422, in get_connection
+    connection.connect()
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+[2025-03-26 00:47:09] WARNING Not Found: /api/users/password-reset/
+[2025-03-26 00:47:18] ERROR Internal Server Error: /api/users/password-reset/verify/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\users\views.py", line 353, in post
+    if not cache.get(f"reset_token_valid:{reset_token}"):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django_redis\client\default.py", line 258, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\commands\core.py", line 1822, in get
+    return self.execute_command("GET", name, keys=[name])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 1422, in get_connection
+    connection.connect()
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\redis\connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение.
+[2025-03-26 00:47:24] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-26 00:47:24] WARNING Unauthorized: /api/users/profile/
+[2025-03-26 00:47:27] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:47:27] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:47:30] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:47:31] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:47:34] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:47:35] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:35] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:35] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:36] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:36] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:36] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:36] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:37] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:40] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:40] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:40] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:47:40] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:49:24] WARNING Forbidden: /api/products/categories/
+[2025-03-26 00:49:25] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:49:27] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:49:28] WARNING Bad Request: /api/products/categories/
+[2025-03-26 00:49:28] WARNING Forbidden: /api/products/categories/10/
+[2025-03-26 00:49:30] WARNING Forbidden: /api/products/categories/12/
+[2025-03-26 00:49:33] WARNING Forbidden: /api/products/products/
+[2025-03-26 00:49:34] WARNING Not Found: /api/products/products/999/
+[2025-03-26 00:49:37] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:49:37] WARNING Bad Request: /api/products/products/7/add_quantity/
+[2025-03-26 00:49:37] WARNING Forbidden: /api/products/products/8/add_quantity/
+[2025-03-26 00:49:40] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:49:41] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:49:41] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:49:42] WARNING Bad Request: /api/products/products/
+[2025-03-26 00:49:42] WARNING Unauthorized: /api/stores/cities/
+[2025-03-26 00:49:44] WARNING Forbidden: /api/stores/cities/
+[2025-03-26 00:49:44] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 00:49:47] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 00:49:47] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-26 00:49:48] WARNING Bad Request: /api/stores/cities/
+[2025-03-26 00:49:49] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:49:49] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:49:49] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-26 00:49:56] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-26 00:49:57] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 00:49:58] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-26 00:49:58] WARNING Bad Request: /api/stores/store-debts/7/mark-as-paid/
+[2025-03-26 00:49:59] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-26 00:50:00] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-26 00:50:01] WARNING Forbidden: /api/stores/stores/
+[2025-03-26 00:50:03] WARNING Bad Request: /api/stores/stores/14/update_status/
+[2025-03-26 00:50:04] WARNING Bad Request: /api/stores/stores/16/activate/
+[2025-03-26 00:50:07] WARNING Method Not Allowed: /api/stores/stores/24/
+[2025-03-26 00:50:08] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 00:50:08] WARNING Bad Request: /api/stores/stores/
+[2025-03-26 00:50:09] WARNING Bad Request: /api/stores/stores/26/activate/
+[2025-03-26 00:50:10] WARNING Bad Request: /api/stores/stores/27/deactivate/
+[2025-03-26 00:50:13] WARNING Forbidden: /api/users/admin/
+[2025-03-26 00:50:15] WARNING Not Found: /api/users/admin/99999/
+[2025-03-26 00:50:15] WARNING Forbidden: /api/users/admin/83/
+[2025-03-26 00:50:21] WARNING Bad Request: /api/users/admin/89/
+[2025-03-26 00:50:22] WARNING Bad Request: /api/users/admin/92/
+[2025-03-26 00:50:24] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-26 00:50:25] WARNING Forbidden: /api/users/profile/delete/96/
+[2025-03-26 00:50:27] WARNING Bad Request: /api/users/admin/block/100/
+[2025-03-26 00:50:28] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-26 00:50:30] WARNING Bad Request: /api/users/admin/unblock/105/
+[2025-03-26 00:50:31] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-26 00:50:34] WARNING Bad Request: /api/users/profile/approve/110/
+[2025-03-26 00:50:36] WARNING Bad Request: /api/users/profile/reject/114/
+[2025-03-26 00:50:37] WARNING Forbidden: /api/users/profile/approve/115/
+[2025-03-26 00:50:37] WARNING Forbidden: /api/users/profile/reject/116/
+[2025-03-26 00:50:38] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-26 00:50:39] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-26 00:50:40] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:50:41] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:50:42] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:50:44] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:50:45] WARNING Bad Request: /api/users/login/
+[2025-03-26 00:50:45] WARNING Unauthorized: /api/users/logout/
+[2025-03-26 00:50:45] WARNING Bad Request: /api/users/logout/
+[2025-03-26 00:50:47] WARNING Bad Request: /api/users/logout/
+[2025-03-26 00:50:48] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-26 00:50:49] WARNING Not Found: /api/users/password-reset/
+[2025-03-26 00:50:49] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-26 00:50:52] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-26 00:50:52] WARNING Unauthorized: /api/users/profile/
+[2025-03-26 00:50:55] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:50:56] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:50:59] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:50:59] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:51:02] WARNING Bad Request: /api/users/profile/
+[2025-03-26 00:51:04] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:04] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:04] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:04] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:04] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:04] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:04] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:05] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:08] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:08] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:08] WARNING Bad Request: /api/users/register/
+[2025-03-26 00:51:08] WARNING Bad Request: /api/users/register/

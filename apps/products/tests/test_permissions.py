@@ -1,8 +1,7 @@
 import pytest
 from rest_framework.test import APIRequestFactory
-
-from apps.stores.views import IsAdminUser
 from apps.users.models import User
+from apps.products.views import IsAdminUser
 
 factory = APIRequestFactory()
 
@@ -16,11 +15,12 @@ def test_admin_user_has_permission():
         last_name="Test",
         is_staff=True
     )
-    request = factory.get('/some-path/')
+    request = factory.get('/fake-url/')
     request.user = user
     permission = IsAdminUser()
 
     assert permission.has_permission(request, None) is True
+
 
 @pytest.mark.django_db
 def test_non_admin_user_no_permission():
@@ -32,15 +32,16 @@ def test_non_admin_user_no_permission():
         last_name="User",
         is_staff=False
     )
-    request = factory.get('/some-path/')
+    request = factory.get('/fake-url/')
     request.user = user
     permission = IsAdminUser()
 
     assert permission.has_permission(request, None) is False
 
+
 @pytest.mark.django_db
 def test_anonymous_user_no_permission():
-    request = factory.get('/some-path/')
+    request = factory.get('/fake-url/')
     request.user = None
     permission = IsAdminUser()
 

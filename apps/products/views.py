@@ -6,17 +6,20 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user and request.user.is_staff
+        return bool(request.user and request.user.is_staff)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name']
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -43,13 +46,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]  # для загрузки image
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category']
     search_fields = ['name', 'description']
     ordering_fields = ['name', 'price', 'quantity', 'created_at']
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'add_quantity']:
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
 
@@ -101,13 +105,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         method='post',
         operation_description="Добавить количество товара на склад (только администратор)",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['quantity_to_add'],
-            properties={
-                'quantity_to_add': openapi.Schema(type=openapi.TYPE_INTEGER, description='Количество товара для добавления')
-            }
-        ),
+        manual_parameters=[
+            openapi.Parameter(
+                name='quantity_to_add',
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_INTEGER,
+                required=True,
+                description='Количество товара для добавления'
+            )
+        ],
         responses={200: ProductSerializer}
     )
     @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
@@ -118,7 +124,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         try:
             quantity_to_add = int(quantity_to_add)
             if quantity_to_add <= 0:
-                return Response({"error": "Количество добавляемого товара должно быть положительным числом"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Количество добавляемого товара должно быть положительным числом"},
+                                status=status.HTTP_400_BAD_REQUEST)
 
             product.quantity += quantity_to_add
             product.save()
@@ -126,4 +133,5 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response(ProductSerializer(product).data)
 
         except ValueError:
-            return Response({"error": "Некорректное значение для количества товара"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Некорректное значение для количества товара"},
+                            status=status.HTTP_400_BAD_REQUEST)

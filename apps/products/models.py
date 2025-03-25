@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Название категории")
+    name = models.CharField(unique=True,max_length=100, verbose_name="Название категории")
 
     class Meta:
         verbose_name = "Категория"
@@ -30,7 +30,7 @@ class Product(models.Model):
         verbose_name="Цена"
     )
     image = models.ImageField(
-        upload_to='products/',
+        upload_to='products/photos/',
         blank=True,
         null=True,
         verbose_name="Изображение"
@@ -46,3 +46,5 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
