@@ -1,0 +1,582 @@
+[2025-03-25 20:33:04] INFO Watching for file changes with StatReloader
+[2025-03-25 20:40:21] INFO Watching for file changes with StatReloader
+[2025-03-25 20:41:08] WARNING Forbidden: /api/users/admin/
+[2025-03-25 20:41:13] WARNING Not Found: /api/users/admin/99999/
+[2025-03-25 20:41:16] WARNING Forbidden: /api/users/admin/9/
+[2025-03-25 20:41:32] WARNING Bad Request: /api/users/admin/15/
+[2025-03-25 20:41:36] WARNING Bad Request: /api/users/admin/18/
+[2025-03-25 20:41:41] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-25 20:41:43] WARNING Forbidden: /api/users/profile/delete/22/
+[2025-03-25 20:41:50] WARNING Bad Request: /api/users/admin/block/26/
+[2025-03-25 20:41:52] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-25 20:41:58] WARNING Bad Request: /api/users/admin/unblock/31/
+[2025-03-25 20:42:00] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-25 20:42:06] WARNING Bad Request: /api/users/profile/approve/36/
+[2025-03-25 20:42:14] WARNING Bad Request: /api/users/profile/reject/40/
+[2025-03-25 20:42:16] WARNING Forbidden: /api/users/profile/approve/41/
+[2025-03-25 20:42:18] WARNING Forbidden: /api/users/profile/reject/42/
+[2025-03-25 20:42:20] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-25 20:42:22] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-25 20:42:26] WARNING Bad Request: /api/users/login/
+[2025-03-25 20:42:30] WARNING Bad Request: /api/users/login/
+[2025-03-25 20:42:33] WARNING Bad Request: /api/users/login/
+[2025-03-25 20:42:37] WARNING Bad Request: /api/users/login/
+[2025-03-25 20:42:43] WARNING Bad Request: /api/users/login/
+[2025-03-25 20:42:43] WARNING Unauthorized: /api/users/logout/
+[2025-03-25 20:42:46] WARNING Bad Request: /api/users/logout/
+[2025-03-25 20:42:51] WARNING Bad Request: /api/users/logout/
+[2025-03-25 20:42:54] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-25 20:42:57] WARNING Not Found: /api/users/password-reset/
+[2025-03-25 20:42:59] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-25 20:43:08] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-25 20:43:08] WARNING Unauthorized: /api/users/profile/
+[2025-03-25 20:43:16] WARNING Bad Request: /api/users/profile/
+[2025-03-25 20:43:18] WARNING Bad Request: /api/users/profile/
+[2025-03-25 20:43:33] WARNING Bad Request: /api/users/profile/
+[2025-03-25 20:43:35] WARNING Bad Request: /api/users/profile/
+[2025-03-25 20:43:49] WARNING Bad Request: /api/users/profile/
+[2025-03-25 20:43:58] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:43:58] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:43:58] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:00] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:00] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:00] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:00] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:02] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:15] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:15] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:15] WARNING Bad Request: /api/users/register/
+[2025-03-25 20:44:15] WARNING Bad Request: /api/users/register/
+[2025-03-25 21:58:44] INFO "POST /admin/login/?next=/admin/stores/application/6/change/ HTTP/1.1" 302 0
+[2025-03-25 21:58:44] WARNING Not Found: /admin/stores/application/6/change/
+[2025-03-25 21:58:44] WARNING "GET /admin/stores/application/6/change/ HTTP/1.1" 404 10594
+[2025-03-25 21:58:55] INFO "GET /admin/ HTTP/1.1" 200 21970
+[2025-03-25 21:58:55] INFO "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+[2025-03-25 21:58:55] INFO "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+[2025-03-25 21:58:55] INFO "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+[2025-03-25 22:10:34] WARNING Unauthorized: /api/stores/cities/
+[2025-03-25 22:10:36] WARNING Forbidden: /api/stores/cities/
+[2025-03-25 22:10:37] WARNING Bad Request: /api/stores/cities/
+[2025-03-25 22:21:12] ERROR Internal Server Error: /api/stores/stores/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: ОШИБКА:  значение NULL в столбце "inn" отношения "stores_store" нарушает ограничение NOT NULL
+DETAIL:  Ошибочная строка содержит (1, Test Store, null, Some Street, +996700000000, pending, t, 2025-03-25 17:21:12.072442+00, 2025-03-25 17:21:12.072442+00, 1).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py", line 111, in create
+    return super().create(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\mixins.py", line 19, in create
+    self.perform_create(serializer)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\mixins.py", line 24, in perform_create
+    serializer.save()
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 208, in save
+    self.instance = self.create(validated_data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 989, in create
+    instance = ModelClass._default_manager.create(**validated_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ОШИБКА:  значение NULL в столбце "inn" отношения "stores_store" нарушает ограничение NOT NULL
+DETAIL:  Ошибочная строка содержит (1, Test Store, null, Some Street, +996700000000, pending, t, 2025-03-25 17:21:12.072442+00, 2025-03-25 17:21:12.072442+00, 1).
+
+[2025-03-25 22:21:13] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 22:21:14] WARNING Bad Request: /api/stores/stores/3/update_status/
+[2025-03-25 22:21:15] WARNING Bad Request: /api/stores/stores/5/activate/
+[2025-03-25 22:21:18] ERROR Internal Server Error: /api/stores/stores/filter_by_debt/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py", line 211, in filter_by_debt
+    stores = Store.objects.annotate(
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1630, in annotate
+    return self._annotate(args, kwargs, select=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1680, in _annotate
+    clone.query.add_annotation(
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1194, in add_annotation
+    annotation = annotation.resolve_expression(self, allow_joins=True, reuse=None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\aggregates.py", line 63, in resolve_expression
+    c = super().resolve_expression(query, allow_joins, reuse, summarize)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\expressions.py", line 1073, in resolve_expression
+    c.source_expressions[pos] = arg.resolve_expression(
+                                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\expressions.py", line 895, in resolve_expression
+    return query.resolve_ref(self.name, allow_joins, reuse, summarize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 2010, in resolve_ref
+    join_info = self.setup_joins(
+                ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1863, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1768, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'storedebts' into field. Choices are: address, city, city_id, created_at, debts, finance_stats, id, inn, is_active, name, phone, product_requests, status, updated_at
+[2025-03-25 22:21:19] WARNING Method Not Allowed: /api/stores/stores/13/
+[2025-03-25 22:24:50] ERROR Internal Server Error: /api/stores/stores/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: ОШИБКА:  значение NULL в столбце "inn" отношения "stores_store" нарушает ограничение NOT NULL
+DETAIL:  Ошибочная строка содержит (1, Test Store, null, Some Street, +996700000000, pending, t, 2025-03-25 17:24:50.81746+00, 2025-03-25 17:24:50.81746+00, 1).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py", line 111, in create
+    return super().create(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\mixins.py", line 19, in create
+    self.perform_create(serializer)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\mixins.py", line 24, in perform_create
+    serializer.save()
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 208, in save
+    self.instance = self.create(validated_data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\serializers.py", line 989, in create
+    instance = ModelClass._default_manager.create(**validated_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ОШИБКА:  значение NULL в столбце "inn" отношения "stores_store" нарушает ограничение NOT NULL
+DETAIL:  Ошибочная строка содержит (1, Test Store, null, Some Street, +996700000000, pending, t, 2025-03-25 17:24:50.81746+00, 2025-03-25 17:24:50.81746+00, 1).
+
+[2025-03-25 22:24:51] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 22:24:53] WARNING Bad Request: /api/stores/stores/3/update_status/
+[2025-03-25 22:24:54] WARNING Bad Request: /api/stores/stores/5/activate/
+[2025-03-25 22:24:57] ERROR Internal Server Error: /api/stores/stores/filter_by_debt/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py", line 211, in filter_by_debt
+    stores = Store.objects.annotate(
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1630, in annotate
+    return self._annotate(args, kwargs, select=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1680, in _annotate
+    clone.query.add_annotation(
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1194, in add_annotation
+    annotation = annotation.resolve_expression(self, allow_joins=True, reuse=None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\aggregates.py", line 63, in resolve_expression
+    c = super().resolve_expression(query, allow_joins, reuse, summarize)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\expressions.py", line 1073, in resolve_expression
+    c.source_expressions[pos] = arg.resolve_expression(
+                                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\expressions.py", line 895, in resolve_expression
+    return query.resolve_ref(self.name, allow_joins, reuse, summarize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 2010, in resolve_ref
+    join_info = self.setup_joins(
+                ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1863, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1768, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'storedebts' into field. Choices are: address, city, city_id, created_at, debts, finance_stats, id, inn, is_active, name, phone, product_requests, status, updated_at
+[2025-03-25 22:24:57] WARNING Method Not Allowed: /api/stores/stores/13/
+[2025-03-25 22:27:00] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:27:02] INFO Watching for file changes with StatReloader
+[2025-03-25 22:27:04] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:27:06] INFO Watching for file changes with StatReloader
+[2025-03-25 22:27:11] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:27:12] INFO Watching for file changes with StatReloader
+[2025-03-25 22:27:20] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:27:21] INFO Watching for file changes with StatReloader
+[2025-03-25 22:27:38] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 22:27:40] WARNING Bad Request: /api/stores/stores/3/update_status/
+[2025-03-25 22:27:41] WARNING Bad Request: /api/stores/stores/5/activate/
+[2025-03-25 22:27:43] ERROR Internal Server Error: /api/stores/stores/filter_by_debt/
+Traceback (most recent call last):
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py", line 211, in filter_by_debt
+    stores = Store.objects.annotate(
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1630, in annotate
+    return self._annotate(args, kwargs, select=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\query.py", line 1680, in _annotate
+    clone.query.add_annotation(
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1194, in add_annotation
+    annotation = annotation.resolve_expression(self, allow_joins=True, reuse=None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\aggregates.py", line 63, in resolve_expression
+    c = super().resolve_expression(query, allow_joins, reuse, summarize)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\expressions.py", line 1073, in resolve_expression
+    c.source_expressions[pos] = arg.resolve_expression(
+                                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\expressions.py", line 895, in resolve_expression
+    return query.resolve_ref(self.name, allow_joins, reuse, summarize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 2010, in resolve_ref
+    join_info = self.setup_joins(
+                ^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1863, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nooke\PycharmProjects\BaiEl(demo2)\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1768, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'storedebts' into field. Choices are: address, city, city_id, created_at, debts, finance_stats, id, inn, is_active, name, phone, product_requests, status, updated_at
+[2025-03-25 22:27:45] WARNING Method Not Allowed: /api/stores/stores/13/
+[2025-03-25 22:30:04] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-25 22:30:06] INFO Watching for file changes with StatReloader
+[2025-03-25 22:30:15] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 22:30:16] WARNING Bad Request: /api/stores/stores/3/update_status/
+[2025-03-25 22:30:18] WARNING Bad Request: /api/stores/stores/5/activate/
+[2025-03-25 22:30:21] WARNING Method Not Allowed: /api/stores/stores/13/
+[2025-03-25 22:35:14] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-25 22:35:16] INFO Watching for file changes with StatReloader
+[2025-03-25 22:35:32] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-25 22:35:34] INFO Watching for file changes with StatReloader
+[2025-03-25 22:36:00] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-25 22:36:00] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 49383
+[2025-03-25 22:41:04] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\urls.py changed, reloading.
+[2025-03-25 22:41:05] INFO Watching for file changes with StatReloader
+[2025-03-25 22:41:26] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 22:44:47] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-25 22:44:49] INFO Watching for file changes with StatReloader
+[2025-03-25 22:45:26] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 22:48:52] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 22:49:25] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 22:51:02] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 22:51:04] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 22:51:05] WARNING Bad Request: /api/stores/store-debts/9/mark-as-paid/
+[2025-03-25 22:51:06] WARNING Not Found: /api/stores/store-debts/10/
+[2025-03-25 22:51:44] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\urls.py changed, reloading.
+[2025-03-25 22:51:46] INFO Watching for file changes with StatReloader
+[2025-03-25 22:53:24] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:53:25] INFO Watching for file changes with StatReloader
+[2025-03-25 22:53:50] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:53:52] INFO Watching for file changes with StatReloader
+[2025-03-25 22:53:56] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:53:58] INFO Watching for file changes with StatReloader
+[2025-03-25 22:54:03] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:54:04] INFO Watching for file changes with StatReloader
+[2025-03-25 22:54:32] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 22:54:33] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 22:54:35] WARNING Bad Request: /api/stores/store-debts/9/mark-as-paid/
+[2025-03-25 22:54:36] WARNING Not Found: /api/stores/store-debts/10/
+[2025-03-25 22:56:25] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\serializers.py changed, reloading.
+[2025-03-25 22:56:27] INFO Watching for file changes with StatReloader
+[2025-03-25 22:56:46] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 22:56:46] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 22:56:47] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 22:56:48] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-25 22:56:50] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-25 23:00:19] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-25 23:00:20] INFO Watching for file changes with StatReloader
+[2025-03-25 23:00:46] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 23:00:47] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 23:00:48] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 23:00:48] WARNING Bad Request: /api/stores/store-debts/7/mark-as-paid/
+[2025-03-25 23:00:49] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-25 23:00:50] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-25 23:02:20] INFO C:\Users\nooke\PycharmProjects\BaiEl(demo2)\apps\stores\views.py changed, reloading.
+[2025-03-25 23:02:22] INFO Watching for file changes with StatReloader
+[2025-03-25 23:05:32] WARNING Unauthorized: /api/stores/cities/
+[2025-03-25 23:05:34] WARNING Forbidden: /api/stores/cities/
+[2025-03-25 23:05:34] WARNING Bad Request: /api/stores/cities/
+[2025-03-25 23:05:38] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-25 23:05:38] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-25 23:09:05] WARNING Unauthorized: /api/stores/cities/
+[2025-03-25 23:09:07] WARNING Forbidden: /api/stores/cities/
+[2025-03-25 23:09:07] WARNING Bad Request: /api/stores/cities/
+[2025-03-25 23:09:11] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-25 23:09:11] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-25 23:09:11] WARNING Bad Request: /api/stores/cities/
+[2025-03-25 23:09:12] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-25 23:09:12] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-25 23:09:12] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-25 23:13:11] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 23:13:12] WARNING Bad Request: /api/stores/stores/3/update_status/
+[2025-03-25 23:13:13] WARNING Bad Request: /api/stores/stores/5/activate/
+[2025-03-25 23:13:16] WARNING Method Not Allowed: /api/stores/stores/13/
+[2025-03-25 23:13:17] WARNING Bad Request: /api/stores/stores/
+[2025-03-25 23:13:18] WARNING Bad Request: /api/stores/stores/
+[2025-03-25 23:13:18] WARNING Bad Request: /api/stores/stores/15/activate/
+[2025-03-25 23:13:19] WARNING Bad Request: /api/stores/stores/16/deactivate/
+[2025-03-25 23:18:54] WARNING Unauthorized: /api/stores/cities/
+[2025-03-25 23:18:56] WARNING Forbidden: /api/stores/cities/
+[2025-03-25 23:18:56] WARNING Bad Request: /api/stores/cities/
+[2025-03-25 23:19:00] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-25 23:19:00] WARNING Forbidden: /api/stores/cities/12/
+[2025-03-25 23:19:00] WARNING Bad Request: /api/stores/cities/
+[2025-03-25 23:19:01] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-25 23:19:01] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-25 23:19:01] WARNING Forbidden: /api/stores/cities/14/
+[2025-03-25 23:19:09] WARNING Bad Request: /api/stores/store-debts/6/mark-as-paid/
+[2025-03-25 23:19:09] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 23:19:10] WARNING Bad Request: /api/stores/store-debts/
+[2025-03-25 23:19:11] WARNING Bad Request: /api/stores/store-debts/7/mark-as-paid/
+[2025-03-25 23:19:11] WARNING Bad Request: /api/stores/store-debts/8/mark-as-paid/
+[2025-03-25 23:19:13] WARNING Not Found: /api/stores/store-debts/9/
+[2025-03-25 23:19:14] WARNING Forbidden: /api/stores/stores/
+[2025-03-25 23:19:15] WARNING Bad Request: /api/stores/stores/14/update_status/
+[2025-03-25 23:19:16] WARNING Bad Request: /api/stores/stores/16/activate/
+[2025-03-25 23:19:20] WARNING Method Not Allowed: /api/stores/stores/24/
+[2025-03-25 23:19:20] WARNING Bad Request: /api/stores/stores/
+[2025-03-25 23:19:21] WARNING Bad Request: /api/stores/stores/
+[2025-03-25 23:19:22] WARNING Bad Request: /api/stores/stores/26/activate/
+[2025-03-25 23:19:23] WARNING Bad Request: /api/stores/stores/27/deactivate/
+[2025-03-25 23:19:27] WARNING Forbidden: /api/users/admin/
+[2025-03-25 23:19:29] WARNING Not Found: /api/users/admin/99999/
+[2025-03-25 23:19:29] WARNING Forbidden: /api/users/admin/53/
+[2025-03-25 23:19:35] WARNING Bad Request: /api/users/admin/59/
+[2025-03-25 23:19:36] WARNING Bad Request: /api/users/admin/62/
+[2025-03-25 23:19:38] WARNING Not Found: /api/users/profile/delete/99999/
+[2025-03-25 23:19:39] WARNING Forbidden: /api/users/profile/delete/66/
+[2025-03-25 23:19:41] WARNING Bad Request: /api/users/admin/block/70/
+[2025-03-25 23:19:42] WARNING Not Found: /api/users/admin/block/99999/
+[2025-03-25 23:19:44] WARNING Bad Request: /api/users/admin/unblock/75/
+[2025-03-25 23:19:45] WARNING Not Found: /api/users/admin/unblock/99999/
+[2025-03-25 23:19:48] WARNING Bad Request: /api/users/profile/approve/80/
+[2025-03-25 23:19:50] WARNING Bad Request: /api/users/profile/reject/84/
+[2025-03-25 23:19:51] WARNING Forbidden: /api/users/profile/approve/85/
+[2025-03-25 23:19:51] WARNING Forbidden: /api/users/profile/reject/86/
+[2025-03-25 23:19:52] WARNING Not Found: /api/users/profile/approve/99999/
+[2025-03-25 23:19:53] WARNING Not Found: /api/users/profile/reject/99999/
+[2025-03-25 23:19:54] WARNING Bad Request: /api/users/login/
+[2025-03-25 23:19:55] WARNING Bad Request: /api/users/login/
+[2025-03-25 23:19:57] WARNING Bad Request: /api/users/login/
+[2025-03-25 23:19:58] WARNING Bad Request: /api/users/login/
+[2025-03-25 23:19:59] WARNING Bad Request: /api/users/login/
+[2025-03-25 23:19:59] WARNING Unauthorized: /api/users/logout/
+[2025-03-25 23:20:00] WARNING Bad Request: /api/users/logout/
+[2025-03-25 23:20:01] WARNING Bad Request: /api/users/logout/
+[2025-03-25 23:20:02] WARNING Unauthorized: /api/users/token/refresh/
+[2025-03-25 23:20:03] WARNING Not Found: /api/users/password-reset/
+[2025-03-25 23:20:04] WARNING Bad Request: /api/users/password-reset/verify/
+[2025-03-25 23:20:07] WARNING Bad Request: /api/users/password-reset/confirm/
+[2025-03-25 23:20:07] WARNING Unauthorized: /api/users/profile/
+[2025-03-25 23:20:10] WARNING Bad Request: /api/users/profile/
+[2025-03-25 23:20:10] WARNING Bad Request: /api/users/profile/
+[2025-03-25 23:20:14] WARNING Bad Request: /api/users/profile/
+[2025-03-25 23:20:14] WARNING Bad Request: /api/users/profile/
+[2025-03-25 23:20:17] WARNING Bad Request: /api/users/profile/
+[2025-03-25 23:20:19] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:19] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:19] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:19] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:19] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:19] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:19] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:20] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:23] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:23] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:23] WARNING Bad Request: /api/users/register/
+[2025-03-25 23:20:23] WARNING Bad Request: /api/users/register/

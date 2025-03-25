@@ -77,13 +77,11 @@ class StoreViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def get_queryset(self):
-        # Для генерации схемы Swagger
         if getattr(self, 'swagger_fake_view', False):
             return Store.objects.none()
 
         queryset = Store.objects.all()
 
-        # Фильтрация по статусу для не-администраторов
         if not self.request.user.is_staff:
             queryset = queryset.filter(status='approved', is_active=True)
 
@@ -209,7 +207,7 @@ class StoreViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def filter_by_debt(self, request):
         stores = Store.objects.annotate(
-            total_debt=Sum('storedebts__amount', filter=F('storedebts__is_paid') == False)
+            total_debt=Sum('debts__amount', filter=F('storedebts__is_paid') == False)
         ).order_by('-total_debt')
         serializer = StoreSerializer(stores, many=True)
         return Response(serializer.data)
@@ -245,11 +243,11 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at', 'amount']
 
     def get_queryset(self):
-        # Для генерации схемы Swagger
+
         if getattr(self, 'swagger_fake_view', False):
             return StoreDebt.objects.none()
 
-        # Администраторы видят все долги, партнеры - только созданные ими
+
         if self.request.user.is_staff:
             return StoreDebt.objects.all()
         return StoreDebt.objects.filter(created_by=self.request.user)
@@ -260,13 +258,14 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
         request_body=StoreDebtPaymentSerializer,
         responses={200: StoreDebtSerializer}
     )
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], url_path='mark-as-paid')
     def mark_as_paid(self, request, pk=None):
         debt = self.get_object()
-        serializer = StoreDebtPaymentSerializer(debt, data={'is_paid': True})
+        serializer = StoreDebtPaymentSerializer(debt, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
             return Response(StoreDebtSerializer(debt).data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

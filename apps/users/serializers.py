@@ -74,6 +74,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return validate_password(value)
 
     def validate_photo(self, value):
+        return validate_photo(value)
 
 
     def update(self, instance, validated_data):
@@ -128,3 +129,38 @@ class LoginSerializer(serializers.Serializer):
 
 
 
+class UserPutSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = "UserPutSerializer"
+        model = User
+        fields = ["email", "phone", "first_name", "last_name", "password", "photo"]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def validate_email(self, value):
+        return validate_email(value, self.instance)
+
+    def validate_phone(self, value):
+        return validate_phone(value, self.instance)
+
+    def validate_first_name(self, value):
+        return validate_first_name(value)
+
+    def validate_last_name(self, value):
+        return validate_last_name(value)
+
+    def validate_password(self, value):
+        return validate_password(value)
+
+    def validate_photo(self, value):
+        return validate_photo(value)
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance

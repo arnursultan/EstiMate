@@ -23,13 +23,15 @@ class StoreSerializer(serializers.ModelSerializer):
         read_only_fields = ['status', 'is_active', 'created_at', 'updated_at']
 
     def validate_inn(self, value):
-        # Проверка формата ИНН (простая проверка длины)
+        # Проверка формата ИНН
         if len(value) < 10 or len(value) > 14:
             raise serializers.ValidationError("ИНН должен быть от 10 до 14 символов")
 
-        # Проверка уникальности ИНН
+        # Проверка уникальности
         if Store.objects.filter(inn=value).exclude(pk=self.instance.pk if self.instance else None).exists():
-            return value
+            raise serializers.ValidationError("Магазин с таким ИНН уже существует")
+
+        return value
 
     def validate_phone(self, value):
         # Проверка формата телефона
@@ -92,6 +94,11 @@ class StoreDebtSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['created_at', 'paid_at', 'created_by']
 
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Сумма долга должна быть положительной.")
+        return value
+
     def create(self, validated_data):
         validated_data['created_by'] = self.context['request'].user
         return super().create(validated_data)
@@ -103,7 +110,7 @@ class StoreDebtPaymentSerializer(serializers.ModelSerializer):
         fields = ['is_paid']
 
     def validate_is_paid(self, value):
-        if not value:
+        if value is not True:
             raise serializers.ValidationError("Можно только отметить долг как оплаченный")
         return value
 
