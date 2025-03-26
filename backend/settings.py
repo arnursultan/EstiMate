@@ -13,10 +13,11 @@ print(f"DEBUG = {os.getenv('DEBUG')}")
 print(f"DB_NAME = {os.getenv('DB_NAME')}")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
-DEBUG = True
-# SERVER_IP = os.getenv("SERVER_IP", "123.456.78.90")
+DEBUG = os.getenv("DEBUG", "False") == "True"
+SERVER_IP = ["localhost"]
 # ALLOWED_HOSTS = [SERVER_IP, "127.0.0.1", "localhost"]
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+
 
     "drf_yasg",
     "django_filters",
@@ -50,6 +52,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -68,6 +71,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
@@ -207,7 +211,9 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "staticfiles")]  # Другое имя
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 

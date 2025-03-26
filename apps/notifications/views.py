@@ -10,7 +10,11 @@ class NotificationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
+        if self.request.user.is_authenticated:
+            return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
+        else:
+            # Вернуть пустой QuerySet для анонимных пользователей
+            return Notification.objects.none()
 
     @action(detail=False, methods=['post'])
     def mark_all_read(self, request):
