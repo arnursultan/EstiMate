@@ -1941,3 +1941,14 @@ redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. По
 [2025-03-28 21:16:06] INFO Watching for file changes with StatReloader
 [2025-03-28 21:16:12] INFO "GET /api/docs/ HTTP/1.1" 200 1633
 [2025-03-28 21:16:13] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 54601
+[2025-03-28 21:19:35] INFO "GET /api/docs/ HTTP/1.1" 200 1633
+[2025-03-28 21:19:36] INFO "GET /api/docs/?format=openapi HTTP/1.1" 200 54601
+[2025-03-28 21:28:48] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:28:49] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:28:50] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:28:50] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:28:50] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:34:58] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:35:53] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:37:28] WARNING Unauthorized: /api/finance/admin/finance-stat/
+[2025-03-28 21:37:29] WARNING Forbidden: /api/finance/admin/finance-stat/
