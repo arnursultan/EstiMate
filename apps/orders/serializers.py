@@ -7,19 +7,21 @@ class ProductRequestSerializer(serializers.ModelSerializer):
     user_email = serializers.CharField(source='user.email', read_only=True)
     store_name = serializers.CharField(source='store.name', read_only=True)
     product_price = serializers.DecimalField(source='product.price', read_only=True, max_digits=10, decimal_places=2)
+    is_bonus_marked = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = ProductRequest
         fields = [
             'id', 'product', 'product_name', 'user', 'user_email',
             'quantity', 'bonus_quantity', 'damaged_quantity', 'payment_method',
-            'status', 'for_store', 'store', 'store_name',
+            'status', 'for_store', 'store', 'store_name', 'is_bonus_marked',
             'product_price', 'total_price', 'created_at'
         ]
         read_only_fields = [
             'bonus_quantity', 'damaged_quantity', 'status',
-            'total_price', 'created_at', 'user'
+            'total_price', 'created_at', 'user', 'is_bonus_marked'
         ]
+
 
     def validate(self, data):
         product = data.get('product')

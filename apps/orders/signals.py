@@ -30,3 +30,21 @@ def handle_status_change(sender, instance, created, **kwargs):
             elif old_status == 'approved' and new_status != 'approved':
                 product.quantity += instance.quantity
                 product.save()
+
+
+@receiver(post_save, sender=ProductRequest)
+def create_debt_for_store(sender, instance, created, **kwargs):
+    """Создает запись о долге магазина, если выбран метод оплаты 'debt'"""
+    # Проверяем, что это для магазина и метод оплаты - в долг
+    if (created or instance.previous_status != 'approved') and \
+            instance.status == 'approved' and \
+            instance.for_store and \
+            instance.store and \
+            instance.payment_method == 'debt':
+        # Создаем запись о долге
+        from apps.stores.models import StoreDebt
+        StoreDebt.objects.create(
+            store=instance.store,
+            amount=instance.total_price,
+            request=instance
+        )

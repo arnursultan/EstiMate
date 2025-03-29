@@ -269,3 +269,106 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# Добавить новый ViewSet
+class StoreViewSet(viewsets.ModelViewSet):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['city', 'is_active']
+    search_fields = ['name', 'inn', 'address']
+    ordering_fields = ['name', 'city__name']
+
+    @action(detail=False, methods=['get'])
+    def search_by_inn(self, request):
+        """
+        Поиск магазина по ИНН (для страницы 4 ТЗ)
+        """
+        inn = request.query_params.get('inn', '')
+        if not inn:
+            return Response({"error": "Необходимо указать ИНН"}, status=400)
+
+        stores = Store.objects.filter(inn__icontains=inn)
+        serializer = StoreSerializer(stores, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def by_city(self, request):
+        """
+        Получение магазинов по городу
+        """
+        city_id = request.query_params.get('city_id')
+        if not city_id:
+            return Response({"error": "Необходимо указать ID города"}, status=400)
+
+        stores = Store.objects.filter(city_id=city_id)
+        serializer = StoreSerializer(stores, many=True)
+        return Response(serializer.data)
+
+
+class StoreDebtViewSet(viewsets.ModelViewSet):
+    serializer_class = StoreDebtSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return StoreDebt.objects.all()
+        # Партнер видит только долги магазинов, с которыми он работал
+        store_ids = ProductRequest.objects.filter(
+            user=self.request.user,
+            store__isnull=False
+        ).values_list('store_id', flat=True).distinct()
+        return StoreDebt.objects.filter(store_id__in=store_ids)
+
+    @action(detail=False, methods=['post'])
+    def pay_debt(self, request):
+        serializer = DebtPaymentSerializer(data=request.data)
+        if serializer.is_valid():
+            debt_id = serializer.validated_data['debt_id']
+            payment_amount = serializer.validated_data['payment_amount']
+
+            debt = StoreDebt.objects.get(id=debt_id)
+
+            # Если сумма платежа совпадает с долгом, отмечаем как полностью погашенный
+            if payment_amount >= debt.amount:
+                debt.is_paid = True
+                debt.paid_at = timezone.now()
+                debt.save()
+
+                # Обновляем статистику
+                from apps.finance.services import update_calendar_statistics
+                update_calendar_statistics(
+                    debt.paid_at.date(),
+                    store=debt.store,
+                    city=debt.store.city if hasattr(debt.store, 'city') else None,
+                    has_debt_payment=True
+                )
+
+                return Response({
+                    "status": "success",
+                    "message": "Долг полностью погашен",
+                    "debt": StoreDebtSerializer(debt).data
+                })
+            else:
+                # Если сумма меньше, создаем новый долг с остатком
+                remaining = debt.amount - payment_amount
+                debt.is_paid = True
+                debt.paid_at = timezone.now()
+                debt.save()
+
+                new_debt = StoreDebt.objects.create(
+                    store=debt.store,
+                    amount=remaining,
+                    request=debt.request
+                )
+
+                return Response({
+                    "status": "partial_payment",
+                    "message": f"Внесена частичная оплата. Создан новый долг на сумму {remaining}",
+                    "paid_debt": StoreDebtSerializer(debt).data,
+                    "remaining_debt": StoreDebtSerializer(new_debt).data
+                })
+
+        return Response(serializer.errors, status=400)
+

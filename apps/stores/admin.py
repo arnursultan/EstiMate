@@ -7,13 +7,14 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     search_fields = ('name',)
 
-
-@admin.register(Store)
-class StoreAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'inn', 'city', 'phone', 'status', 'is_active', 'created_at')
-    list_filter = ('city', 'status', 'is_active')
-    search_fields = ('name', 'inn', 'address', 'phone')
-    readonly_fields = ('created_at', 'updated_at')
+@admin.register(StoreDebt)
+class StoreDebtAdmin(admin.ModelAdmin):
+        # Удалите 'created_by' или замените его на корректное поле
+    list_display = (
+            'id', 'store', 'amount', 'request', 'created_at', 'is_paid'  # Удалено 'created_by'
+    )
+    list_filter = ('is_paid', 'created_at')
+    search_fields = ('store__name', 'request__id')
     actions = ['approve_stores', 'reject_stores', 'activate_stores', 'deactivate_stores']
 
     def approve_stores(self, request, queryset):
@@ -44,17 +45,3 @@ class StoreAdmin(admin.ModelAdmin):
         return False
 
 
-@admin.register(StoreDebt)
-class StoreDebtAdmin(admin.ModelAdmin):
-    list_display = ('id', 'store', 'amount', 'is_paid', 'created_at', 'paid_at', 'created_by')
-    list_filter = ('is_paid', 'created_at', 'store')
-    search_fields = ('store__name', 'description')
-    readonly_fields = ('created_at', 'paid_at')
-    actions = ['mark_as_paid']
-
-    def mark_as_paid(self, request, queryset):
-        from django.utils import timezone
-        updated = queryset.filter(is_paid=False).update(is_paid=True, paid_at=timezone.now())
-        self.message_user(request, f'Отмечено как оплаченные {updated} долгов')
-
-    mark_as_paid.short_description = 'Отметить выбранные долги как оплаченные'

@@ -10,10 +10,12 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
+    is_bonus_eligible = serializers.BooleanField(default=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'category', 'category_name', 'description', 'price', 'image', 'quantity', 'created_at']
+        fields = ['id', 'name', 'category', 'category_name', 'description',
+                  'price', 'image', 'quantity', 'created_at', 'is_bonus_eligible']
         read_only_fields = ['created_at']
 
     def validate_name(self, value):

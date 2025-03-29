@@ -165,6 +165,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'apps.finance.tasks.run_daily_finance_statistics',
         'schedule': crontab(hour=0, minute=5),
     },
+    'archive-daily-data': {
+        'task': 'apps.finance.tasks.archive_daily_data',
+        'schedule': crontab(hour=23, minute=55),
+    },
 }
 
 CACHES = {

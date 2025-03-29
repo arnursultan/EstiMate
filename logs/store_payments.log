@@ -1952,3 +1952,123 @@ redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. По
 [2025-03-28 21:35:53] WARNING Unauthorized: /api/finance/admin/finance-stat/
 [2025-03-28 21:37:28] WARNING Unauthorized: /api/finance/admin/finance-stat/
 [2025-03-28 21:37:29] WARNING Forbidden: /api/finance/admin/finance-stat/
+[2025-03-28 20:59:56] INFO Watching for file changes with StatReloader
+[2025-03-28 21:00:10] WARNING Not Found: /
+[2025-03-28 21:00:10] WARNING "GET / HTTP/1.1" 404 4112
+[2025-03-28 21:00:10] WARNING Not Found: /favicon.ico
+[2025-03-28 21:00:10] WARNING "GET /favicon.ico HTTP/1.1" 404 4163
+[2025-03-28 21:00:13] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-03-28 21:00:13] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+[2025-03-28 21:00:13] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+[2025-03-28 21:00:13] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+[2025-03-28 21:00:13] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+[2025-03-28 21:00:13] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+[2025-03-28 21:00:13] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+[2025-03-28 21:00:13] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+[2025-03-28 21:00:14] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 54601
+[2025-03-29 19:09:38] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/models.py changed, reloading.
+[2025-03-29 19:09:38] INFO Watching for file changes with StatReloader
+[2025-03-29 19:16:42] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-03-29 19:16:42] INFO Watching for file changes with StatReloader
+[2025-03-29 19:17:08] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/urls.py changed, reloading.
+[2025-03-29 19:17:09] INFO Watching for file changes with StatReloader
+[2025-03-29 19:17:20] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/urls.py changed, reloading.
+[2025-03-29 19:17:21] INFO Watching for file changes with StatReloader
+[2025-03-29 19:42:12] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-29 19:42:12] INFO Watching for file changes with StatReloader
+[2025-03-29 19:43:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-29 19:43:22] INFO Watching for file changes with StatReloader
+[2025-03-29 19:45:05] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/urls.py changed, reloading.
+[2025-03-29 19:45:05] INFO Watching for file changes with StatReloader
+[2025-03-29 19:46:12] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/models.py changed, reloading.
+[2025-03-29 19:46:13] INFO Watching for file changes with StatReloader
+[2025-03-29 19:47:42] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-03-29 19:47:42] INFO Watching for file changes with StatReloader
+[2025-03-29 19:48:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-03-29 19:48:21] INFO Watching for file changes with StatReloader
+[2025-03-29 19:51:18] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-03-29 19:51:18] INFO Watching for file changes with StatReloader
+[2025-03-29 19:58:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-03-29 19:58:21] INFO Watching for file changes with StatReloader
+[2025-03-29 19:59:05] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-03-29 19:59:05] INFO Watching for file changes with StatReloader
+[2025-03-29 19:59:39] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/urls.py changed, reloading.
+[2025-03-29 19:59:39] INFO Watching for file changes with StatReloader
+[2025-03-29 20:08:42] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-03-29 20:08:43] INFO Watching for file changes with StatReloader
+[2025-03-29 20:09:19] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/urls.py changed, reloading.
+[2025-03-29 20:09:19] INFO Watching for file changes with StatReloader
+[2025-03-29 20:10:13] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/admin.py changed, reloading.
+[2025-03-29 20:10:13] INFO Watching for file changes with StatReloader
+[2025-03-29 20:11:13] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/models.py changed, reloading.
+[2025-03-29 20:11:13] INFO Watching for file changes with StatReloader
+[2025-03-29 20:17:50] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/models.py changed, reloading.
+[2025-03-29 20:17:51] INFO Watching for file changes with StatReloader
+[2025-03-29 20:17:55] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/models.py changed, reloading.
+[2025-03-29 20:17:55] INFO Watching for file changes with StatReloader
+[2025-03-29 20:18:15] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/models.py changed, reloading.
+[2025-03-29 20:18:16] INFO Watching for file changes with StatReloader
+[2025-03-29 20:18:32] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/serializers.py changed, reloading.
+[2025-03-29 20:18:33] INFO Watching for file changes with StatReloader
+[2025-03-29 20:19:03] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/serializers.py changed, reloading.
+[2025-03-29 20:19:04] INFO Watching for file changes with StatReloader
+[2025-03-29 20:19:43] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-03-29 20:19:44] INFO Watching for file changes with StatReloader
+[2025-03-29 20:21:38] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
+[2025-03-29 20:21:39] INFO Watching for file changes with StatReloader
+[2025-03-29 20:21:55] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/serializers.py changed, reloading.
+[2025-03-29 20:21:55] INFO Watching for file changes with StatReloader
+[2025-03-29 20:22:15] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/serializers.py changed, reloading.
+[2025-03-29 20:22:16] INFO Watching for file changes with StatReloader
+[2025-03-29 20:22:51] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-03-29 20:22:52] INFO Watching for file changes with StatReloader
+[2025-03-29 20:23:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/models.py changed, reloading.
+[2025-03-29 20:23:21] INFO Watching for file changes with StatReloader
+[2025-03-29 20:23:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/serializers.py changed, reloading.
+[2025-03-29 20:23:33] INFO Watching for file changes with StatReloader
+[2025-03-29 20:23:53] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py changed, reloading.
+[2025-03-29 20:23:53] INFO Watching for file changes with StatReloader
+[2025-03-29 20:24:17] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/urls.py changed, reloading.
+[2025-03-29 20:24:18] INFO Watching for file changes with StatReloader
+[2025-03-29 20:24:30] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/urls.py changed, reloading.
+[2025-03-29 20:24:31] INFO Watching for file changes with StatReloader
+[2025-03-29 20:24:51] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/urls.py changed, reloading.
+[2025-03-29 20:24:51] INFO Watching for file changes with StatReloader
+[2025-03-29 20:25:18] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/serializers.py changed, reloading.
+[2025-03-29 20:25:19] INFO Watching for file changes with StatReloader
+[2025-03-29 20:25:34] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/serializers.py changed, reloading.
+[2025-03-29 20:25:34] INFO Watching for file changes with StatReloader
+[2025-03-29 20:25:46] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-29 20:25:46] INFO Watching for file changes with StatReloader
+[2025-03-29 20:26:24] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-29 20:26:25] INFO Watching for file changes with StatReloader
+[2025-03-29 20:27:10] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-29 20:27:11] INFO Watching for file changes with StatReloader
+[2025-03-29 20:27:35] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-29 20:27:36] INFO Watching for file changes with StatReloader
+[2025-03-29 20:28:06] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-29 20:28:06] INFO Watching for file changes with StatReloader
+[2025-03-29 20:28:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-03-29 20:28:33] INFO Watching for file changes with StatReloader
+[2025-03-29 20:29:05] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/urls.py changed, reloading.
+[2025-03-29 20:29:06] INFO Watching for file changes with StatReloader
+[2025-03-29 20:32:15] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/views.py changed, reloading.
+[2025-03-29 20:32:15] INFO Watching for file changes with StatReloader
+[2025-03-29 20:33:15] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/views.py changed, reloading.
+[2025-03-29 20:33:16] INFO Watching for file changes with StatReloader
+[2025-03-29 20:33:45] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/views.py changed, reloading.
+[2025-03-29 20:33:45] INFO Watching for file changes with StatReloader
+[2025-03-29 20:34:05] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/urls.py changed, reloading.
+[2025-03-29 20:34:06] INFO Watching for file changes with StatReloader
+[2025-03-29 20:34:31] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/urls.py changed, reloading.
+[2025-03-29 20:34:31] INFO Watching for file changes with StatReloader
+[2025-03-29 20:36:48] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-29 20:36:49] INFO Watching for file changes with StatReloader
+[2025-03-29 20:37:30] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-29 20:37:31] INFO Watching for file changes with StatReloader
+[2025-03-29 20:37:51] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-29 20:37:51] INFO Watching for file changes with StatReloader
+[2025-03-29 20:41:27] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-29 20:41:28] INFO Watching for file changes with StatReloader
+[2025-03-29 20:43:38] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-03-29 20:43:39] INFO Watching for file changes with StatReloader

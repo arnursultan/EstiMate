@@ -3,7 +3,7 @@ from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import ProductRequest
+from .models import ProductRequest, Product
 from .serializers import (
     ProductRequestSerializer,
     AdminProductRequestStatusSerializer,
@@ -139,3 +139,183 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
             "total_damaged": total_damaged,
             "total_spent_cash": total_spent
         })
+
+    @action(detail=False, methods=['post'])
+    def calculate_total(self, request):
+        """
+        Калькулятор для расчета общей стоимости запроса без его создания.
+        Используется при изменении количества товаров в интерфейсе.
+        """
+        items = request.data.get('items', [])
+        total_quantity = 0
+        total_price = 0
+
+        for item in items:
+            product_id = item.get('product')
+            quantity = int(item.get('quantity', 0))
+
+            if product_id and quantity > 0:
+                try:
+                    product = Product.objects.get(id=product_id)
+                    bonus_quantity = quantity // 21  # Расчет бонусных товаров
+                    actual_quantity = quantity - bonus_quantity
+                    item_price = product.price * actual_quantity
+
+                    total_quantity += quantity
+                    total_price += float(item_price)
+
+                except Product.DoesNotExist:
+                    pass
+
+        return Response({
+            "total_quantity": total_quantity,
+            "total_price": total_price
+        })
+
+    @action(detail=False, methods=['post'])
+    def calculate_total(self, request):
+        """
+        Калькулятор для расчета общей стоимости запроса без его создания.
+        Используется при изменении количества товаров в интерфейсе.
+        """
+        items = request.data.get('items', [])
+        total_quantity = 0
+        total_price = 0
+
+        for item in items:
+            product_id = item.get('product')
+            quantity = int(item.get('quantity', 0))
+
+            if product_id and quantity > 0:
+                try:
+                    product = Product.objects.get(id=product_id)
+                    bonus_quantity = quantity // 21  # Расчет бонусных товаров
+                    actual_quantity = quantity - bonus_quantity
+                    item_price = product.price * actual_quantity
+
+                    total_quantity += quantity
+                    total_price += float(item_price)
+
+                except Product.DoesNotExist:
+                    pass
+
+        return Response({
+            "total_quantity": total_quantity,
+            "total_price": total_price
+        })
+
+    @action(detail=False, methods=['get'])
+    def pending_cart(self, request):
+        """
+        Возвращает запросы в ожидании (для корзины партнера)
+        """
+        user = request.user
+        queryset = ProductRequest.objects.filter(
+            user=user,
+            for_store=False,
+            status='pending'
+        ).order_by('-created_at')
+        serializer = ProductRequestSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def approved_cart(self, request):
+        """
+        Возвращает одобренные запросы (для корзины партнера)
+        """
+        user = request.user
+        queryset = ProductRequest.objects.filter(
+            user=user,
+            for_store=False,
+            status='approved'
+        ).order_by('-created_at')
+        serializer = ProductRequestSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def mark_received_check(self, request, pk=None):
+        """
+        Проверяет, можно ли отметить запрос как полученный
+        """
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response({
+                "can_mark_received": False,
+                "message": "Вы не можете отмечать чужие запросы"
+            })
+
+        can_mark = instance.status == 'approved'
+        return Response({
+            "can_mark_received": can_mark,
+            "message": "Запрос можно отметить как полученный" if can_mark else
+            "Только подтвержденные запросы можно отметить как полученные"
+        })
+
+    # Обновить метод report_damaged
+    @action(detail=True, methods=['post'])
+    def report_damaged(self, request, pk=None):
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response({"error": "Вы не можете редактировать чужие запросы"}, status=403)
+
+        if instance.status != 'received':
+            return Response({"error": "Брак можно указать только после получения"}, status=400)
+
+        serializer = ReportDamagedSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            prev_damaged = instance.damaged_quantity
+            instance = serializer.save()
+
+            # Если количество брака изменилось, обновляем финансовую статистику
+            if prev_damaged != instance.damaged_quantity:
+                # Получаем или создаем статистику за текущий день
+                from apps.finance.models import PartnerFinanceStat
+                from django.utils import timezone
+
+                today = timezone.now().date()
+                stats, _ = PartnerFinanceStat.objects.get_or_create(
+                    user=instance.user,
+                    date=today
+                )
+
+                # Рассчитываем сумму убытка от брака
+                damage_loss = instance.damaged_quantity * instance.product.price
+                stats.total_damaged_loss = damage_loss
+                stats.total_profit = stats.total_approved_cash - damage_loss
+                stats.save()
+
+                # Обновляем метки календаря
+                from apps.finance.services import update_calendar_statistics
+                update_calendar_statistics(
+                    today,
+                    user=instance.user,
+                    has_damaged=True
+                )
+
+                # Если это для магазина, обновляем его статистику тоже
+                if instance.store:
+                    from apps.finance.models import StoreFinanceStat
+                    store_stats, _ = StoreFinanceStat.objects.get_or_create(
+                        store=instance.store,
+                        date=today
+                    )
+                    store_stats.total_damaged = sum(
+                        r.damaged_quantity * r.product.price
+                        for r in ProductRequest.objects.filter(
+                            store=instance.store,
+                            status='received',
+                            created_at__date=today
+                        )
+                    )
+                    store_stats.save()
+
+                    # Обновляем метки календаря для магазина
+                    update_calendar_statistics(
+                        today,
+                        store=instance.store,
+                        has_damaged=True
+                    )
+
+            return Response(ProductRequestSerializer(instance).data)
+
+        return Response(serializer.errors, status=400)

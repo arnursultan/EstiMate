@@ -33,6 +33,7 @@ class ProductRequest(models.Model):
     quantity = models.PositiveIntegerField(verbose_name="Запрошенное количество")
     bonus_quantity = models.PositiveIntegerField(default=0, verbose_name="Бонусное количество")
     damaged_quantity = models.PositiveIntegerField(default=0, verbose_name="Количество бракованных товаров")
+    is_bonus_marked = models.BooleanField(default=False, verbose_name="Отмечен как бонусный")
     payment_method = models.CharField(
         max_length=10,
         choices=PAYMENT_METHOD_CHOICES,
@@ -70,10 +71,24 @@ class ProductRequest(models.Model):
         ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
+        """
+        Автоматически рассчитывает бонусные товары и общую сумму.
+        Бонусы считаются как каждый 21-й товар.
+        """
+        # Расчет бонусного количества
         self.bonus_quantity = self.quantity // 21
+
+        # Расчет фактического количества для оплаты
         actual_qty = max(self.quantity - self.bonus_quantity - self.damaged_quantity, 0)
+
+        # Расчет общей суммы
         self.total_price = actual_qty * self.product.price
+
+        # Ставим метку бонусного товара, если есть бонусные единицы
+        self.is_bonus_marked = self.bonus_quantity > 0
+
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.product.name} — {self.quantity} шт. от {self.user}"
+

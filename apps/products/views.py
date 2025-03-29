@@ -135,3 +135,32 @@ class ProductViewSet(viewsets.ModelViewSet):
         except ValueError:
             return Response({"error": "Некорректное значение для количества товара"},
                             status=status.HTTP_400_BAD_REQUEST)
+
+    # Добавить новый метод к ProductViewSet
+    @action(detail=True, methods=['get'])
+    def bonus_info(self, request, pk=None):
+        """
+        Возвращает информацию о бонусном статусе товара и
+        расчетах бонуса для указанного количества
+        """
+        product = self.get_object()
+        quantity = request.query_params.get('quantity', 0)
+
+        try:
+            quantity = int(quantity)
+            bonus_count = quantity // 21
+            bonus_value = bonus_count * product.price
+
+            return Response({
+                "product_id": product.id,
+                "product_name": product.name,
+                "is_bonus_eligible": product.is_bonus_eligible,
+                "requested_quantity": quantity,
+                "bonus_count": bonus_count,
+                "bonus_value": float(bonus_value),
+                "total_price_with_bonus": float((quantity - bonus_count) * product.price)
+            })
+        except (ValueError, TypeError):
+            return Response({
+                "error": "Количество должно быть целым числом"
+            }, status=400)

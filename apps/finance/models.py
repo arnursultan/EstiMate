@@ -39,3 +39,61 @@ class FinanceEntry(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+
+class CalendarStatistics(models.Model):
+    """Модель для хранения меток календаря с данными"""
+    date = models.DateField(verbose_name="Дата")
+    has_sales = models.BooleanField(default=False, verbose_name="Были продажи")
+    has_requests = models.BooleanField(default=False, verbose_name="Были запросы")
+    has_expenses = models.BooleanField(default=False, verbose_name="Были расходы")
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='calendar_marks',
+        null=True,
+        blank=True,
+        verbose_name="Партнер"
+    )
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name='calendar_marks',
+        null=True,
+        blank=True,
+        verbose_name="Магазин"
+    )
+    city = models.ForeignKey(
+        City,
+        on_delete=models.CASCADE,
+        related_name='calendar_marks',
+        null=True,
+        blank=True,
+        verbose_name="Город"
+    )
+
+    class Meta:
+        unique_together = ('date', 'user', 'store', 'city')
+        verbose_name = "Метка календаря"
+        verbose_name_plural = "Метки календаря"
+        ordering = ['-date']
+
+
+class ArchivedDailySummary(models.Model):
+    """Архивная сводка данных по дням для партнера"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='archived_summaries')
+    date = models.DateField()
+
+    total_requests = models.IntegerField(default=0)
+    total_sales = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_expenses = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_profit = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    data = models.JSONField(default=dict, blank=True)  # Дополнительные данные
+
+    class Meta:
+        unique_together = ('user', 'date')
+        verbose_name = "Архивная сводка"
+        verbose_name_plural = "Архивные сводки"
+        ordering = ['-date']

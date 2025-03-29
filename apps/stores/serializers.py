@@ -124,3 +124,32 @@ class StoreDebtPaymentSerializer(serializers.ModelSerializer):
             instance.paid_at = timezone.now()
         instance.save()
         return instance
+
+
+# Добавить новые сериализаторы
+class StoreDebtSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(source='store.name', read_only=True)
+
+    class Meta:
+        model = StoreDebt
+        fields = ['id', 'store', 'store_name', 'amount', 'created_at', 'is_paid', 'paid_at']
+        read_only_fields = ['created_at', 'is_paid', 'paid_at']
+
+
+class DebtPaymentSerializer(serializers.Serializer):
+    debt_id = serializers.IntegerField()
+    payment_amount = serializers.DecimalField(max_digits=12, decimal_places=2)
+
+    def validate_debt_id(self, value):
+        try:
+            debt = StoreDebt.objects.get(id=value)
+            if debt.is_paid:
+                raise serializers.ValidationError("Этот долг уже погашен")
+            return value
+        except StoreDebt.DoesNotExist:
+            raise serializers.ValidationError("Долг с таким ID не найден")
+
+    def validate_payment_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Сумма платежа должна быть положительной")
+        return value

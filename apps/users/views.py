@@ -1,5 +1,6 @@
 import re
 from django.core.cache import cache
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -16,6 +17,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import datetime, timezone
+from apps.orders.models import ProductRequest
+from rest_framework.permissions import IsAdminUser
 
 
 class RegisterView(generics.CreateAPIView):
@@ -495,4 +499,157 @@ class CustomTokenRefreshView(TokenRefreshView):
             return Response({"error": "Refresh-токен недействителен, войдите заново."},
                             status=status.HTTP_401_UNAUTHORIZED)
 
+
+# Добавить новые представления
+class PartnerDailySummaryView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Общая информация о товарах партнера за день",
+        operation_description="Возвращает сводку по запрошенным, проданным товарам и остаткам за выбранный день",
+        manual_parameters=[
+            openapi.Parameter(
+                'date',
+                openapi.IN_QUERY,
+                description="Дата (YYYY-MM-DD)",
+                type=openapi.TYPE_STRING,
+                format='date'
+            )
+        ]
+    )
+    def get(self, request):
+        user = request.user
+        date_str = request.query_params.get('date')
+
+        if date_str:
+            try:
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                return Response({"error": "Неверный формат даты"}, status=400)
+        else:
+            date_obj = timezone.now().date()
+
+        # Получаем все запросы за указанную дату
+        requests = ProductRequest.objects.filter(
+            user=user,
+            created_at__date=date_obj
+        )
+
+        # Группируем по товарам
+        from django.db.models import Sum
+        product_summary = {}
+
+        for req in requests:
+            product_id = req.product_id
+            if product_id not in product_summary:
+                product_summary[product_id] = {
+                    "product_id": product_id,
+                    "product_name": req.product.name,
+                    "total_requested": 0,
+                    "total_sold": 0,
+                    "total_remaining": 0,
+                    "total_bonus": 0
+                }
+
+            # Учитываем по статусу
+            product_summary[product_id]["total_requested"] += req.quantity
+
+            if req.status == 'received':
+                product_summary[product_id]["total_sold"] += req.quantity
+            elif req.status in ['pending', 'approved']:
+                product_summary[product_id]["total_remaining"] += req.quantity
+
+            product_summary[product_id]["total_bonus"] += req.bonus_quantity
+
+        # Формируем общий итог
+        total_requested = sum(item["total_requested"] for item in product_summary.values())
+        total_sold = sum(item["total_sold"] for item in product_summary.values())
+        total_remaining = sum(item["total_remaining"] for item in product_summary.values())
+        total_bonus = sum(item["total_bonus"] for item in product_summary.values())
+
+        # Получаем расходы за день
+        expenses = user.manual_finance_entries.filter(date=date_obj)
+        total_expenses = sum(float(e.expense) for e in expenses)
+
+        return Response({
+            "date": date_obj.isoformat(),
+            "products": list(product_summary.values()),
+            "summary": {
+                "total_requested": total_requested,
+                "total_sold": total_sold,
+                "total_remaining": total_remaining,
+                "total_bonus": total_bonus,
+                "total_expenses": total_expenses
+            }
+        })
+
+
+class AdminDashboardView(APIView):
+    permission_classes = [IsAdminUser]
+
+    @swagger_auto_schema(
+        operation_summary="Панель управления администратора",
+        operation_description="Возвращает общую статистику для панели администратора"
+    )
+    def get(self, request):
+        # Получаем текущую дату
+        today = timezone.now().date()
+
+        # Статистика по пользователям
+        user_stats = {
+            "total_users": User.objects.filter(is_staff=False).count(),
+            "active_users": User.objects.filter(is_staff=False, is_active=True).count(),
+            "pending_approvals": User.objects.filter(is_staff=False, status='pending').count()
+        }
+
+        # Статистика по товарам
+        from apps.products.models import Product
+        product_stats = {
+            "total_products": Product.objects.count(),
+            "out_of_stock": Product.objects.filter(quantity=0).count(),
+            "low_stock": Product.objects.filter(quantity__gt=0, quantity__lt=10).count()
+        }
+
+        # Статистика по заказам сегодня
+        from apps.orders.models import ProductRequest
+        today_order_stats = {
+            "new_requests": ProductRequest.objects.filter(created_at__date=today, status='pending').count(),
+            "approved_requests": ProductRequest.objects.filter(created_at__date=today, status='approved').count(),
+            "completed_requests": ProductRequest.objects.filter(created_at__date=today, status='received').count()
+        }
+
+        # Статистика по долгам
+        from apps.stores.models import StoreDebt
+        debt_stats = {
+            "total_debt": float(StoreDebt.objects.filter(is_paid=False).aggregate(Sum('amount'))['amount__sum'] or 0),
+            "debts_count": StoreDebt.objects.filter(is_paid=False).count(),
+            "debts_paid_today": StoreDebt.objects.filter(is_paid=True, paid_at__date=today).count()
+        }
+
+        # Другие важные метрики для админа
+        from apps.finance.models import FinanceEntry
+        finance_stats = {
+            "today_income": float(ProductRequest.objects.filter(
+                created_at__date=today,
+                status='received',
+                payment_method='cash'
+            ).aggregate(Sum('total_price'))['total_price__sum'] or 0),
+
+            "today_expenses": float(FinanceEntry.objects.filter(
+                date=today
+            ).aggregate(Sum('expense'))['expense__sum'] or 0)
+        }
+
+        # Список недавних действий (можно добавить модель для логирования)
+        recent_activities = []
+
+        return Response({
+            "date": today.isoformat(),
+            "user_stats": user_stats,
+            "product_stats": product_stats,
+            "order_stats": today_order_stats,
+            "debt_stats": debt_stats,
+            "finance_stats": finance_stats,
+            "recent_activities": recent_activities
+        })
 

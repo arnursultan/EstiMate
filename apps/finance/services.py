@@ -1,7 +1,7 @@
 from datetime import date
 from django.db.models import Sum
 from apps.orders.models import ProductRequest
-from .models import PartnerFinanceStat, StoreFinanceStat
+from .models import PartnerFinanceStat, StoreFinanceStat, CalendarStatistics
 
 
 def generate_partner_finance_stat(user):
@@ -40,3 +40,32 @@ def generate_store_finance_stat(store):
             'total_debt': total_debt
         }
     )
+
+
+def update_calendar_statistics(date_obj, user=None, store=None, city=None, **kwargs):
+    """
+    Обновляет статистику календаря для указанной даты
+
+    :param date_obj: Дата для обновления статистики
+    :param user: Объект пользователя (если статистика привязана к пользователю)
+    :param store: Объект магазина (если статистика привязана к магазину)
+    :param city: Объект города (если статистика привязана к городу)
+    :param kwargs: Дополнительные флаги статистики для обновления
+    """
+    stats, created = CalendarStatistics.objects.get_or_create(
+        date=date_obj,
+        user=user,
+        store=store,
+        city=city,
+        defaults=kwargs
+    )
+
+    if not created:
+        for key, value in kwargs.items():
+            if value:  # Обновляем только True значения
+                setattr(stats, key, value)
+        stats.save()
+
+    return stats
+
+
