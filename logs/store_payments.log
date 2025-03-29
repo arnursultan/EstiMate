@@ -7620,3 +7620,7 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: "' *; host cvjm
 [2025-03-29 07:24:33] WARNING "GET /favicon.ico HTTP/1.0" 404 179
 [2025-03-29 07:24:33] WARNING Not Found: /favicon.png
 [2025-03-29 07:24:33] WARNING "GET /favicon.png HTTP/1.0" 404 179
+[2025-03-29 07:28:46] WARNING Not Found: /status
+[2025-03-29 07:28:46] WARNING "GET /status HTTP/1.1" 404 179
+[2025-03-29 07:28:47] WARNING Not Found: /stat
+[2025-03-29 07:28:47] WARNING "GET /stat HTTP/1.1" 404 179
