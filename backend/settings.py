@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "apps.finance",
     "apps.chats",
     "apps.notifications",
+    "apps.cart",
 ]
 
 MIDDLEWARE = [
@@ -101,7 +102,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("127.0.0.1", 6379)],
         },
     },
 }
@@ -277,7 +278,7 @@ LOGGING = {
             "propagate": True,
         },
         "store_payments": {
-            "handlers": ["console", "file"],
+            "handlers": ["c onsole", "file"],
             "level": "INFO",
             "propagate": False,
         },

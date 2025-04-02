@@ -2,154 +2,107 @@ from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
+from .models import Product
+from .serializers import (
+    ProductSerializer,
+    ProductDetailSerializer,
+    ProductQuantityUpdateSerializer,
+    ProductBonusSerializer
+)
 
 
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_staff)
-
-
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name']
-
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
-        return super().get_permissions()
-
-    @swagger_auto_schema(
-        operation_description="Получить список всех категорий",
-        responses={200: CategorySerializer(many=True)}
-    )
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    @swagger_auto_schema(
-        operation_description="Создать новую категорию (только администратор)",
-        request_body=CategorySerializer,
-        responses={201: CategorySerializer}
-    )
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        return request.user and request.user.is_staff
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]  # для загрузки image
+    parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category']
+    filterset_fields = ['is_bonus_eligible']
     search_fields = ['name', 'description']
     ordering_fields = ['name', 'price', 'quantity', 'created_at']
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ProductDetailSerializer
+        elif self.action == 'add_quantity':
+            return ProductQuantityUpdateSerializer
+        elif self.action == 'bonus_info':
+            return ProductBonusSerializer
+        return self.serializer_class
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy', 'add_quantity']:
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
 
-    @swagger_auto_schema(
-        operation_description="Получить список всех продуктов",
-        responses={200: ProductSerializer(many=True)}
-    )
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+    def get_queryset(self):
+        queryset = Product.objects.all()
 
-    @swagger_auto_schema(
-        operation_description="Создать новый продукт (только администратор)",
-        request_body=ProductSerializer,
-        responses={201: ProductSerializer}
-    )
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        # Фильтрация по наличию товара
+        in_stock = self.request.query_params.get('in_stock')
+        if in_stock == 'true':
+            queryset = queryset.filter(quantity__gt=0)
+        elif in_stock == 'false':
+            queryset = queryset.filter(quantity=0)
 
-    @swagger_auto_schema(
-        operation_description="Получить детали продукта по ID",
-        responses={200: ProductSerializer}
-    )
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        # Фильтрация по цене
+        min_price = self.request.query_params.get('min_price')
+        max_price = self.request.query_params.get('max_price')
 
-    @swagger_auto_schema(
-        operation_description="Обновить продукт (только администратор)",
-        request_body=ProductSerializer,
-        responses={200: ProductSerializer}
-    )
-    def update(self, request, *args, **kwargs):
-        return super().update(request, *args, **kwargs)
+        if min_price:
+            try:
+                min_price = float(min_price)
+                queryset = queryset.filter(price__gte=min_price)
+            except (ValueError, TypeError):
+                pass
 
-    @swagger_auto_schema(
-        operation_description="Частично обновить продукт (только администратор)",
-        request_body=ProductSerializer,
-        responses={200: ProductSerializer}
-    )
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, *args, **kwargs)
+        if max_price:
+            try:
+                max_price = float(max_price)
+                queryset = queryset.filter(price__lte=max_price)
+            except (ValueError, TypeError):
+                pass
 
-    @swagger_auto_schema(
-        operation_description="Удалить продукт (только администратор)",
-        responses={204: "Продукт успешно удален"}
-    )
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
+        return queryset
 
-    @swagger_auto_schema(
-        method='post',
-        operation_description="Добавить количество товара на склад (только администратор)",
-        manual_parameters=[
-            openapi.Parameter(
-                name='quantity_to_add',
-                in_=openapi.IN_FORM,
-                type=openapi.TYPE_INTEGER,
-                required=True,
-                description='Количество товара для добавления'
-            )
-        ],
-        responses={200: ProductSerializer}
-    )
+
+
     @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
     def add_quantity(self, request, pk=None):
+        """Добавление количества товара на склад"""
         product = self.get_object()
-        quantity_to_add = request.data.get('quantity_to_add', 0)
+        serializer = self.get_serializer(data=request.data)
 
-        try:
-            quantity_to_add = int(quantity_to_add)
-            if quantity_to_add <= 0:
-                return Response({"error": "Количество добавляемого товара должно быть положительным числом"},
-                                status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            try:
+                quantity_to_add = serializer.validated_data['quantity_to_add']
+                product.add_quantity(quantity_to_add)
+                return Response(ProductDetailSerializer(product).data)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            product.quantity += quantity_to_add
-            product.save()
-
-            return Response(ProductSerializer(product).data)
-
-        except ValueError:
-            return Response({"error": "Некорректное значение для количества товара"},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-    # Добавить новый метод к ProductViewSet
     @action(detail=True, methods=['get'])
     def bonus_info(self, request, pk=None):
-        """
-        Возвращает информацию о бонусном статусе товара и
-        расчетах бонуса для указанного количества
-        """
+        """Расчет бонусов для товара"""
         product = self.get_object()
-        quantity = request.query_params.get('quantity', 0)
+        serializer = ProductBonusSerializer(data=request.query_params)
 
-        try:
-            quantity = int(quantity)
-            bonus_count = quantity // 21
+        if serializer.is_valid():
+            quantity = serializer.validated_data['quantity']
+
+            # Рассчитываем бонусы только если товар участвует в бонусной программе
+            bonus_count = product.calculate_bonus(quantity)
             bonus_value = bonus_count * product.price
+            total_price = product.calculate_total_price(quantity, bonus_count)
 
             return Response({
                 "product_id": product.id,
@@ -158,9 +111,29 @@ class ProductViewSet(viewsets.ModelViewSet):
                 "requested_quantity": quantity,
                 "bonus_count": bonus_count,
                 "bonus_value": float(bonus_value),
-                "total_price_with_bonus": float((quantity - bonus_count) * product.price)
+                "total_price_with_bonus": float(total_price)
             })
-        except (ValueError, TypeError):
-            return Response({
-                "error": "Количество должно быть целым числом"
-            }, status=400)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['get'])
+    def low_stock(self, request):
+        """Получение товаров с низким остатком (менее 10 единиц)"""
+        if not request.user.is_staff:
+            return Response({"error": "Недостаточно прав для выполнения операции"},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        low_stock_products = Product.objects.filter(quantity__gt=0, quantity__lt=10)
+        serializer = self.get_serializer(low_stock_products, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def out_of_stock(self, request):
+        """Получение отсутствующих товаров"""
+        if not request.user.is_staff:
+            return Response({"error": "Недостаточно прав для выполнения операции"},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        out_of_stock_products = Product.objects.filter(quantity=0)
+        serializer = self.get_serializer(out_of_stock_products, many=True)
+        return Response(serializer.data)

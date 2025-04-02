@@ -7,41 +7,21 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     search_fields = ('name',)
 
+
+@admin.register(Store)
+class StoreAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'inn', 'city', 'status', 'is_active', 'created_at')
+    search_fields = ('name', 'inn', 'address', 'phone')
+    list_filter = ('status', 'is_active', 'city', 'created_at')
+    readonly_fields = ('created_at', 'updated_at')
+
+
 @admin.register(StoreDebt)
 class StoreDebtAdmin(admin.ModelAdmin):
-        # Удалите 'created_by' или замените его на корректное поле
-    list_display = (
-            'id', 'store', 'amount', 'request', 'created_at', 'is_paid'  # Удалено 'created_by'
-    )
-    list_filter = ('is_paid', 'created_at')
-    search_fields = ('store__name', 'request__id')
-    actions = ['approve_stores', 'reject_stores', 'activate_stores', 'deactivate_stores']
-
-    def approve_stores(self, request, queryset):
-        updated = queryset.filter(status='pending').update(status='approved')
-        self.message_user(request, f'Подтверждено {updated} магазинов')
-
-    approve_stores.short_description = 'Подтвердить выбранные магазины'
-
-    def reject_stores(self, request, queryset):
-        updated = queryset.filter(status='pending').update(status='rejected')
-        self.message_user(request, f'Отклонено {updated} магазинов')
-
-    reject_stores.short_description = 'Отклонить выбранные магазины'
-
-    def activate_stores(self, request, queryset):
-        updated = queryset.filter(is_active=False).update(is_active=True)
-        self.message_user(request, f'Активировано {updated} магазинов')
-
-    activate_stores.short_description = 'Активировать выбранные магазины'
-
-    def deactivate_stores(self, request, queryset):
-        updated = queryset.filter(is_active=True).update(is_active=False)
-        self.message_user(request, f'Деактивировано {updated} магазинов')
-
-    deactivate_stores.short_description = 'Деактивировать выбранные магазины'
+    list_display = ('id', 'store', 'amount', 'request', 'created_at', 'is_paid', 'paid_at')
+    list_filter = ('is_paid', 'created_at', 'store__city')
+    search_fields = ('store__name', 'store__inn', 'request__id')
+    readonly_fields = ('created_at', 'paid_at')
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-

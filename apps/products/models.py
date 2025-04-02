@@ -1,28 +1,9 @@
 from django.db import models
-
-
-class Category(models.Model):
-    name = models.CharField(unique=True,max_length=100, verbose_name="Название категории")
-
-    class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
+from django.core.exceptions import ValidationError
 
 
 class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название продукта")
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='products',
-        verbose_name="Категория"
-    )
     description = models.TextField(blank=True, verbose_name="Описание продукта")
     price = models.DecimalField(
         max_digits=10,
@@ -36,9 +17,9 @@ class Product(models.Model):
         verbose_name="Изображение"
     )
     quantity = models.PositiveIntegerField(default=0, verbose_name="Количество на складе")
+    is_bonus_eligible = models.BooleanField(default=True, verbose_name="Участвует в бонусной программе")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    is_bonus_eligible = models.BooleanField(default=True, verbose_name="Участвует в бонусной программе")
 
     class Meta:
         verbose_name = "Продукт"
@@ -48,4 +29,38 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def add_quantity(self, amount):
+        """Добавить количество товара на склад"""
+        if amount <= 0:
+            raise ValidationError("Количество добавляемого товара должно быть положительным")
 
+        self.quantity += amount
+        self.save()
+        return self.quantity
+
+    def reduce_quantity(self, amount):
+        """Уменьшить количество товара на складе"""
+        if amount <= 0:
+            raise ValidationError("Количество уменьшаемого товара должно быть положительным")
+
+        if self.quantity < amount:
+            raise ValidationError("Недостаточно товара на складе")
+
+        self.quantity -= amount
+        self.save()
+        return self.quantity
+
+    def calculate_bonus(self, quantity_requested):
+        """Расчет бонусов для товара"""
+        if not self.is_bonus_eligible:
+            return 0
+
+        return quantity_requested // 21
+
+    def calculate_total_price(self, quantity, bonus_quantity=None):
+        """Расчет общей стоимости с учетом бонусов"""
+        if bonus_quantity is None:
+            bonus_quantity = self.calculate_bonus(quantity)
+
+        charged_quantity = quantity - bonus_quantity
+        return charged_quantity * self.price

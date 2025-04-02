@@ -7564,3 +7564,431 @@ AttributeError: type object 'datetime.timezone' has no attribute 'now'
 [2025-04-02 09:49:49] WARNING "GET /api/finance/admin/finance-stat/ HTTP/1.0" 403 117
 [2025-04-02 09:50:10] INFO "POST /api/users/login/ HTTP/1.0" 200 483
 [2025-04-02 09:52:28] INFO "GET /api/finance/admin/finance-stat/ HTTP/1.0" 200 197
+[2025-04-02 09:57:26] INFO Watching for file changes with StatReloader
+[2025-04-02 09:57:27] WARNING Not Found: /
+[2025-04-02 09:57:27] WARNING "GET / HTTP/1.1" 404 4112
+[2025-04-02 09:57:30] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-02 09:57:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-04-02 09:57:30] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-04-02 09:57:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-04-02 09:57:30] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-04-02 09:57:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-04-02 09:57:30] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-04-02 09:57:30] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-04-02 09:57:30] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 57657
+[2025-04-02 11:34:33] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/models.py changed, reloading.
+[2025-04-02 11:34:34] INFO Watching for file changes with StatReloader
+[2025-04-02 11:35:04] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-04-02 11:35:05] INFO Watching for file changes with StatReloader
+[2025-04-02 11:42:27] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/models.py changed, reloading.
+[2025-04-02 11:42:28] INFO Watching for file changes with StatReloader
+[2025-04-02 11:42:45] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-04-02 11:42:45] INFO Watching for file changes with StatReloader
+[2025-04-02 11:43:29] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/serializers.py changed, reloading.
+[2025-04-02 11:43:29] INFO Watching for file changes with StatReloader
+[2025-04-02 11:43:45] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/urls.py changed, reloading.
+[2025-04-02 11:43:45] INFO Watching for file changes with StatReloader
+[2025-04-02 11:44:08] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py changed, reloading.
+[2025-04-02 11:44:08] INFO Watching for file changes with StatReloader
+[2025-04-02 11:53:39] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/serializers.py changed, reloading.
+[2025-04-02 11:53:40] INFO Watching for file changes with StatReloader
+[2025-04-02 11:59:58] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/models.py changed, reloading.
+[2025-04-02 11:59:59] INFO Watching for file changes with StatReloader
+[2025-04-02 12:00:10] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/admin.py changed, reloading.
+[2025-04-02 12:00:10] INFO Watching for file changes with StatReloader
+[2025-04-02 12:01:07] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-04-02 12:01:07] INFO Watching for file changes with StatReloader
+[2025-04-02 12:04:23] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-04-02 12:04:24] INFO Watching for file changes with StatReloader
+[2025-04-02 12:09:35] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/models.py changed, reloading.
+[2025-04-02 12:09:35] INFO Watching for file changes with StatReloader
+[2025-04-02 12:13:05] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/serializers.py changed, reloading.
+[2025-04-02 12:13:05] INFO Watching for file changes with StatReloader
+[2025-04-02 12:19:39] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-04-02 12:19:39] INFO Watching for file changes with StatReloader
+[2025-04-02 12:19:50] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/urls.py changed, reloading.
+[2025-04-02 12:19:50] INFO Watching for file changes with StatReloader
+[2025-04-02 12:55:13] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/serializers.py changed, reloading.
+[2025-04-02 12:55:13] INFO Watching for file changes with StatReloader
+[2025-04-02 12:55:31] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/serializers.py changed, reloading.
+[2025-04-02 12:55:31] INFO Watching for file changes with StatReloader
+[2025-04-02 12:57:05] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/urls.py changed, reloading.
+[2025-04-02 12:57:06] INFO Watching for file changes with StatReloader
+[2025-04-02 13:05:55] INFO Watching for file changes with StatReloader
+[2025-04-02 13:10:31] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-04-02 13:10:32] INFO Watching for file changes with StatReloader
+[2025-04-02 13:10:42] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-04-02 13:10:43] INFO Watching for file changes with StatReloader
+[2025-04-02 13:11:11] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/urls.py changed, reloading.
+[2025-04-02 13:11:11] INFO Watching for file changes with StatReloader
+[2025-04-02 13:11:35] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-04-02 13:11:36] INFO Watching for file changes with StatReloader
+[2025-04-02 13:11:41] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/urls.py changed, reloading.
+[2025-04-02 13:11:41] INFO Watching for file changes with StatReloader
+[2025-04-02 13:12:49] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-04-02 13:12:49] INFO Watching for file changes with StatReloader
+[2025-04-02 13:13:09] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-04-02 13:13:09] INFO Watching for file changes with StatReloader
+[2025-04-02 13:14:10] INFO Watching for file changes with StatReloader
+[2025-04-02 13:15:45] INFO Watching for file changes with StatReloader
+[2025-04-02 14:22:24] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/serializers.py changed, reloading.
+[2025-04-02 14:22:24] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/serializers.py changed, reloading.
+[2025-04-02 14:22:24] INFO Watching for file changes with StatReloader
+[2025-04-02 14:22:24] INFO Watching for file changes with StatReloader
+[2025-04-02 14:22:31] INFO Watching for file changes with StatReloader
+[2025-04-02 14:23:08] INFO Watching for file changes with StatReloader
+[2025-04-02 14:23:15] INFO Watching for file changes with StatReloader
+[2025-04-02 14:23:20] WARNING Not Found: /
+[2025-04-02 14:23:20] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-02 14:23:20] WARNING Not Found: /favicon.ico
+[2025-04-02 14:23:20] WARNING "GET /favicon.ico HTTP/1.1" 404 4315
+[2025-04-02 15:14:23] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/apps.py changed, reloading.
+[2025-04-02 15:14:24] INFO Watching for file changes with StatReloader
+[2025-04-02 15:14:35] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/admin.py changed, reloading.
+[2025-04-02 15:14:35] INFO Watching for file changes with StatReloader
+[2025-04-02 15:14:53] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/models.py changed, reloading.
+[2025-04-02 15:14:53] INFO Watching for file changes with StatReloader
+[2025-04-02 15:15:21] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/notifications.py changed, reloading.
+[2025-04-02 15:15:22] INFO Watching for file changes with StatReloader
+[2025-04-02 15:15:35] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/serializers.py changed, reloading.
+[2025-04-02 15:15:36] INFO Watching for file changes with StatReloader
+[2025-04-02 15:15:43] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/urls.py changed, reloading.
+[2025-04-02 15:15:44] INFO Watching for file changes with StatReloader
+[2025-04-02 15:16:07] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/stores/views.py changed, reloading.
+[2025-04-02 15:16:07] INFO Watching for file changes with StatReloader
+[2025-04-02 15:39:04] INFO Watching for file changes with StatReloader
+[2025-04-02 15:39:07] WARNING Not Found: /
+[2025-04-02 15:39:07] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-02 15:43:40] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/apps.py changed, reloading.
+[2025-04-02 15:43:40] INFO Watching for file changes with StatReloader
+[2025-04-02 15:43:48] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/admin.py changed, reloading.
+[2025-04-02 15:43:48] INFO Watching for file changes with StatReloader
+[2025-04-02 15:44:00] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/models.py changed, reloading.
+[2025-04-02 15:44:01] INFO Watching for file changes with StatReloader
+[2025-04-02 15:44:36] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/notifications.py changed, reloading.
+[2025-04-02 15:44:37] INFO Watching for file changes with StatReloader
+[2025-04-02 15:45:14] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/serializers.py changed, reloading.
+[2025-04-02 15:45:15] INFO Watching for file changes with StatReloader
+[2025-04-02 15:53:50] INFO Watching for file changes with StatReloader
+[2025-04-02 19:50:26] INFO Watching for file changes with StatReloader
+[2025-04-02 19:50:27] WARNING Not Found: /
+[2025-04-02 19:50:27] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-02 19:50:30] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-02 19:50:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-04-02 19:50:30] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-04-02 19:50:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-04-02 19:50:30] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-04-02 19:50:30] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-04-02 19:50:30] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-04-02 19:50:30] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-04-02 19:50:30] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 70890
+[2025-04-02 20:10:41] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/cart/views.py changed, reloading.
+[2025-04-02 20:10:42] INFO Watching for file changes with StatReloader
+[2025-04-02 20:19:06] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/cart/views.py changed, reloading.
+[2025-04-02 20:19:06] INFO Watching for file changes with StatReloader
+[2025-04-02 20:36:02] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/finance/views.py changed, reloading.
+[2025-04-02 20:36:03] INFO Watching for file changes with StatReloader
+[2025-04-02 20:36:31] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-04-02 20:36:31] INFO Watching for file changes with StatReloader
+[2025-04-02 20:37:43] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/products/views.py changed, reloading.
+[2025-04-02 20:37:43] INFO Watching for file changes with StatReloader
+[2025-04-02 20:38:53] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/orders/views.py changed, reloading.
+[2025-04-02 20:38:54] INFO Watching for file changes with StatReloader
+[2025-04-02 20:49:27] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/models.py changed, reloading.
+[2025-04-02 20:49:27] INFO Watching for file changes with StatReloader
+[2025-04-02 20:50:13] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/consumers.py changed, reloading.
+[2025-04-02 20:50:13] INFO Watching for file changes with StatReloader
+[2025-04-02 20:50:23] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/serializers.py changed, reloading.
+[2025-04-02 20:50:23] INFO Watching for file changes with StatReloader
+[2025-04-02 20:50:50] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/views.py changed, reloading.
+[2025-04-02 20:50:50] INFO Watching for file changes with StatReloader
+[2025-04-02 20:50:58] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/urls.py changed, reloading.
+[2025-04-02 20:50:58] INFO Watching for file changes with StatReloader
+[2025-04-02 20:51:11] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/routing.py changed, reloading.
+[2025-04-02 20:51:11] INFO Watching for file changes with StatReloader
+[2025-04-02 21:11:01] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/apps/chats/admin.py changed, reloading.
+[2025-04-02 21:11:02] INFO Watching for file changes with StatReloader
+[2025-04-02 23:07:34] WARNING Not Found: /
+[2025-04-02 23:07:34] WARNING Not Found: /favicon.ico
+[2025-04-02 23:49:11] WARNING Not Found: /swagger/
+[2025-04-02 23:49:31] WARNING Not Found: /swagger/
+[2025-04-02 23:49:32] WARNING Not Found: /swagger/
+[2025-04-02 23:49:50] INFO Watching for file changes with StatReloader
+[2025-04-02 23:49:51] WARNING Not Found: /
+[2025-04-02 23:49:51] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-02 23:49:55] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-02 23:49:55] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 73503
+[2025-04-03 00:00:59] INFO Watching for file changes with StatReloader
+[2025-04-03 00:01:00] WARNING Not Found: /
+[2025-04-03 00:01:00] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-03 00:01:02] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-03 00:01:03] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 73503
+[2025-04-03 00:01:29] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 81, in set
+    return self.client.set(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 185, in set
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/views.py", line 324, in post
+    cache.set(f"reset_token_valid:{reset_token}", True, timeout=120)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 175, in set
+    return bool(client.set(nkey, nvalue, nx=nx, px=timeout, xx=xx))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/commands/core.py", line 2335, in set
+    return self.execute_command("SET", *pieces, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+[2025-04-03 00:01:29] ERROR "POST /api/users/password-reset/ HTTP/1.1" 500 23203
+[2025-04-03 00:08:06] INFO Watching for file changes with StatReloader
+[2025-04-03 00:08:07] WARNING Not Found: /
+[2025-04-03 00:08:07] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-03 00:08:10] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-03 00:08:11] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 73503
+[2025-04-03 00:08:37] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 81, in set
+    return self.client.set(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 185, in set
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/views.py", line 324, in post
+    cache.set(f"reset_token_valid:{reset_token}", True, timeout=120)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 175, in set
+    return bool(client.set(nkey, nvalue, nx=nx, px=timeout, xx=xx))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/commands/core.py", line 2335, in set
+    return self.execute_command("SET", *pieces, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+[2025-04-03 00:08:37] ERROR "POST /api/users/password-reset/ HTTP/1.1" 500 23171
+[2025-04-03 00:09:58] INFO Watching for file changes with StatReloader
+[2025-04-03 00:10:55] WARNING Not Found: /
+[2025-04-03 00:10:55] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-03 00:10:57] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-03 00:10:57] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 73503
+[2025-04-03 00:11:23] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 81, in set
+    return self.client.set(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 185, in set
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/views.py", line 324, in post
+    cache.set(f"reset_token_valid:{reset_token}", True, timeout=120)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 175, in set
+    return bool(client.set(nkey, nvalue, nx=nx, px=timeout, xx=xx))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/commands/core.py", line 2335, in set
+    return self.execute_command("SET", *pieces, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+[2025-04-03 00:11:23] ERROR "POST /api/users/password-reset/ HTTP/1.1" 500 23171
+[2025-04-03 00:12:00] INFO Watching for file changes with StatReloader
+[2025-04-03 00:12:01] WARNING Not Found: /
+[2025-04-03 00:12:01] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-03 00:12:11] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-03 00:12:11] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 73503
+[2025-04-03 00:12:31] ERROR Internal Server Error: /api/users/password-reset/
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 81, in set
+    return self.client.set(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 185, in set
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/apps/users/views.py", line 324, in post
+    cache.set(f"reset_token_valid:{reset_token}", True, timeout=120)
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/django_redis/client/default.py", line 175, in set
+    return bool(client.set(nkey, nvalue, nx=nx, px=timeout, xx=xx))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/commands/core.py", line 2335, in set
+    return self.execute_command("SET", *pieces, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+  File "/Users/azatmurzaev/PycharmProjects/EstiMate1/venv/lib/python3.11/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 8 connecting to redis:6379. nodename nor servname provided, or not known.
+[2025-04-03 00:12:31] ERROR "POST /api/users/password-reset/ HTTP/1.1" 500 23171
+[2025-04-03 00:14:32] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-04-03 00:14:32] INFO Watching for file changes with StatReloader
+[2025-04-03 00:17:36] INFO Watching for file changes with StatReloader
+[2025-04-03 00:17:37] WARNING Not Found: /
+[2025-04-03 00:17:37] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-03 00:17:37] WARNING Not Found: /favicon.ico
+[2025-04-03 00:17:37] WARNING "GET /favicon.ico HTTP/1.1" 404 4315
+[2025-04-03 00:17:41] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-03 00:17:41] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 304 0
+[2025-04-03 00:17:41] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 304 0
+[2025-04-03 00:17:41] INFO "GET /static/drf-yasg/style.css HTTP/1.1" 304 0
+[2025-04-03 00:17:41] INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 304 0
+[2025-04-03 00:17:41] INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 304 0
+[2025-04-03 00:17:41] INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 304 0
+[2025-04-03 00:17:41] INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 304 0
+[2025-04-03 00:17:41] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 73503
+[2025-04-03 00:51:31] INFO /Users/azatmurzaev/PycharmProjects/EstiMate1/backend/settings.py changed, reloading.
+[2025-04-03 00:51:31] INFO Watching for file changes with StatReloader

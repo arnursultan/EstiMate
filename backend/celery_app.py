@@ -1,5 +1,8 @@
 import os
 from celery import Celery
+import logging
+
+logger = logging.getLogger(__name__)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 
@@ -11,6 +14,5 @@ app.autodiscover_tasks()
 
 @app.task(bind=True)
 def debug_task(self):
-    print(f"✅ Celery работает: {self.request!r}")
-
-
+    """Задача для проверки работы Celery"""
+    logger.info(f"Celery работает: {self.request!r}")

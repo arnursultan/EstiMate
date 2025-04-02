@@ -28,6 +28,7 @@ urlpatterns = [
     path("api/finance/", include("apps.finance.urls", namespace="finance")),
     path("api/chats/", include("apps.chats.urls")),
     path('api/notifications/', include('apps.notifications.urls')),
+    path('api/cart/', include('apps.cart.urls')),
 
     # re_path(r"ws/", include(websocket_urlpatterns)),
     path("api/docs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
