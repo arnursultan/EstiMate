@@ -49,42 +49,6 @@ class Store(models.Model):
     def __str__(self):
         return f"{self.name} (ИНН: {self.inn})"
 
-
-class StoreDebt(models.Model):
-    store = models.ForeignKey(
-        Store,
-        on_delete=models.CASCADE,
-        related_name='debts',
-        verbose_name="Магазин"
-    )
-    amount = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name="Сумма долга"
-    )
-    description = models.TextField(blank=True, verbose_name="Описание")
-    is_paid = models.BooleanField(default=False, verbose_name="Оплачен")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Дата оплаты")
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='created_debts',
-        verbose_name="Кем создан"
-    )
-
-    class Meta:
-        verbose_name = "Долг магазина"
-        verbose_name_plural = "Долги магазинов"
-        ordering = ['-created_at']
-
-    def __str__(self):
-        status = "Оплачен" if self.is_paid else "Не оплачен"
-        return f"{self.store.name}: {self.amount} сом ({status})"
-
-
-# Добавить новую модель
 class StoreDebt(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='debts')
     amount = models.DecimalField(max_digits=12, decimal_places=2)
@@ -98,3 +62,7 @@ class StoreDebt(models.Model):
         ordering = ['-created_at']
         verbose_name = "Долг магазина"
         verbose_name_plural = "Долги магазинов"
+
+    def __str__(self):
+        status = "Оплачен" if self.is_paid else "Не оплачен"
+        return f"{self.store.name}: {self.amount} сом ({status})"

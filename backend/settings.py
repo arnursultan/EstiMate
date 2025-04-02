@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
 DEBUG = True
 # SERVER_IP = os.getenv("SERVER_IP", "123.456.78.90")
 # ALLOWED_HOSTS = [SERVER_IP, "127.0.0.1", "localhost"]
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "*", "baielapp.kg", "www.baielapp.kg"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -66,6 +66,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
+    "https://baielapp.kg",
+    "http://baielapp.kg",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -211,7 +213,9 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "staticfiles")]  # Другое имя
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
@@ -279,3 +283,5 @@ LOGGING = {
         },
     },
 }
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
