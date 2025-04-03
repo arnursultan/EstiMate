@@ -278,7 +278,7 @@ LOGGING = {
             "propagate": True,
         },
         "store_payments": {
-            "handlers": ["c onsole", "file"],
+            "handlers": ["console", "file"],
             "level": "INFO",
             "propagate": False,
         },

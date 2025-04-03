@@ -9,10 +9,13 @@ from .serializers import (
     AdminProductRequestStatusSerializer,
     PartnerMarkReceivedSerializer,
     ReportDamagedSerializer,
-    ProductRequestCalculationSerializer
+    ProductRequestCalculationSerializer,
+    BulkProductRequestSerializer
 )
 from apps.products.models import Product
 from apps.stores.models import Store
+from drf_yasg.utils import swagger_auto_schema
+
 
 
 class IsAdminUser(permissions.BasePermission):
@@ -194,3 +197,22 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+    @swagger_auto_schema(
+        method='post',
+        request_body=BulkProductRequestSerializer,
+        operation_summary="Групповой запрос на товары",
+        operation_description="Создаёт несколько заявок на товары за один раз. Поддерживает запросы для магазина или себя.",
+        responses={201: ProductRequestSerializer(many=True)}
+    )
+    @action(detail=False, methods=["post"], url_path="bulk_create", permission_classes=[permissions.IsAuthenticated])
+    def bulk_create(self, request):
+        """
+        Групповой запрос: создание сразу нескольких ProductRequest.
+        """
+        serializer = BulkProductRequestSerializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        instances = serializer.save(user=request.user)
+
+        return Response(ProductRequestSerializer(instances, many=True).data, status=status.HTTP_201_CREATED)
