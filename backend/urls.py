@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/notifications/', include('apps.notifications.urls')),
     path('api/cart/', include('apps.cart.urls')),
 
-    # re_path(r"ws/", include(websocket_urlpatterns)),
+    re_path(r"ws/", include(websocket_urlpatterns)),
     path("api/docs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("api/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path('swagger/',schema_view.with_ui('swagger', cache_timeout=0),name='schema-swagger-ui' ),

@@ -1,31 +1,33 @@
 FROM python:3.11-slim
 
-# Устанавливаем рабочую директорию
+# Установка рабочей директории
 WORKDIR /app
 
-# Устанавливаем зависимости
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Установка необходимых зависимостей для системы
+RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
-    postgresql-client \
+    libmagic1 \
+    netcat-traditional \
+    libffi-dev \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем requirements.txt и устанавливаем зависимости Python
-COPY requirements.txt .
+# Установка зависимостей Python
+COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем entrypoint скрипт и делаем его исполняемым
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
+# Копирование проекта
+COPY . /app/
 
-# Копируем проект
-COPY . .
+# Создание директорий, если они не существуют
+RUN mkdir -p /app/static /app/media/products /app/media/users/photos /app/media/chat_files /app/logs
 
-# Создаем директории для статических и медиа файлов
-RUN mkdir -p /app/static /app/media || true
+# Установка прав на entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-# Открываем порт для Django
+# Открытие порта для Django
 EXPOSE 8000
 
-# Запускаем entrypoint скрипт
+# Запуск entrypoint скрипта
 ENTRYPOINT ["/app/entrypoint.sh"]

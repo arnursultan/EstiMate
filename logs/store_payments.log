@@ -7999,3 +7999,8 @@ redis.exceptions.ConnectionError: Error 8 connecting to redis:6379. nodename nor
 [2025-04-03 06:10:56] WARNING "GET / HTTP/1.1" 404 4264
 [2025-04-03 06:10:59] INFO "GET /swagger/ HTTP/1.1" 200 1633
 [2025-04-03 06:10:59] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 74578
+[2025-04-03 10:09:30] INFO Watching for file changes with StatReloader
+[2025-04-03 10:09:31] WARNING Not Found: /
+[2025-04-03 10:09:31] WARNING "GET / HTTP/1.1" 404 4264
+[2025-04-03 10:09:33] INFO "GET /swagger/ HTTP/1.1" 200 1633
+[2025-04-03 10:09:33] INFO "GET /swagger/?format=openapi HTTP/1.1" 200 74578
