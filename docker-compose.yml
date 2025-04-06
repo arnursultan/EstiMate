@@ -2,67 +2,93 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:13
+    image: postgres:14.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
-    restart: always
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
-    image: redis:6-alpine
-    restart: always
+    image: redis:7-alpine
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   web:
     build: .
-    restart: always
-    depends_on:
-      - db
-      - redis
-    env_file:
-      - ./.env
+    command: >
+      sh -c "daphne -b 0.0.0.0 -p 8000 backend.asgi:application"
     volumes:
       - .:/app
-      - ./static:/app/static
-      - ./media:/app/media
-      - ./staticfiles:/app/staticfiles
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - logs_volume:/app/logs
     ports:
       - "8000:8000"
-    command: >
-      sh -c "python manage.py migrate --noinput &&
-             python manage.py collectstatic --noinput &&
-             python manage.py runserver 0.0.0.0:8000"
-
-  celery:
-    build: .
-    command: celery -A backend worker -l info
-    depends_on:
-      - db
-      - redis
-      - web
     env_file:
       - ./.env
+    environment:
+      - POSTGRES_HOST=db
+      - REDIS_HOST=redis
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build: .
+    command: celery -A backend worker --loglevel=info
     volumes:
       - .:/app
-
-  celery-beat:
-    build: .
-    command: celery -A backend beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    depends_on:
-      - db
-      - redis
-      - web
+      - media_volume:/app/media
+      - logs_volume:/app/logs
     env_file:
       - ./.env
+    environment:
+      - POSTGRES_HOST=db
+      - REDIS_HOST=redis
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - web
+
+  celery_beat:
+    build: .
+    command: celery -A backend beat --loglevel=info
     volumes:
       - .:/app
+      - logs_volume:/app/logs
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_HOST=db
+      - REDIS_HOST=redis
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - celery_worker
 
 volumes:
   postgres_data:
   redis_data:
+  static_volume:
+  media_volume:
+  logs_volume:

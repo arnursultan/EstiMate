@@ -5,29 +5,44 @@ from apps.notifications.services import notify
 
 
 @receiver(post_save, sender=ProductRequest)
-def product_request_notify(sender, instance, created, **kwargs):
+def notify_product_request_status_change(sender, instance, created, **kwargs):
     if created:
-        notify(
-            user=instance.user,
-            title="Запрос отправлен",
-            message=f"Ваш запрос на {instance.product.name} отправлен на рассмотрение."
-        )
-    else:
+        # Уведомление администраторам о новом запросе
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        admin_users = User.objects.filter(is_staff=True)
+
+        for admin in admin_users:
+            notify(
+                user=admin,
+                title="Новый запрос на товар",
+                message=f"Пользователь {instance.user} запросил {instance.quantity} шт. {instance.product.name}"
+            )
+        return
+
+    # Предыдущий статус должен быть установлен в __init__
+    if hasattr(instance, 'previous_status') and instance.previous_status != instance.status:
         if instance.status == 'approved':
             notify(
                 user=instance.user,
                 title="Запрос одобрен",
-                message=f"Ваш запрос на {instance.product.name} был одобрен."
+                message=f"Ваш запрос на {instance.product.name} ({instance.quantity} шт.) одобрен."
             )
         elif instance.status == 'rejected':
             notify(
                 user=instance.user,
                 title="Запрос отклонён",
-                message=f"Ваш запрос на {instance.product.name} был отклонён."
+                message=f"Ваш запрос на {instance.product.name} ({instance.quantity} шт.) был отклонён."
             )
         elif instance.status == 'received':
-            notify(
-                user=instance.user,
-                title="Запрос получен",
-                message=f"Вы отметили получение товара: {instance.product.name}"
-            )
+            # Уведомление администраторам о получении товара
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            admin_users = User.objects.filter(is_staff=True)
+
+            for admin in admin_users:
+                notify(
+                    user=admin,
+                    title="Товар получен",
+                    message=f"Пользователь {instance.user} получил {instance.quantity} шт. {instance.product.name}"
+                )

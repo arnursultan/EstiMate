@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import pre_save
+from django.utils import timezone
 from apps.users.models import User
 
 
@@ -52,34 +52,29 @@ class Store(models.Model):
 
 
 class StoreDebt(models.Model):
-    store = models.ForeignKey(
-        Store,
-        on_delete=models.CASCADE,
-        related_name='debts',
-        verbose_name="Магазин"
-    )
-    amount = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name="Сумма долга"
-    )
-    description = models.TextField(blank=True, verbose_name="Описание")
-    is_paid = models.BooleanField(default=False, verbose_name="Оплачен")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Дата оплаты")
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='created_debts',
-        verbose_name="Кем создан"
-    )
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='debts')
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    request = models.ForeignKey('orders.ProductRequest', on_delete=models.SET_NULL,
+                                null=True, blank=True, related_name='debts')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_debts')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_paid = models.BooleanField(default=False)
+    paid_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        ordering = ['-created_at']
         verbose_name = "Долг магазина"
         verbose_name_plural = "Долги магазинов"
-        ordering = ['-created_at']
 
     def __str__(self):
         status = "Оплачен" if self.is_paid else "Не оплачен"
         return f"{self.store.name}: {self.amount} сом ({status})"
+
+    def mark_as_paid(self):
+        """Отметить долг как оплаченный"""
+        if not self.is_paid:
+            self.is_paid = True
+            self.paid_at = timezone.now()
+            self.save()
+            return True
+        return False

@@ -13,11 +13,10 @@ print(f"DEBUG = {os.getenv('DEBUG')}")
 print(f"DB_NAME = {os.getenv('DB_NAME')}")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
-DEBUG = os.getenv("DEBUG", "False") == "True"
-SERVER_IP = ["localhost"]
+DEBUG = True
+# SERVER_IP = os.getenv("SERVER_IP", "123.456.78.90")
 # ALLOWED_HOSTS = [SERVER_IP, "127.0.0.1", "localhost"]
-
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "*"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "*", "baielapp.kg", "www.baielapp.kg"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -32,7 +31,6 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
 
-
     "drf_yasg",
     "django_filters",
     "channels",
@@ -46,13 +44,13 @@ INSTALLED_APPS = [
     "apps.finance",
     "apps.chats",
     "apps.notifications",
+    "apps.cart",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -69,9 +67,10 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
+    "https://baielapp.kg",
+    "http://baielapp.kg",
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
@@ -103,7 +102,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("127.0.0.1", 6379)],
         },
     },
 }
@@ -168,6 +167,10 @@ CELERY_BEAT_SCHEDULE = {
     'generate-daily-finance': {
         'task': 'apps.finance.tasks.run_daily_finance_statistics',
         'schedule': crontab(hour=0, minute=5),
+    },
+    'archive-daily-data': {
+        'task': 'apps.finance.tasks.archive_daily_data',
+        'schedule': crontab(hour=23, minute=55),
     },
 }
 
@@ -235,49 +238,47 @@ SWAGGER_SETTINGS = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB
+
+BASE_URL = 'http://localhost:8000'
+
 LOG_DIR = os.path.join(BASE_DIR, 'logs')
 
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "[{asctime}] {levelname} {message}",
-            "style": "{",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
         },
     },
-    "handlers": {
-        "file": {
-            "level": "INFO",
-            "class": "logging.FileHandler",
-            "filename": "logs/store_payments.log",
-            "formatter": "verbose",
-            "encoding": "utf-8",
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
-        "console": {
-            "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'chat.log'),
+            'formatter': 'verbose',
         },
     },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "file"],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "store_payments": {
-            "handlers": ["console", "file"],
-            "level": "INFO",
-            "propagate": False,
+    'loggers': {
+        'chat': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
         },
     },
 }
+
+
+# USE_X_FORWARDED_HOST = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
