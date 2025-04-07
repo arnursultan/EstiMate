@@ -63,10 +63,19 @@ class StoreViewSet(viewsets.ModelViewSet):
             # Для обычных пользователей только подтвержденные и активные
             return Store.objects.filter(status='approved', is_active=True)
 
+    # Модификации метода create в StoreViewSet
     def create(self, request, *args, **kwargs):
         if request.user.is_staff:
             return Response({"error": "Администраторы не могут создавать магазины"}, status=403)
-        return super().create(request, *args, **kwargs)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
 
     @action(detail=False, methods=['get'], permission_classes=[IsAdminUser])
     def pending_requests(self, request):
@@ -198,6 +207,8 @@ class StoreViewSet(viewsets.ModelViewSet):
         ]
         return Response(data)
 
+    # Модификации метода create в StoreViewSet
+
 
 class StoreDebtViewSet(viewsets.ModelViewSet):
     serializer_class = StoreDebtSerializer
@@ -319,3 +330,103 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
             return Response({"error": "Долг не найден"}, status=404)
         except Exception as e:
             return Response({"error": str(e)}, status=400)
+
+    # Добавляем в apps/stores/views.py
+
+    # Модифицируем метод погашения долга в apps/stores/views.py
+
+    @action(detail=True, methods=['post'])
+    def pay_debt(self, request, pk=None):
+        """Погашение долга магазина"""
+        store = self.get_object()
+        amount = request.data.get('amount', 0)
+
+        try:
+            amount = float(amount)
+            if amount <= 0:
+                return Response(
+                    {"error": "Сумма погашения должна быть положительной"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Проверяем, есть ли долг у магазина
+            total_debt = store.debts.filter(is_paid=False).aggregate(total=Sum('amount'))['total'] or 0
+            if total_debt <= 0:
+                return Response(
+                    {"error": "У магазина нет долгов для погашения"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if amount > total_debt:
+                return Response(
+                    {"error": f"Сумма погашения ({amount}) превышает сумму долга ({total_debt})"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Погашаем долги, начиная с самых старых
+            remaining_amount = amount
+            paid_debts = []
+
+            for debt in store.debts.filter(is_paid=False).order_by('created_at'):
+                if remaining_amount <= 0:
+                    break
+
+                if remaining_amount >= debt.amount:
+                    # Полное погашение долга
+                    debt.is_paid = True
+                    debt.paid_at = timezone.now()
+                    debt.save()
+                    paid_debts.append({
+                        'id': debt.id,
+                        'amount': float(debt.amount),
+                        'created_at': debt.created_at.isoformat()
+                    })
+                    remaining_amount -= debt.amount
+                else:
+                    # Частичное погашение - создаем новый долг с оставшейся суммой
+                    new_debt = StoreDebt.objects.create(
+                        store=store,
+                        amount=debt.amount - remaining_amount,
+                        request=debt.request,
+                        created_by=debt.created_by
+                    )
+
+                    # Отмечаем текущий долг как полностью погашенный
+                    paid_amount = remaining_amount
+                    debt.amount = paid_amount
+                    debt.is_paid = True
+                    debt.paid_at = timezone.now()
+                    debt.save()
+
+                    paid_debts.append({
+                        'id': debt.id,
+                        'amount': float(paid_amount),
+                        'created_at': debt.created_at.isoformat()
+                    })
+                    remaining_amount = 0
+
+            # Обновляем статистику магазина
+            from apps.finance.services import update_store_daily_stats
+            update_store_daily_stats(store, timezone.now().date())
+
+            # Обновляем календарную статистику
+            from apps.finance.services import update_calendar_statistics
+            update_calendar_statistics(
+                timezone.now().date(),
+                store=store,
+                has_debt_payment=True
+            )
+
+            return Response({
+                "message": f"Долг магазина '{store.name}' погашен на сумму {amount}",
+                "paid_debts": paid_debts,
+                "remaining_debt": total_debt - amount
+            })
+        except Exception as e:
+            return Response(
+                {"error": f"Ошибка при погашении долга: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+# Модификации метода create в StoreViewSet

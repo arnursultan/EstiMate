@@ -42,6 +42,16 @@ class Store(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
+    # Добавляем поле "создатель" для хранения информации о партнере, создавшем заявку на магазин
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_stores',
+        verbose_name="Создатель"
+    )
+
     class Meta:
         verbose_name = "Магазин"
         verbose_name_plural = "Магазины"

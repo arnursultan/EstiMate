@@ -1,36 +1,44 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
-# Ожидание доступности PostgreSQL
-echo "Waiting for PostgreSQL..."
-while ! nc -z ${POSTGRES_HOST:-db} ${POSTGRES_PORT:-5432}; do
-  sleep 0.1
-done
-echo "PostgreSQL is up!"
+# Встроенная проверка соединения с PostgreSQL
+echo "Testing database connection..."
+python -c "
+import sys
+import psycopg2
+import os
+import time
 
-# Ожидание доступности Redis
-echo "Waiting for Redis..."
-while ! nc -z ${REDIS_HOST:-redis} ${REDIS_PORT:-6379}; do
-  sleep 0.1
-done
-echo "Redis is up!"
+# Пытаемся подключиться к базе данных
+for i in range(30):
+    try:
+        conn = psycopg2.connect(
+            dbname=os.environ.get('DB_NAME', 'baza1_db'),
+            user=os.environ.get('DB_USER', 'baza1'),
+            password=os.environ.get('DB_PASSWORD', '12345678'),
+            host=os.environ.get('DB_HOST', 'db'),
+            port=os.environ.get('DB_PORT', '5432')
+        )
+        conn.close()
+        print('Database connection successful!')
+        break
+    except psycopg2.OperationalError as e:
+        print(f'Waiting for database... ({i+1}/30) Error: {e}')
+        time.sleep(1)
+else:
+    print('Could not connect to the database after 30 seconds.')
+    sys.exit(1)
+"
 
-# Создание директорий для логов, если они не существуют
-mkdir -p /app/logs
-
-# Устанавливаем правильные разрешения для логов
-touch /app/logs/chat.log /app/logs/errors.log /app/logs/store_payments.log
-chmod 666 /app/logs/chat.log /app/logs/errors.log /app/logs/store_payments.log
-
-# Применяем миграции базы данных
+# Применение миграций
 echo "Applying database migrations..."
 python manage.py migrate
 
-# Собираем статические файлы
+# Сборка статических файлов
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Запускаем команду из docker-compose
+# Запуск команды
 echo "Starting the application..."
 exec "$@"

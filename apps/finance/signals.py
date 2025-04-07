@@ -23,7 +23,7 @@ def update_calendar_on_request(sender, instance, created, **kwargs):
             )
 
         # Обновляем для магазина, если запрос для магазина
-        if instance.store:
+        if instance.request_type == 'STORE' and instance.store:
             update_calendar_statistics(
                 date_obj,
                 store=instance.store,
@@ -47,7 +47,7 @@ def update_calendar_on_request(sender, instance, created, **kwargs):
                     has_sales=True
                 )
 
-            if instance.store:
+            if instance.request_type == 'STORE' and instance.store:
                 update_calendar_statistics(
                     date_obj,
                     store=instance.store,
@@ -68,17 +68,29 @@ def update_calendar_on_request(sender, instance, created, **kwargs):
 def update_calendar_on_finance(sender, instance, created, **kwargs):
     """Обновляет календарную статистику при финансовой операции"""
     try:
+        # Обновляем метки в зависимости от типа записи
+        has_expenses = instance.entry_type == 'expense'
+        has_sales = instance.entry_type == 'sale'
+        has_damages = instance.entry_type == 'damage'
+        has_returns = instance.entry_type == 'return'
+
         update_calendar_statistics(
             instance.date,
             user=instance.user,
-            has_expenses=True
+            has_expenses=has_expenses,
+            has_sales=has_sales,
+            has_damages=has_damages,
+            has_returns=has_returns
         )
 
         if instance.city:
             update_calendar_statistics(
                 instance.date,
                 city=instance.city,
-                has_expenses=True
+                has_expenses=has_expenses,
+                has_sales=has_sales,
+                has_damages=has_damages,
+                has_returns=has_returns
             )
     except Exception as e:
         logger.error(f"Ошибка при обновлении календарной статистики для финансовой записи: {str(e)}")

@@ -1,6 +1,10 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from .models import ProductRequest
+from apps.products.models import PartnerProduct
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @receiver(pre_save, sender=ProductRequest)
@@ -13,51 +17,106 @@ def product_request_pre_save(sender, instance, **kwargs):
             instance.previous_status = None
 
 
+# Модифицируем обработчик изменения статуса запроса в apps/orders/signals.py
+
 @receiver(post_save, sender=ProductRequest)
-def handle_status_change(sender, instance, created, **kwargs):
+def handle_status_change(sender, instance, created, update_fields, **kwargs):
+    """
+    Обрабатывает изменения в запросах:
+    - Создание запроса STORE -> добавление в корзину
+    - Подтверждение запроса STORE -> удаление из корзины, создание долга
+    - Подтверждение/получение запроса -> обновление статистики
+    """
     if created:
-        return
-
-    if instance.for_store:
-        return  # Складской запас не меняется, если запрос для магазина
-
-    product = instance.product
-    old_status = instance.previous_status
-    new_status = instance.status
-
-    if old_status != new_status:
-        if old_status != 'approved' and new_status == 'approved':
-            # Уменьшаем количество товара на складе при одобрении запроса
+        # Новый запрос создан
+        if instance.request_type == 'STORE':
+            # Добавляем запрос в корзину
+            from apps.cart.models import CartItem
             try:
-                product.reduce_quantity(instance.quantity)
+                CartItem.objects.create(
+                    user=instance.user,
+                    cart_type='STORE',
+                    partner_product=instance.partner_product,
+                    store=instance.store,
+                    quantity=instance.quantity,
+                    product_request=instance
+                )
+                logger.info(f"Добавлен элемент корзины для запроса #{instance.id}")
             except Exception as e:
-                # Логирование ошибки
-                import logging
-                logger = logging.getLogger(__name__)
-                logger.error(f"Ошибка при уменьшении количества товара: {str(e)}")
+                logger.error(f"Ошибка при добавлении запроса в корзину: {str(e)}")
 
-        elif old_status == 'approved' and new_status != 'approved':
-            # Возвращаем товар на склад, если запрос был одобрен, а потом отклонен
+        # Обновляем статистику для запросов SELF
+        if instance.request_type == 'SELF':
             try:
-                product.add_quantity(instance.quantity)
+                from apps.finance.services import update_partner_daily_stats
+                update_partner_daily_stats(instance.user, instance.created_at.date())
             except Exception as e:
-                # Логирование ошибки
-                import logging
-                logger = logging.getLogger(__name__)
-                logger.error(f"Ошибка при возврате товара на склад: {str(e)}")
+                logger.error(f"Ошибка при обновлении статистики партнера: {str(e)}")
+    else:
+        # Изменение существующего запроса
+        if hasattr(instance, 'previous_status') and instance.previous_status != instance.status:
+            # Статус изменился
 
+            # Запрос STORE подтвержден партнером
+            if instance.request_type == 'STORE' and instance.previous_status == 'pending' and instance.status == 'approved':
+                try:
+                    # Удаляем из корзины
+                    from apps.cart.models import CartItem
+                    CartItem.objects.filter(product_request=instance).delete()
+                    logger.info(f"Удален элемент корзины для запроса #{instance.id}")
 
-@receiver(post_save, sender=ProductRequest)
-def create_debt_for_store(sender, instance, created, **kwargs):
-    if (created or instance.previous_status != 'approved') and \
-            instance.status == 'approved' and \
-            instance.for_store and \
-            instance.store and \
-            instance.payment_method == 'debt':
-        from apps.stores.models import StoreDebt
-        StoreDebt.objects.create(
-            store=instance.store,
-            amount=instance.total_price,
-            request=instance,
-            created_by=instance.user
-        )
+                    # Создаем долг магазина
+                    from apps.stores.models import StoreDebt
+                    StoreDebt.objects.create(
+                        store=instance.store,
+                        amount=instance.total_price,
+                        request=instance,
+                        created_by=instance.user
+                    )
+                    logger.info(f"Создан долг магазина {instance.store.name} на сумму {instance.total_price}")
+
+                    # Уменьшаем количество товара в каталоге партнера
+                    if instance.partner_product:
+                        instance.partner_product.update_quantity(instance.quantity, operation='subtract')
+
+                    # Обновляем статистику партнера и магазина
+                    from apps.finance.services import update_partner_daily_stats, update_store_daily_stats
+                    update_partner_daily_stats(instance.user, instance.created_at.date())
+                    update_store_daily_stats(instance.store, instance.created_at.date())
+                except Exception as e:
+                    logger.error(f"Ошибка при обработке подтверждения запроса #{instance.id}: {str(e)}")
+
+            # Запрос SELF подтвержден админом
+            elif instance.request_type == 'SELF' and instance.previous_status == 'pending' and instance.status == 'approved':
+                try:
+                    # Обновляем статистику партнера (долг админу)
+                    from apps.finance.services import update_partner_daily_stats
+                    update_partner_daily_stats(instance.user, instance.created_at.date())
+                except Exception as e:
+                    logger.error(f"Ошибка при обновлении статистики после подтверждения SELF-запроса: {str(e)}")
+
+            # Запрос SELF получен партнером
+            elif instance.request_type == 'SELF' and instance.previous_status == 'approved' and instance.status == 'received':
+                try:
+                    # Создаем или обновляем товар в каталоге партнера
+                    from apps.products.models import PartnerProduct
+                    partner_product, created = PartnerProduct.objects.get_or_create(
+                        partner=instance.user,
+                        product=instance.product,
+                        defaults={
+                            'price': instance.product.price,
+                            'quantity': 0
+                        }
+                    )
+
+                    # Увеличиваем количество товара
+                    partner_product.quantity += instance.quantity
+                    if instance.bonus_quantity > 0:
+                        partner_product.bonus_quantity += instance.bonus_quantity
+                    partner_product.save()
+
+                    # Обновляем статистику партнера
+                    from apps.finance.services import update_partner_daily_stats
+                    update_partner_daily_stats(instance.user, instance.created_at.date())
+                except Exception as e:
+                    logger.error(f"Ошибка при добавлении товара в каталог партнера: {str(e)}")

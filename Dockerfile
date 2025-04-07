@@ -3,13 +3,11 @@ FROM python:3.11-slim
 # Установка рабочей директории
 WORKDIR /app
 
-# Установка необходимых зависимостей для системы
+# Установка необходимых зависимостей
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
-    libmagic1 \
-    netcat-traditional \
-    libffi-dev \
+    netcat-openbsd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -20,13 +18,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копирование проекта
 COPY . /app/
 
-# Создание директорий, если они не существуют
-RUN mkdir -p /app/static /app/media/products /app/media/users/photos /app/media/chat_files /app/logs
+# Создание директорий для логов
+RUN mkdir -p /app/logs /app/media /app/static
 
 # Установка прав на entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# Открытие порта для Django
+# Открытие порта
 EXPOSE 8000
 
 # Запуск entrypoint скрипта

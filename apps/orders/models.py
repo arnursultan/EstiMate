@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from apps.users.models import User
 from apps.products.models import Product
 from apps.stores.models import Store
+from apps.products.models import PartnerProduct
 
 
 class ProductRequest(models.Model):
@@ -13,9 +14,13 @@ class ProductRequest(models.Model):
         ('received', 'Получен'),
     )
 
+    REQUEST_TYPE_CHOICES = (
+        ('SELF', 'Для себя'),
+        ('STORE', 'Для магазина'),
+    )
+
     PAYMENT_METHOD_CHOICES = (
-        ('cash', 'Наличными'),
-        ('debt', 'В долг'),
+        ('debt', 'В долг'),  # Только долг в новом ТЗ, наличные удалены
     )
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='requests')
@@ -24,10 +29,18 @@ class ProductRequest(models.Model):
     bonus_quantity = models.PositiveIntegerField(default=0)
     damaged_quantity = models.PositiveIntegerField(default=0)
     is_bonus_marked = models.BooleanField(default=False)
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES, default='cash')
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES, default='debt')
+    request_type = models.CharField(max_length=5, choices=REQUEST_TYPE_CHOICES, default='SELF')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    for_store = models.BooleanField(default=False)
     store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True, related_name='product_requests')
+    # Добавляем связь с товаром партнера для STORE-запросов
+    partner_product = models.ForeignKey(
+        PartnerProduct,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='store_requests'
+    )
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -44,41 +57,46 @@ class ProductRequest(models.Model):
 
     def clean(self):
         """Валидация модели"""
-        if self.for_store and not self.store:
-            raise ValidationError("Для запроса на магазин необходимо указать магазин")
+        # Для SELF-запросов не нужен магазин и partner_product
+        if self.request_type == 'SELF':
+            if self.store:
+                raise ValidationError("Для запроса 'для себя' не нужно указывать магазин")
+            if self.partner_product:
+                raise ValidationError("Для запроса 'для себя' не нужно указывать товар из личного каталога")
 
-        if self.store and self.store.status != 'approved':
-            raise ValidationError("Можно выбрать только подтвержденные магазины")
+        # Для STORE-запросов нужен магазин и partner_product
+        if self.request_type == 'STORE':
+            if not self.store:
+                raise ValidationError("Для запроса в магазин необходимо указать магазин")
+            if not self.partner_product:
+                raise ValidationError("Для запроса в магазин необходимо указать товар из личного каталога")
 
-        if self.store and not self.store.is_active:
-            raise ValidationError("Можно выбрать только активные магазины")
-
-        if self.for_store and self.payment_method == 'debt' and not self.store:
-            raise ValidationError("Для оплаты в долг необходимо выбрать магазин")
-
-        if not self.for_store and self.payment_method == 'debt':
-            raise ValidationError("Оплата в долг доступна только для магазинов")
+            # Проверяем, что магазин подтвержден и активен
+            if self.store and self.store.status != 'approved':
+                raise ValidationError("Можно выбрать только подтвержденные магазины")
+            if self.store and not self.store.is_active:
+                raise ValidationError("Можно выбрать только активные магазины")
 
     def save(self, *args, **kwargs):
-        # Расчет бонусов
-        if self.product.is_bonus_eligible:
-            self.bonus_quantity = self.quantity // 21
+        # Расчет бонусов для запросов SELF
+        if self.request_type == 'SELF' and self.product and self.product.is_bonus_eligible:
+            self.bonus_quantity = self.product.calculate_bonus(self.quantity)
+        elif self.request_type == 'STORE' and self.partner_product and self.partner_product.product.is_bonus_eligible:
+            # Для STORE также можно рассчитать бонусы на основе глобального товара
+            self.bonus_quantity = self.partner_product.product.calculate_bonus(self.quantity)
         else:
             self.bonus_quantity = 0
 
         self.is_bonus_marked = self.bonus_quantity > 0
 
-        # Расчет общей стоимости
+        # Расчет общей стоимости (без учета бонусов и брака)
         actual_qty = max(self.quantity - self.bonus_quantity - self.damaged_quantity, 0)
-        self.total_price = actual_qty * self.product.price
 
-        # Если запрос не для магазина и статус меняется на approved,
-        # проверяем достаточно ли товара на складе
-        if (not self.for_store and
-                self.previous_status != 'approved' and
-                self.status == 'approved' and
-                self.product.quantity < self.quantity):
-            raise ValidationError("Недостаточно товара на складе")
+        if self.request_type == 'SELF' and self.product:
+            self.total_price = actual_qty * self.product.price
+        elif self.request_type == 'STORE' and self.partner_product:
+            # Для STORE используем цену из каталога партнера
+            self.total_price = actual_qty * self.partner_product.price
 
         super().save(*args, **kwargs)
 
@@ -86,8 +104,8 @@ class ProductRequest(models.Model):
         self.previous_status = self.status
 
     def __str__(self):
-        store_info = f" для {self.store}" if self.store else ""
-        return f"{self.product.name} — {self.quantity} шт.{store_info} от {self.user}"
+        type_info = "для себя" if self.request_type == 'SELF' else f"для магазина {self.store}"
+        return f"{self.product.name} — {self.quantity} шт. ({type_info}) от {self.user}"
 
     def mark_as_received(self):
         """Отметить запрос как полученный"""

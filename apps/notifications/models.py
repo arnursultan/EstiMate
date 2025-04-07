@@ -4,7 +4,7 @@ from django.conf import settings
 
 class Notification(models.Model):
     recipient = models.ForeignKey(
-        settings.AUTH_USER_MODEL,  # Используем AUTH_USER_MODEL вместо 'auth.User'
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='notifications'
     )
@@ -12,6 +12,21 @@ class Notification(models.Model):
     message = models.TextField(verbose_name='Сообщение')
     is_read = models.BooleanField(default=False, verbose_name='Прочитано')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
+
+    # Добавим поле для хранения типа уведомления
+    notification_type = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name='Тип уведомления'
+    )
+
+    # Добавим поле для хранения контекстных данных
+    context_data = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name='Контекстные данные'
+    )
 
     class Meta:
         verbose_name = 'Уведомление'

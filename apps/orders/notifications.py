@@ -12,28 +12,42 @@ def notify_product_request_status_change(sender, instance, created, **kwargs):
         User = get_user_model()
         admin_users = User.objects.filter(is_staff=True)
 
+        request_type = "для себя" if instance.request_type == 'SELF' else f"для магазина {instance.store.name}"
+
         for admin in admin_users:
             notify(
                 user=admin,
                 title="Новый запрос на товар",
-                message=f"Пользователь {instance.user} запросил {instance.quantity} шт. {instance.product.name}"
+                message=f"Пользователь {instance.user} запросил {instance.quantity} шт. {instance.product.name} ({request_type})"
             )
         return
 
     # Предыдущий статус должен быть установлен в __init__
     if hasattr(instance, 'previous_status') and instance.previous_status != instance.status:
+        request_type = "для себя" if instance.request_type == 'SELF' else f"для магазина {instance.store.name if instance.store else 'не указан'}"
+
         if instance.status == 'approved':
             notify(
                 user=instance.user,
                 title="Запрос одобрен",
-                message=f"Ваш запрос на {instance.product.name} ({instance.quantity} шт.) одобрен."
+                message=f"Ваш запрос на {instance.product.name} ({instance.quantity} шт.) {request_type} одобрен."
             )
+
+            # Если это запрос SELF, сообщаем, что товар добавлен в каталог
+            if instance.request_type == 'SELF':
+                notify(
+                    user=instance.user,
+                    title="Товар добавлен в ваш каталог",
+                    message=f"Товар {instance.product.name} ({instance.quantity} шт.) добавлен в ваш личный каталог."
+                )
+
         elif instance.status == 'rejected':
             notify(
                 user=instance.user,
                 title="Запрос отклонён",
-                message=f"Ваш запрос на {instance.product.name} ({instance.quantity} шт.) был отклонён."
+                message=f"Ваш запрос на {instance.product.name} ({instance.quantity} шт.) {request_type} был отклонён."
             )
+
         elif instance.status == 'received':
             # Уведомление администраторам о получении товара
             from django.contrib.auth import get_user_model
@@ -44,5 +58,5 @@ def notify_product_request_status_change(sender, instance, created, **kwargs):
                 notify(
                     user=admin,
                     title="Товар получен",
-                    message=f"Пользователь {instance.user} получил {instance.quantity} шт. {instance.product.name}"
+                    message=f"Пользователь {instance.user} получил {instance.quantity} шт. {instance.product.name} {request_type}"
                 )

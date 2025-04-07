@@ -1,5 +1,5 @@
 import django_filters
-from .models import PartnerFinanceStat, StoreFinanceStat, FinanceEntry, CalendarStatistics
+from .models import PartnerFinanceStat, StoreFinanceStat, FinanceEntry, CalendarStatistics, InventorySummary
 
 
 class DateRangeFilter(django_filters.FilterSet):
@@ -22,10 +22,20 @@ class StoreFinanceStatFilter(DateRangeFilter):
 class FinanceEntryFilter(DateRangeFilter):
     class Meta:
         model = FinanceEntry
-        fields = ['user', 'date', 'city']
+        fields = ['user', 'date', 'city', 'entry_type', 'partner_product']
 
 
 class CalendarStatisticsFilter(DateRangeFilter):
     class Meta:
         model = CalendarStatistics
-        fields = ['store', 'user', 'city', 'date', 'has_sales', 'has_requests', 'has_expenses', 'has_debt_payment']
+        fields = [
+            'store', 'user', 'city', 'date',
+            'has_sales', 'has_requests', 'has_expenses',
+            'has_debt_payment', 'has_damages', 'has_returns'
+        ]
+
+
+class InventorySummaryFilter(DateRangeFilter):
+    class Meta:
+        model = InventorySummary
+        fields = ['user', 'date']

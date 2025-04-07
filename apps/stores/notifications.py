@@ -24,6 +24,15 @@ def store_status_notify(sender, instance, **kwargs):
                         title="Магазин одобрен",
                         message=f"Магазин '{instance.name}' был одобрен и активирован."
                     )
+
+                # Отправляем уведомление создателю магазина
+                if instance.creator:
+                    notify(
+                        user=instance.creator,
+                        title="Ваш магазин одобрен",
+                        message=f"Ваша заявка на магазин '{instance.name}' была одобрена администратором."
+                    )
+
             elif instance.status == 'rejected':
                 # Отправляем уведомление администраторам
                 from django.contrib.auth import get_user_model
@@ -36,5 +45,14 @@ def store_status_notify(sender, instance, **kwargs):
                         title="Магазин отклонён",
                         message=f"Магазин '{instance.name}' был отклонён администратором."
                     )
+
+                # Отправляем уведомление создателю магазина
+                if instance.creator:
+                    notify(
+                        user=instance.creator,
+                        title="Ваш магазин отклонен",
+                        message=f"Ваша заявка на магазин '{instance.name}' была отклонена администратором."
+                    )
+
     except Store.DoesNotExist:
         pass  # Магазин новый, уведомления не нужны

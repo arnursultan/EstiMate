@@ -8,12 +8,30 @@ from apps.notifications.services import notify
 def notify_manual_entry(sender, instance, created, **kwargs):
     """Отправка уведомлений при добавлении финансовой записи"""
     if created:
+        entry_type_labels = {
+            'expense': 'расход',
+            'income': 'доход',
+            'sale': 'продажа',
+            'damage': 'брак',
+            'return': 'возврат'
+        }
+
+        entry_type = entry_type_labels.get(instance.entry_type, instance.entry_type)
+
         # Уведомление пользователю
-        notify(
-            user=instance.user,
-            title="Добавлена финансовая запись",
-            message=f"Вы добавили запись: Доход {instance.income}, Расход {instance.expense}."
-        )
+        if instance.entry_type in ['sale', 'damage', 'return'] and instance.partner_product:
+            product_name = instance.partner_product.product.name
+            notify(
+                user=instance.user,
+                title=f"Добавлена запись: {entry_type}",
+                message=f"Вы добавили запись '{entry_type}' для товара '{product_name}' - {instance.quantity} шт. на сумму {instance.amount}."
+            )
+        else:
+            notify(
+                user=instance.user,
+                title=f"Добавлена запись: {entry_type}",
+                message=f"Вы добавили запись '{entry_type}' на сумму {instance.amount}."
+            )
 
         # Уведомление администраторам
         from django.contrib.auth import get_user_model
@@ -21,8 +39,16 @@ def notify_manual_entry(sender, instance, created, **kwargs):
         admin_users = User.objects.filter(is_staff=True)
 
         for admin in admin_users:
-            notify(
-                user=admin,
-                title="Новая финансовая запись",
-                message=f"Пользователь {instance.user} добавил запись: Доход {instance.income}, Расход {instance.expense}."
-            )
+            if instance.entry_type in ['sale', 'damage', 'return'] and instance.partner_product:
+                product_name = instance.partner_product.product.name
+                notify(
+                    user=admin,
+                    title=f"Новая запись от партнера: {entry_type}",
+                    message=f"Партнер {instance.user.email} добавил запись '{entry_type}' для товара '{product_name}' - {instance.quantity} шт. на сумму {instance.amount}."
+                )
+            else:
+                notify(
+                    user=admin,
+                    title=f"Новая запись от партнера: {entry_type}",
+                    message=f"Партнер {instance.user.email} добавил запись '{entry_type}' на сумму {instance.amount}."
+                )

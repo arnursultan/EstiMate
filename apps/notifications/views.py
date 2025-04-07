@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,7 +15,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['is_read']
+    filterset_fields = ['is_read', 'notification_type']
     ordering_fields = ['created_at']
     ordering = ['-created_at']
 
@@ -59,3 +59,28 @@ class NotificationViewSet(viewsets.ModelViewSet):
         except Exception as e:
             logger.error(f"Ошибка при отметке всех уведомлений как прочитанных: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'])
+    def unread_count(self, request):
+        """Получить количество непрочитанных уведомлений"""
+        count = self.get_queryset().filter(is_read=False).count()
+        return Response({"unread_count": count})
+
+    @action(detail=False, methods=['get'])
+    def by_type(self, request):
+        """Получить уведомления по типу"""
+        notification_type = request.query_params.get('type')
+        if not notification_type:
+            return Response(
+                {"error": "Необходимо указать параметр 'type'"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        notifications = self.get_queryset().filter(notification_type=notification_type)
+        page = self.paginate_queryset(notifications)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(notifications, many=True)
+        return Response(serializer.data)

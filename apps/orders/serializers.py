@@ -1,63 +1,164 @@
 from rest_framework import serializers
 from .models import ProductRequest
-from apps.products.models import Product
+from apps.products.models import Product, PartnerProduct
 from apps.stores.models import Store
 
 
 class ProductRequestSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
-    price_per_unit = serializers.DecimalField(source='product.price', max_digits=10, decimal_places=2, read_only=True)
+    price_per_unit = serializers.SerializerMethodField(read_only=True)
     total_price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     bonus_quantity = serializers.IntegerField(read_only=True)
     user_email = serializers.EmailField(source='user.email', read_only=True)
     store_name = serializers.CharField(source='store.name', read_only=True, allow_null=True)
+    request_type_display = serializers.CharField(source='get_request_type_display', read_only=True)
+    partner_product_info = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ProductRequest
         fields = [
-            'id', 'product', 'product_name', 'user', 'user_email', 'store', 'store_name', 'for_store',
+            'id', 'product', 'product_name', 'user', 'user_email', 'store', 'store_name',
+            'request_type', 'request_type_display', 'partner_product', 'partner_product_info',
             'quantity', 'bonus_quantity', 'damaged_quantity', 'is_bonus_marked',
             'payment_method', 'status', 'total_price', 'price_per_unit', 'created_at'
         ]
         read_only_fields = ['status', 'total_price', 'bonus_quantity', 'created_at', 'is_bonus_marked', 'user']
 
+    def get_price_per_unit(self, obj):
+        if obj.request_type == 'SELF' and obj.product:
+            return float(obj.product.price)
+        elif obj.request_type == 'STORE' and obj.partner_product:
+            return float(obj.partner_product.price)
+        return 0
+
+    def get_partner_product_info(self, obj):
+        if obj.partner_product:
+            return {
+                'id': obj.partner_product.id,
+                'product_name': obj.partner_product.product.name,
+                'remaining_quantity': obj.partner_product.remaining_quantity
+            }
+        return None
+
     def validate(self, data):
         """Валидация данных запроса"""
         product = data.get('product')
         quantity = data.get('quantity')
-        for_store = data.get('for_store', False)
+        request_type = data.get('request_type', 'SELF')
         store = data.get('store')
-        payment_method = data.get('payment_method', 'cash')
+        partner_product = data.get('partner_product')
+        payment_method = data.get('payment_method', 'debt')
 
-        # Проверка на магазин при for_store=True
-        if for_store and not store:
-            raise serializers.ValidationError({"store": "Для запроса на магазин необходимо указать магазин"})
+        # Проверки для разных типов запросов
+        if request_type == 'SELF':
+            # Для SELF не нужны store и partner_product
+            if store or partner_product:
+                raise serializers.ValidationError(
+                    {"request_type": "Для запроса 'для себя' не нужно указывать магазин и товар из личного каталога"}
+                )
 
-        # Проверка статуса и активности магазина
-        if store:
-            if store.status != 'approved':
-                raise serializers.ValidationError({"store": "Можно выбрать только подтвержденные магазины"})
+            # Проверка наличия продукта
+            if not product:
+                raise serializers.ValidationError({"product": "Необходимо указать товар"})
 
-            if not store.is_active:
-                raise serializers.ValidationError({"store": "Можно выбрать только активные магазины"})
-
-        # Проверка на долг только для магазинов
-        if payment_method == 'debt':
-            if not for_store:
-                raise serializers.ValidationError({"payment_method": "Оплата в долг доступна только для магазинов"})
-
+        elif request_type == 'STORE':
+            # Для STORE нужны store и partner_product
             if not store:
-                raise serializers.ValidationError({"store": "Для оплаты в долг необходимо выбрать магазин"})
+                raise serializers.ValidationError({"store": "Для запроса в магазин необходимо указать магазин"})
 
-        # Проверка наличия товара на складе, если запрос не для магазина
-        if not for_store and product.quantity < quantity:
-            raise serializers.ValidationError({"quantity": "Недостаточно товара на складе для выполнения запроса"})
+            if not partner_product:
+                raise serializers.ValidationError(
+                    {"partner_product": "Для запроса в магазин необходимо указать товар из личного каталога"}
+                )
+
+            # Проверка статуса и активности магазина
+            if store:
+                if store.status != 'approved':
+                    raise serializers.ValidationError({"store": "Можно выбрать только подтвержденные магазины"})
+
+                if not store.is_active:
+                    raise serializers.ValidationError({"store": "Можно выбрать только активные магазины"})
+
+            # Проверка, что партнер имеет доступ к выбранному partner_product
+            user = self.context.get('request').user
+            if partner_product and partner_product.partner.id != user.id:
+                raise serializers.ValidationError(
+                    {"partner_product": "Вы можете выбрать только товары из вашего личного каталога"}
+                )
+
+            # Проверка достаточного количества товара у партнера
+            if partner_product and quantity > partner_product.remaining_quantity:
+                raise serializers.ValidationError(
+                    {
+                        "quantity": f"Недостаточно товара в вашем каталоге. Доступно: {partner_product.remaining_quantity}"}
+                )
 
         return data
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
+
+
+class SelfRequestSerializer(serializers.Serializer):
+    """Сериализатор для создания запроса 'для себя' (SELF)"""
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+
+    def validate_product_id(self, value):
+        try:
+            product = Product.objects.get(id=value, is_active=True)
+            return value
+        except Product.DoesNotExist:
+            raise serializers.ValidationError("Указанный товар не найден или неактивен")
+
+    def validate_quantity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Количество должно быть положительным числом")
+        return value
+
+
+class StoreRequestSerializer(serializers.Serializer):
+    """Сериализатор для создания запроса 'для магазина' (STORE)"""
+    partner_product_id = serializers.IntegerField()
+    store_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+
+    def validate_partner_product_id(self, value):
+        try:
+            user = self.context['request'].user
+            partner_product = PartnerProduct.objects.get(id=value, partner=user)
+            return value
+        except PartnerProduct.DoesNotExist:
+            raise serializers.ValidationError("Указанный товар не найден в вашем каталоге")
+
+    def validate_store_id(self, value):
+        try:
+            store = Store.objects.get(id=value, status='approved', is_active=True)
+            return value
+        except Store.DoesNotExist:
+            raise serializers.ValidationError("Указанный магазин не найден или не активен")
+
+    def validate_quantity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Количество должно быть положительным числом")
+        return value
+
+    def validate(self, data):
+        # Проверяем, достаточно ли товара в каталоге партнера
+        try:
+            user = self.context['request'].user
+            partner_product = PartnerProduct.objects.get(id=data['partner_product_id'], partner=user)
+
+            if data['quantity'] > partner_product.remaining_quantity:
+                raise serializers.ValidationError(
+                    {
+                        "quantity": f"Недостаточно товара в вашем каталоге. Доступно: {partner_product.remaining_quantity}"}
+                )
+        except PartnerProduct.DoesNotExist:
+            pass  # Эта ошибка уже обрабатывается в validate_partner_product_id
+
+        return data
 
 
 class AdminProductRequestStatusSerializer(serializers.ModelSerializer):
@@ -106,131 +207,3 @@ class ReportDamagedSerializer(serializers.ModelSerializer):
                 f"Количество бракованных товаров ({value}) не может превышать общее количество ({self.instance.quantity})")
 
         return value
-
-
-class ProductRequestCalculationSerializer(serializers.Serializer):
-    product_id = serializers.IntegerField()
-    quantity = serializers.IntegerField(min_value=1)
-    for_store = serializers.BooleanField(default=False)
-    store_id = serializers.IntegerField(required=False, allow_null=True)
-
-    def validate(self, data):
-        try:
-            product = Product.objects.get(id=data['product_id'])
-        except Product.DoesNotExist:
-            raise serializers.ValidationError({"product_id": "Товар не найден"})
-
-        if data['quantity'] <= 0:
-            raise serializers.ValidationError({"quantity": "Количество должно быть положительным"})
-
-        # Проверка для магазина
-        if data.get('for_store') and data.get('store_id'):
-            try:
-                store = Store.objects.get(id=data['store_id'])
-                if store.status != 'approved':
-                    raise serializers.ValidationError({"store_id": "Можно выбрать только подтвержденные магазины"})
-
-                if not store.is_active:
-                    raise serializers.ValidationError({"store_id": "Можно выбрать только активные магазины"})
-
-                data['store'] = store
-            except Store.DoesNotExist:
-                raise serializers.ValidationError({"store_id": "Магазин не найден"})
-
-        # Проверка наличия товара на складе, если запрос не для магазина
-        if not data.get('for_store') and product.quantity < data['quantity']:
-            raise serializers.ValidationError({"quantity": "Недостаточно товара на складе для выполнения запроса"})
-
-        data['product'] = product
-        return data
-
-
-class BulkProductRequestSerializer(serializers.Serializer):
-    items = serializers.ListField(
-        child=serializers.DictField(
-            child=serializers.IntegerField(),
-            allow_empty=False
-        )
-    )
-    for_store = serializers.BooleanField(default=False)
-    store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all(), required=False, allow_null=True)
-    payment_method = serializers.ChoiceField(choices=ProductRequest.PAYMENT_METHOD_CHOICES, default='cash')
-
-    def validate(self, data):
-        # Проверка наличия items
-        if not data.get('items'):
-            raise serializers.ValidationError({"items": "Должен быть предоставлен хотя бы один товар"})
-
-        # Проверки для запроса на магазин
-        for_store = data.get('for_store', False)
-        store = data.get('store')
-        payment_method = data.get('payment_method', 'cash')
-
-        if for_store and not store:
-            raise serializers.ValidationError({"store": "Для запроса на магазин необходимо указать магазин"})
-
-        if store:
-            if store.status != 'approved':
-                raise serializers.ValidationError({"store": "Можно выбрать только подтвержденные магазины"})
-            if not store.is_active:
-                raise serializers.ValidationError({"store": "Можно выбрать только активные магазины"})
-
-        if payment_method == 'debt':
-            if not for_store:
-                raise serializers.ValidationError({"payment_method": "Оплата в долг доступна только для магазинов"})
-            if not store:
-                raise serializers.ValidationError({"store": "Для оплаты в долг необходимо выбрать магазин"})
-
-        # Проверка товаров
-        valid_items = []
-        for item in data.get('items', []):
-            if not all(k in item for k in ['product_id', 'quantity']):
-                raise serializers.ValidationError({"items": "Каждый элемент должен содержать product_id и quantity"})
-
-            product_id = item.get('product_id')
-            quantity = item.get('quantity')
-
-            try:
-                product = Product.objects.get(id=product_id)
-            except Product.DoesNotExist:
-                raise serializers.ValidationError({"items": f"Товар с ID {product_id} не найден"})
-
-            if quantity <= 0:
-                raise serializers.ValidationError(
-                    {"items": f"Количество должно быть положительным числом для товара {product.name}"})
-
-            # Проверка наличия товара на складе, если запрос не для магазина
-            if not for_store and product.quantity < quantity:
-                raise serializers.ValidationError({
-                                                      "items": f"Недостаточно товара {product.name} на складе: требуется {quantity}, доступно {product.quantity}"})
-
-            valid_items.append({
-                'product': product,
-                'quantity': quantity
-            })
-
-        data['valid_items'] = valid_items
-        return data
-
-    def save(self, **kwargs):
-        user = kwargs.get('user') or self.context['request'].user
-        for_store = self.validated_data.get('for_store', False)
-        store = self.validated_data.get('store')
-        payment_method = self.validated_data.get('payment_method', 'cash')
-
-        requests = []
-        for item in self.validated_data['valid_items']:
-            product = item['product']
-            quantity = item['quantity']
-
-            request = ProductRequest.objects.create(
-                product=product,
-                user=user,
-                quantity=quantity,
-                for_store=for_store,
-                store=store,
-                payment_method=payment_method
-            )
-            requests.append(request)
-
-        return requests
