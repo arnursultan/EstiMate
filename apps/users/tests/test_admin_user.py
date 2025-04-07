@@ -1,8 +1,16 @@
+from datetime import timedelta
+from datetime import datetime, time
 import pytest
 from django.urls import reverse
+
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
+from apps.products.models import Product
+from apps.orders.models import ProductRequest
+from apps.stores.models import StoreDebt, City, Store
+from apps.finance.models import FinanceEntry
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -343,3 +351,295 @@ def test_reject_nonexistent_user(admin_client):
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
+
+
+@pytest.mark.django_db
+class TestAdminDashboardView:
+
+    @pytest.fixture
+    def url(self):
+        return reverse("admin-dashboard")
+
+    @pytest.fixture
+    def client(self):
+        return APIClient()
+
+    @pytest.fixture
+    def admin(self):
+        return User.objects.create_user(
+            email="admin@example.com",
+            password="adminpass",
+            is_staff=True,
+            phone="7770000001",
+            first_name="Admin",
+            last_name="Test",
+            is_active=True,
+            status="approved",
+        )
+
+    @pytest.fixture
+    def user(self):
+        return User.objects.create_user(
+            email="user@example.com",
+            password="userpass",
+            is_staff=False,
+            phone="7770000002",
+            first_name="User",
+            last_name="Test",
+            is_active=True,
+            status="pending"
+        )
+
+    def test_admin_success(self, client, admin, url):
+        client.force_authenticate(user=admin)
+        response = client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert set(response.data.keys()) == {
+            "date",
+            "user_stats",
+            "product_stats",
+            "order_stats",
+            "debt_stats",
+            "finance_stats",
+            "recent_activities"
+        }
+
+    def test_forbidden_for_non_admin(self, client, user, url):
+        client.force_authenticate(user=user)
+        response = client.get(url)
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_unauthorized_if_not_logged_in(self, client, url):
+        response = client.get(url)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_full_data_aggregation(self, client, admin, url):
+        today = timezone.localtime().date()
+
+        # Город
+        city = City.objects.create(name="TestCity")
+
+        # Пользователи
+        User.objects.create_user(
+            email="1@t.com", password="x", is_active=True,
+            status="approved",
+            phone="7770000003", first_name="User1", last_name="Test"
+        )
+        User.objects.create_user(
+            email="2@t.com", password="x", is_active=False,
+            status="pending", phone="7770000004", first_name="User2", last_name="Test"
+        )
+
+        # Товары
+        p1 = Product.objects.create(name="Product1", quantity=0, price=100)
+        p2 = Product.objects.create(name="Product2", quantity=5, price=50)
+        p3 = Product.objects.create(name="Product3", quantity=20, price=130)
+
+        # Заказы
+        ProductRequest.objects.create(
+            user=admin,
+            product=p1,
+            status="pending",
+            quantity=1,
+            created_at=timezone.now()
+        )
+        ProductRequest.objects.create(
+            user=admin,
+            product=p2,
+            status="approved",
+            quantity=1,
+            created_at=timezone.now()
+        )
+        ProductRequest.objects.create(
+            user=admin,
+            product=p3,
+            status="received",
+            payment_method="cash",
+            total_price=120,
+            quantity=1,
+            created_at=timezone.now()
+        )
+
+        # Магазин
+        store = Store.objects.create(
+            name="Test Store",
+            inn="12345678901234",
+            city=city,
+            address="ул. Центральная, 1",
+            phone="0700123456",
+            status="approved",
+            is_active=True,
+            creator=admin
+        )
+
+        # Долги
+        StoreDebt.objects.create(store=store, amount=200, is_paid=False)
+        StoreDebt.objects.create(store=store, amount=100, is_paid=True, paid_at=timezone.now())
+
+        # Финансы
+        FinanceEntry.objects.create(user=admin, date=today, amount=50, entry_type="expense")
+
+        # Запрос
+        client.force_authenticate(user=admin)
+        response = client.get(url)
+        data = response.data
+
+        assert data["user_stats"]["total_users"] == 2
+        assert data["user_stats"]["active_users"] == 1
+        assert data["user_stats"]["pending_approvals"] == 1
+
+        assert data["product_stats"]["total_products"] == 3
+        assert data["product_stats"]["out_of_stock"] == 1
+        assert data["product_stats"]["low_stock"] == 1
+
+        assert data["order_stats"]["new_requests"] == 1
+        assert data["order_stats"]["approved_requests"] == 1
+        assert data["order_stats"]["completed_requests"] == 1
+
+        assert data["debt_stats"]["total_debt"] == 200.0
+        assert data["debt_stats"]["debts_count"] == 1
+        assert data["debt_stats"]["debts_paid_today"] == 1
+
+        assert data["finance_stats"]["today_income"] == 130.0
+        assert data["finance_stats"]["today_expenses"] == 50.0
+
+    def test_no_data_still_works(self, client, admin, url):
+        client.force_authenticate(user=admin)
+        response = client.get(url)
+        data = response.data
+
+        assert response.status_code == status.HTTP_200_OK
+        assert data["user_stats"]["total_users"] == 0
+        assert data["product_stats"]["total_products"] == 0
+        assert data["order_stats"]["new_requests"] == 0
+        assert data["debt_stats"]["total_debt"] == 0.0
+        assert data["finance_stats"]["today_expenses"] == 0.0
+
+
+
+
+
+@pytest.mark.django_db
+class TestPartnerDailySummaryView:
+
+    @pytest.fixture
+    def url(self):
+        return reverse("daily-summary")
+
+    @pytest.fixture
+    def client(self):
+        return APIClient()
+
+    @pytest.fixture
+    def partner(self):
+        return User.objects.create_user(
+            email="partner@example.com",
+            password="partnerpass",
+            is_staff=False,
+            phone="7770000007",
+            first_name="Partner",
+            last_name="Test",
+            status="approved",
+            is_active=True
+        )
+
+    @pytest.fixture
+    def setup_data(self, partner):
+        today = timezone.localtime().date()
+
+        p1 = Product.objects.create(name="Product 1", quantity=100, price=100, is_bonus_eligible=True)
+        p2 = Product.objects.create(name="Product 2", quantity=100, price=80, is_bonus_eligible=False)
+        p3 = Product.objects.create(name="Product 3", quantity=100, price=60, is_bonus_eligible=True)
+
+        ProductRequest.objects.create(
+            user=partner, product=p1, quantity=21, status='pending',
+            request_type='SELF', created_at=datetime.combine(today, time.min).replace(tzinfo=timezone.get_current_timezone())
+        )
+        ProductRequest.objects.create(
+            user=partner, product=p2, quantity=3, status='approved',
+            request_type='SELF', created_at=datetime.combine(today, time.min).replace(tzinfo=timezone.get_current_timezone())
+        )
+        ProductRequest.objects.create(
+            user=partner, product=p3, quantity=42, status='received',
+            request_type='SELF', created_at=datetime.combine(today, time.min).replace(tzinfo=timezone.get_current_timezone())
+        )
+
+        FinanceEntry.objects.create(
+            user=partner, date=today, amount=75, entry_type="expense"
+        )
+
+        return {"date": today, "products": [p1, p2, p3]}
+
+    def test_authenticated_summary(self, client, partner, url, setup_data):
+        client.force_authenticate(user=partner)
+        response = client.get(url, {"date": setup_data["date"].isoformat()})
+        assert response.status_code == status.HTTP_200_OK
+
+        data = response.data
+        summary = data["summary"]
+        assert summary["total_requested"] == 66  # 21 + 3 + 42
+        assert summary["total_sold"] == 42       # только received
+        assert summary["total_remaining"] == 24  # pending + approved
+        assert summary["total_bonus"] == 3       # 1 (21//21) + 0 + 2 (42//21)
+        assert summary["total_expenses"] == 75.0
+
+    def test_unauthenticated(self, client, url):
+        response = client.get(url)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_invalid_date_format(self, client, partner, url):
+        client.force_authenticate(user=partner)
+        response = client.get(url, {"date": "2024-99-99"})
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "error" in response.data
+
+    def test_no_data_returns_zeros(self, client, partner, url):
+        client.force_authenticate(user=partner)
+        future_date = (timezone.localtime().date() + timedelta(days=30)).isoformat()
+        response = client.get(url, {"date": future_date})
+        summary = response.data["summary"]
+        assert summary["total_requested"] == 0
+        assert summary["total_sold"] == 0
+        assert summary["total_remaining"] == 0
+        assert summary["total_bonus"] == 0
+        assert summary["total_expenses"] == 0.0
+
+    def test_all_non_bonus_products(self, client, partner, url):
+        today = timezone.localtime().date()
+
+        p1 = Product.objects.create(name="NoBonus1", quantity=100, price=100, is_bonus_eligible=False)
+        p2 = Product.objects.create(name="NoBonus2", quantity=100, price=200, is_bonus_eligible=False)
+
+        ProductRequest.objects.create(user=partner, product=p1, quantity=5, request_type="SELF", status="pending")
+        ProductRequest.objects.create(user=partner, product=p2, quantity=10, request_type="SELF", status="received")
+
+        client.force_authenticate(user=partner)
+        response = client.get(url, {"date": today.isoformat()})
+        assert response.data["summary"]["total_bonus"] == 0
+
+    def test_all_rejected_requests(self, client, partner, url):
+        today = timezone.localtime().date()
+        product = Product.objects.create(name="RejectedProd", quantity=50, price=70)
+
+        ProductRequest.objects.create(user=partner, product=product, quantity=4, request_type="SELF", status="rejected")
+
+        client.force_authenticate(user=partner)
+        response = client.get(url, {"date": today.isoformat()})
+
+        summary = response.data["summary"]
+        assert summary["total_requested"] == 4
+        assert summary["total_sold"] == 0
+        assert summary["total_remaining"] == 0
+
+
+    def test_bonus_when_quantity_zero(self, client, partner, url):
+        today = timezone.localtime().date()
+        product = Product.objects.create(name="ZeroQtyBonus", quantity=0, price=50, is_bonus_eligible=True)
+
+        ProductRequest.objects.create(user=partner, product=product, quantity=42, request_type="SELF", status="approved")
+
+        client.force_authenticate(user=partner)
+        response = client.get(url, {"date": today.isoformat()})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["summary"]["total_bonus"] >= 2

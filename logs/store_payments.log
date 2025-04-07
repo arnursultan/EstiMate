@@ -1952,6 +1952,21 @@ redis.exceptions.ConnectionError: Error 10061 connecting to localhost:6379. По
 [2025-03-28 21:35:53] WARNING Unauthorized: /api/finance/admin/finance-stat/
 [2025-03-28 21:37:28] WARNING Unauthorized: /api/finance/admin/finance-stat/
 [2025-03-28 21:37:29] WARNING Forbidden: /api/finance/admin/finance-stat/
+[2025-03-30 19:45:31] INFO Watching for file changes with StatReloader
+[2025-03-30 19:45:49] INFO Watching for file changes with StatReloader
+[2025-03-30 19:51:59] INFO "POST /api/users/register/ HTTP/1.1" 201 145
+[2025-03-30 20:00:43] WARNING Unauthorized: /api/users/profile/
+[2025-03-30 20:00:48] WARNING Bad Request: /api/users/profile/
+[2025-03-30 20:00:49] WARNING Bad Request: /api/users/profile/
+[2025-03-30 20:00:57] WARNING Bad Request: /api/users/profile/
+[2025-03-30 20:00:59] WARNING Bad Request: /api/users/profile/
+[2025-03-30 20:01:05] WARNING Bad Request: /api/users/profile/
+[2025-03-30 20:01:54] WARNING Bad Request: /api/users/login/
+[2025-03-30 20:01:57] WARNING Bad Request: /api/users/login/
+[2025-03-30 20:01:59] WARNING Bad Request: /api/users/login/
+[2025-03-30 20:02:02] WARNING Bad Request: /api/users/login/
+[2025-03-30 20:02:05] WARNING Bad Request: /api/users/login/
+[2025-03-30 20:02:28] INFO Watching for file changes with StatReloader
 [2025-03-28 20:59:56] INFO Watching for file changes with StatReloader
 [2025-03-28 21:00:10] WARNING Not Found: /
 [2025-03-28 21:00:10] WARNING "GET / HTTP/1.1" 404 4112

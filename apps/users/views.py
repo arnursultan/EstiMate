@@ -17,7 +17,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from datetime import datetime, timezone
+from datetime import datetime, time
+from django.utils import timezone
 from apps.orders.models import ProductRequest
 from rest_framework.permissions import IsAdminUser
 
@@ -529,14 +530,13 @@ class PartnerDailySummaryView(APIView):
         else:
             date_obj = timezone.now().date()
 
-        # Получаем все запросы за указанную дату
-        requests = ProductRequest.objects.filter(
-            user=user,
-            created_at__date=date_obj
-        )
+        local_tz = timezone.get_current_timezone()
+        start = timezone.make_aware(datetime.combine(date_obj, time.min), local_tz)
+        end = timezone.make_aware(datetime.combine(date_obj, time.max), local_tz)
 
-        # Группируем по товарам
-        from django.db.models import Sum
+        # Получаем все запросы за указанную дату
+        requests = ProductRequest.objects.filter(created_at__range=(start, end))
+
         product_summary = {}
 
         for req in requests:
@@ -568,8 +568,8 @@ class PartnerDailySummaryView(APIView):
         total_bonus = sum(item["total_bonus"] for item in product_summary.values())
 
         # Получаем расходы за день
-        expenses = user.manual_finance_entries.filter(date=date_obj)
-        total_expenses = sum(float(e.expense) for e in expenses)
+        expenses = user.manual_finance_entries.filter(date=date_obj, entry_type='expense')
+        total_expenses = sum(float(e.amount) for e in expenses)
 
         return Response({
             "date": date_obj.isoformat(),
@@ -636,8 +636,9 @@ class AdminDashboardView(APIView):
             ).aggregate(Sum('total_price'))['total_price__sum'] or 0),
 
             "today_expenses": float(FinanceEntry.objects.filter(
-                date=today
-            ).aggregate(Sum('expense'))['expense__sum'] or 0)
+                date=today,
+                entry_type='expense'
+            ).aggregate(Sum('amount'))['amount__sum'] or 0)
         }
 
         # Список недавних действий (можно добавить модель для логирования)
@@ -652,4 +653,6 @@ class AdminDashboardView(APIView):
             "finance_stats": finance_stats,
             "recent_activities": recent_activities
         })
+
+
 
