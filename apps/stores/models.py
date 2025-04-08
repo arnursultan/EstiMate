@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from apps.users.models import User
-
+from django.core.exceptions import ValidationError
 
 class City(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Название города")
@@ -71,6 +71,9 @@ class StoreDebt(models.Model):
     is_paid = models.BooleanField(default=False)
     paid_at = models.DateTimeField(null=True, blank=True)
 
+    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0,
+                                      verbose_name="Погашенная сумма")
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = "Долг магазина"
@@ -88,3 +91,26 @@ class StoreDebt(models.Model):
             self.save()
             return True
         return False
+
+    def pay_partial(self, amount):
+        """Частичная оплата долга"""
+        if amount <= 0:
+            raise ValidationError("Сумма погашения должна быть положительной")
+
+        if amount > (self.amount - self.paid_amount):
+            raise ValidationError(f"Сумма погашения превышает оставшийся долг ({self.amount - self.paid_amount})")
+
+        self.paid_amount += amount
+
+        # Если погашена вся сумма, отмечаем как полностью оплаченный
+        if self.paid_amount >= self.amount:
+            self.is_paid = True
+            self.paid_at = timezone.now()
+
+        self.save()
+
+        # Обновляем статистику магазина
+        from apps.finance.services import update_store_daily_stats
+        update_store_daily_stats(self.store, timezone.now().date())
+
+        return self.paid_amount

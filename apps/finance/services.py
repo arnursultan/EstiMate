@@ -1,14 +1,10 @@
 from datetime import date
-from decimal import Decimal
-
 from django.db.models import Sum
 from django.core.exceptions import ValidationError
 from apps.orders.models import ProductRequest
 from apps.products.models import PartnerProduct
 from .models import PartnerFinanceStat, StoreFinanceStat, CalendarStatistics, InventorySummary
-from django.utils import timezone
-
-from .utils import floatify
+from datetime import timezone
 
 
 def generate_partner_finance_stat(user):
@@ -321,7 +317,7 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         requested_details[product_name]['quantity'] += request.quantity
-        requested_details[product_name]['amount'] += float(request.quantity * request.product.price)
+        requested_details[product_name]['amount'] += request.quantity * request.product.price
         requested_details[product_name]['bonus'] += request.bonus_quantity
 
     # 2. Проданные товары (STORE) за этот день
@@ -348,7 +344,7 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         sold_details[product_name]['quantity'] += request.quantity
-        sold_details[product_name]['amount'] += float(request.quantity * request.partner_product.price)
+        sold_details[product_name]['amount'] += request.quantity * request.partner_product.price
         sold_details[product_name]['bonus'] += request.bonus_quantity
 
     # 3. Долг администратору (по подтвержденным SELF-запросам)
@@ -409,14 +405,13 @@ def update_partner_daily_stats(user, date=None):
     stats.total_bonus_quantity = bonus_quantity
     stats.total_remaining_quantity = remaining_quantity
 
-
     # Обновляем детализацию
-    stats.detailed_data = floatify({
+    stats.detailed_data = {
         'requested': requested_details,
         'sold': sold_details,
         'damaged': damaged_details,
         'remaining': remaining_details
-    })
+    }
 
     stats.save()
     return stats
