@@ -1,6 +1,5 @@
-import uuid
 from django.db import models
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from apps.users.models import User
 from apps.products.models import Product
 from apps.stores.models import Store
@@ -110,7 +109,7 @@ class ProductRequest(models.Model):
             self.total_price = actual_qty * self.partner_product.price
 
         # НОВАЯ ЛОГИКА: Для новых запросов STORE сразу устанавливаем статус approved
-        if is_new and self.request_type == 'STORE':
+        if is_new and self.request_type == 'STORE' and not self.status:
             self.status = 'approved'
 
         super().save(*args, **kwargs)

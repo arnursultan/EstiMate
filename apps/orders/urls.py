@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import ProductRequestViewSet, RecordDamageView, RecordExpenseView, PayDebtView
 
 router = DefaultRouter()
-router.register(r'product-requests', ProductRequestViewSet, basename='product-request')
+router.register(r'product-requests', ProductRequestViewSet, basename='product-requests')
 
 urlpatterns = [
     path('', include(router.urls)),

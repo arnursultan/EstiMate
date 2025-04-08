@@ -1,11 +1,13 @@
 import uuid
+from decimal import Decimal
+
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+
 
 from .models import ProductRequest
 from .serializers import (
@@ -206,7 +208,12 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-    # В apps/orders/views.py - метод create_store_request
+    @swagger_auto_schema(
+        method='post',
+        request_body=StoreRequestSerializer,
+        responses={201: ProductRequestSerializer()}
+    )
+    @action(detail=False, methods=['post'], url_path='create_store_request')
 
     def create_store_request(self, request):
         """Создать запрос 'для магазина' (STORE)"""
@@ -638,8 +645,15 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )
 
+
         # Проверяем статус запроса
-        if instance.status != 'approved':
+        # Отсекаем неподходящие статусы (только approved допустим)
+        if instance.status == 'received':
+            return Response(
+                {"error": "Товар уже был отмечен как полученный"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        elif instance.status != 'approved':
             return Response(
                 {"error": f"Товар в статусе '{instance.get_status_display()}' не может быть отмечен как полученный"},
                 status=status.HTTP_400_BAD_REQUEST
@@ -682,8 +696,6 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-
-# В apps/orders/views.py
 
 class RecordDamageView(APIView):
     """API для записи бракованных товаров"""
@@ -881,71 +893,49 @@ class PayDebtView(APIView):
             )
 
         try:
-            amount = float(amount)
+            amount = Decimal(str(amount))
             if amount <= 0:
                 return Response(
                     {"error": "Сумма оплаты должна быть положительным числом"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Находим магазин
             store = Store.objects.get(id=store_id)
 
-            # Проверяем права доступа (только партнеры могут оплачивать долги своих магазинов)
+            # Только партнер может оплачивать долг своего магазина
             if not request.user.is_staff:
-                if not ProductRequest.objects.filter(user=request.user, store=store).exists():
+                has_access = ProductRequest.objects.filter(user=request.user, store=store).exists()
+                if not has_access:
                     return Response(
                         {"error": "У вас нет прав на оплату долга этого магазина"},
                         status=status.HTTP_403_FORBIDDEN
                     )
 
-            # Получаем неоплаченные долги магазина
-            debts = StoreDebt.objects.filter(
-                store=store,
-                is_paid=False
-            ).order_by('created_at')
-
+            debts = StoreDebt.objects.filter(store=store, is_paid=False).order_by('created_at')
             if not debts.exists():
                 return Response(
                     {"error": "У магазина нет неоплаченных долгов"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Общая сумма долга
-            total_debt = sum(float(debt.amount - debt.paid_amount) for debt in debts)
-
+            total_debt = sum(debt.amount - debt.paid_amount for debt in debts)
             if amount > total_debt:
                 return Response(
                     {"error": f"Сумма оплаты ({amount}) превышает общий долг ({total_debt})"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Оплата долгов, начиная с самых ранних
-            remaining_amount = amount
+            remaining = amount
             paid_debts = []
 
             for debt in debts:
-                if remaining_amount <= 0:
+                if remaining <= 0:
                     break
+                debt_remaining = debt.amount - debt.paid_amount
 
-                debt_remaining = float(debt.amount - debt.paid_amount)
-
-                if remaining_amount >= debt_remaining:
-                    # Полная оплата этого долга
-                    payment = debt_remaining
-                    debt.is_paid = True
-                    debt.paid_amount = debt.amount
-                    debt.paid_at = timezone.now()
-                    debt.save()
-
-                    remaining_amount -= payment
-                else:
-                    # Частичная оплата
-                    payment = remaining_amount
-                    debt.paid_amount += payment
-                    debt.save()
-
-                    remaining_amount = 0
+                payment = min(debt_remaining, remaining)
+                debt.pay_partial(payment)
+                remaining -= payment
 
                 paid_debts.append({
                     "debt_id": debt.id,
@@ -955,20 +945,17 @@ class PayDebtView(APIView):
                     "is_fully_paid": debt.is_paid
                 })
 
-            # Обновляем статистику
-            from apps.finance.services import update_store_daily_stats
-            update_store_daily_stats(store, timezone.now().date())
-
             return Response({
                 "store": {
                     "id": store.id,
                     "name": store.name
                 },
-                "total_debt_before": total_debt,
-                "paid_amount": amount,
-                "remaining_debt": total_debt - amount,
+                "total_debt_before": float(total_debt),
+                "paid_amount": float(amount),
+                "remaining_debt": float(total_debt - amount),
                 "paid_debts": paid_debts
             })
+
         except Store.DoesNotExist:
             return Response(
                 {"error": f"Магазин с ID {store_id} не найден"},
@@ -979,5 +966,4 @@ class PayDebtView(APIView):
                 {"error": f"Ошибка при оплате долга: {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
