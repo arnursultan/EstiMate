@@ -49,6 +49,8 @@ class MyFinanceStatView(APIView):
         return Response(serializer.data)
 
 
+# В apps/finance/views.py
+
 class StoreStatisticsView(APIView):
     """API для получения статистики магазина"""
     permission_classes = [permissions.IsAuthenticated]
@@ -128,7 +130,7 @@ class StoreStatisticsView(APIView):
                     "name": store.name,
                     "city": store.city.name if store.city else None
                 },
-                "received": {
+                "requested": {
                     "quantity": stats.total_received_quantity,
                     "details": stats.detailed_data.get('received', {})
                 },
@@ -142,14 +144,14 @@ class StoreStatisticsView(APIView):
                     "current": float(stats.total_debt),
                     "paid": float(stats.total_paid_debt)
                 },
-                "partner_expenses": float(stats.total_partner_expenses)
+                "expenses": float(stats.total_partner_expenses),
+                "profit": float(stats.profit)
             })
         except Exception as e:
             return Response(
                 {"error": f"Ошибка при получении статистики магазина: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
 
 class ManualFinanceEntryView(generics.CreateAPIView):
     """Создание ручных финансовых записей"""
@@ -183,6 +185,8 @@ class FinanceEntryListView(generics.ListAPIView):
             return FinanceEntry.objects.all().order_by('-date')
         return FinanceEntry.objects.filter(user=self.request.user).order_by('-date')
 
+
+# В apps/finance/views.py
 
 class AdminStatisticsView(APIView):
     """API для получения общей статистики (только для администратора)"""
@@ -260,7 +264,6 @@ class AdminStatisticsView(APIView):
                             "amount": float(stats.total_sold_amount),
                             "details": stats.detailed_data.get('sold', {})
                         },
-                        "debt_to_admin": float(stats.total_debt_to_admin),
                         "expenses": float(stats.total_expenses),
                         "damaged": {
                             "quantity": stats.total_damaged_quantity,
@@ -272,7 +275,8 @@ class AdminStatisticsView(APIView):
                         "remaining": {
                             "quantity": stats.total_remaining_quantity,
                             "details": stats.detailed_data.get('remaining', {})
-                        }
+                        },
+                        "profit": float(stats.profit)
                     }
                 except User.DoesNotExist:
                     return Response(
@@ -291,7 +295,7 @@ class AdminStatisticsView(APIView):
                         "id": store.id,
                         "name": store.name,
                         "city": store.city.name if store.city else None,
-                        "received": {
+                        "requested": {
                             "quantity": stats.total_received_quantity,
                             "details": stats.detailed_data.get('received', {})
                         },
@@ -305,7 +309,8 @@ class AdminStatisticsView(APIView):
                             "current": float(stats.total_debt),
                             "paid": float(stats.total_paid_debt)
                         },
-                        "partner_expenses": float(stats.total_partner_expenses)
+                        "expenses": float(stats.total_partner_expenses),
+                        "profit": float(stats.profit)
                     }
                 except Store.DoesNotExist:
                     return Response(
@@ -330,19 +335,33 @@ class AdminStatisticsView(APIView):
                         "total_damaged": 0,
                         "total_debt": 0,
                         "total_paid_debt": 0,
-                        "total_partner_expenses": 0
+                        "total_expenses": 0,
+                        "stores": []
                     }
 
                     for store in stores:
                         from apps.finance.services import update_store_daily_stats
                         stats = update_store_daily_stats(store, date_obj)
 
+                        # Добавляем информацию о магазине
+                        city_stats["stores"].append({
+                            "id": store.id,
+                            "name": store.name,
+                            "received": stats.total_received_quantity,
+                            "bonus": stats.total_bonus_quantity,
+                            "damaged": stats.total_damaged_quantity,
+                            "debt": float(stats.total_debt),
+                            "paid_debt": float(stats.total_paid_debt),
+                            "expenses": float(stats.total_partner_expenses)
+                        })
+
+                        # Суммируем показатели
                         city_stats["total_received"] += stats.total_received_quantity
                         city_stats["total_bonus"] += stats.total_bonus_quantity
                         city_stats["total_damaged"] += stats.total_damaged_quantity
                         city_stats["total_debt"] += float(stats.total_debt)
                         city_stats["total_paid_debt"] += float(stats.total_paid_debt)
-                        city_stats["total_partner_expenses"] += float(stats.total_partner_expenses)
+                        city_stats["total_expenses"] += float(stats.total_partner_expenses)
 
                     result['city'] = {
                         "id": city.id,
@@ -365,10 +384,11 @@ class AdminStatisticsView(APIView):
                     "count": partners.count(),
                     "total_requested": 0,
                     "total_sold": 0,
-                    "total_debt": 0,
                     "total_expenses": 0,
                     "total_damaged": 0,
-                    "total_bonus": 0
+                    "total_bonus": 0,
+                    "total_remaining": 0,
+                    "total_profit": 0
                 }
 
                 for partner in partners:
@@ -377,12 +397,24 @@ class AdminStatisticsView(APIView):
                         stats = PartnerFinanceStat.objects.get(user=partner, date=date_obj)
                         partners_stats["total_requested"] += stats.total_requested_quantity
                         partners_stats["total_sold"] += stats.total_sold_quantity
-                        partners_stats["total_debt"] += float(stats.total_debt_to_admin)
                         partners_stats["total_expenses"] += float(stats.total_expenses)
                         partners_stats["total_damaged"] += stats.total_damaged_quantity
                         partners_stats["total_bonus"] += stats.total_bonus_quantity
+                        partners_stats["total_remaining"] += stats.total_remaining_quantity
+                        partners_stats["total_profit"] += float(stats.profit)
                     except PartnerFinanceStat.DoesNotExist:
-                        pass
+                        # Обновляем статистику если её нет
+                        try:
+                            stats = update_partner_daily_stats(partner, date_obj)
+                            partners_stats["total_requested"] += stats.total_requested_quantity
+                            partners_stats["total_sold"] += stats.total_sold_quantity
+                            partners_stats["total_expenses"] += float(stats.total_expenses)
+                            partners_stats["total_damaged"] += stats.total_damaged_quantity
+                            partners_stats["total_bonus"] += stats.total_bonus_quantity
+                            partners_stats["total_remaining"] += stats.total_remaining_quantity
+                            partners_stats["total_profit"] += float(stats.profit)
+                        except Exception:
+                            pass
 
                 # Статистика по магазинам
                 stores = Store.objects.filter(status='approved')
@@ -392,7 +424,11 @@ class AdminStatisticsView(APIView):
                     "count": stores.count(),
                     "total_received": 0,
                     "total_debt": 0,
-                    "total_paid_debt": 0
+                    "total_paid_debt": 0,
+                    "total_bonus": 0,
+                    "total_damaged": 0,
+                    "total_expenses": 0,
+                    "total_profit": 0
                 }
 
                 for store in stores:
@@ -402,8 +438,23 @@ class AdminStatisticsView(APIView):
                         stores_stats["total_received"] += stats.total_received_quantity
                         stores_stats["total_debt"] += float(stats.total_debt)
                         stores_stats["total_paid_debt"] += float(stats.total_paid_debt)
+                        stores_stats["total_bonus"] += stats.total_bonus_quantity
+                        stores_stats["total_damaged"] += stats.total_damaged_quantity
+                        stores_stats["total_expenses"] += float(stats.total_partner_expenses)
+                        stores_stats["total_profit"] += float(stats.profit)
                     except StoreFinanceStat.DoesNotExist:
-                        pass
+                        # Обновляем статистику если её нет
+                        try:
+                            stats = update_store_daily_stats(store, date_obj)
+                            stores_stats["total_received"] += stats.total_received_quantity
+                            stores_stats["total_debt"] += float(stats.total_debt)
+                            stores_stats["total_paid_debt"] += float(stats.total_paid_debt)
+                            stores_stats["total_bonus"] += stats.total_bonus_quantity
+                            stores_stats["total_damaged"] += stats.total_damaged_quantity
+                            stores_stats["total_expenses"] += float(stats.total_partner_expenses)
+                            stores_stats["total_profit"] += float(stats.profit)
+                        except Exception:
+                            pass
 
                 # Статистика по запросам
                 from apps.orders.models import ProductRequest
@@ -419,10 +470,18 @@ class AdminStatisticsView(APIView):
                     "received": ProductRequest.objects.filter(created_at__date=date_obj, status='received').count()
                 }
 
+                # Общий баланс администратора
+                total_income = partners_stats["total_requested"]  # Доход от запросов партнеров
+                total_expenses = partners_stats["total_expenses"]  # Расходы партнеров
+                total_bonus_value = partners_stats["total_bonus"]  # Стоимость бонусов
+
+                admin_balance = float(total_income) - float(total_expenses) - float(total_bonus_value)
+
                 result['summary'] = {
                     "partners": partners_stats,
                     "stores": stores_stats,
-                    "requests": requests_stats
+                    "requests": requests_stats,
+                    "admin_balance": admin_balance
                 }
 
             # Добавляем информацию о дате
@@ -1426,6 +1485,8 @@ class DailyStatisticsView(APIView):
             )
 
 
+# В apps/finance/views.py
+
 class PartnerStatisticsView(APIView):
     """API для получения статистики партнера"""
     permission_classes = [IsAuthenticated]
@@ -1475,7 +1536,6 @@ class PartnerStatisticsView(APIView):
                     "amount": float(stats.total_sold_amount),
                     "details": stats.detailed_data.get('sold', {})
                 },
-                "debt_to_admin": float(stats.total_debt_to_admin),
                 "expenses": float(stats.total_expenses),
                 "damaged": {
                     "quantity": stats.total_damaged_quantity,
@@ -1487,7 +1547,8 @@ class PartnerStatisticsView(APIView):
                 "remaining": {
                     "quantity": stats.total_remaining_quantity,
                     "details": stats.detailed_data.get('remaining', {})
-                }
+                },
+                "profit": float(stats.profit)
             })
         except Exception as e:
             return Response(

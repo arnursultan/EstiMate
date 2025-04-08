@@ -1,10 +1,11 @@
+# В apps/finance/urls.py
+
 from django.urls import path
 from .views import (
     MyFinanceStatView, StoreStatisticsView, ManualFinanceEntryView,
     AdminStatisticsView, CalendarStatisticsView, ArchivedDataView,
     AdminDamagedGoodsReportView, BalanceCalculatorView, ProductRequestHistoryView,
-    FinanceSummaryView, StoreFinanceStatListView,
-    FinanceEntryListView, PartnerInventoryView, FinanceEntryCreateView,
+    FinanceSummaryView, FinanceEntryListView, PartnerInventoryView, FinanceEntryCreateView,
     PartnerProductFinanceView, PartnerCatalogFinanceView, PartnerStatisticsView
 )
 
@@ -25,12 +26,11 @@ urlpatterns = [
     path('calendar/', CalendarStatisticsView.as_view(), name='calendar-statistics'),
     path('archives/', ArchivedDataView.as_view(), name='archived-data'),
 
-    # Административные маршруты
-    path('admin/damaged-report/', AdminDamagedGoodsReportView.as_view(), name='damaged-goods-report'),
-
-    # API для моделей
-    path('store-stats/', StoreFinanceStatListView.as_view(), name='store-finance-stats'),
+    # Новые маршруты
     path('partner-statistics/', PartnerStatisticsView.as_view(), name='partner-statistics'),
     path('store-statistics/', StoreStatisticsView.as_view(), name='store-statistics'),
+
+    # Административные маршруты
+    path('admin/damaged-report/', AdminDamagedGoodsReportView.as_view(), name='damaged-goods-report'),
     path('admin-statistics/', AdminStatisticsView.as_view(), name='admin-statistics'),
 ]

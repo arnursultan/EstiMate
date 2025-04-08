@@ -14,7 +14,8 @@ from apps.stores.models import Store
 from apps.orders.models import ProductRequest
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
+from datetime import timezone
+import uuid
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
@@ -183,6 +184,8 @@ class CartViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(cart_items, many=True)
         return Response(serializer.data)
 
+    # В apps/cart/views.py - метод checkout
+
     @swagger_auto_schema(
         method='post',
         request_body=CheckoutSerializer,
@@ -204,43 +207,105 @@ class CartViewSet(viewsets.ModelViewSet):
             )
 
         created_requests = []
+        batch_id = uuid.uuid4()  # Общий batch_id для групповых запросов
 
         # Создаем запросы в зависимости от типа корзины
         if cart_type == 'SELF':
             for item in cart_items:
-                request = ProductRequest.objects.create(
+                # Проверяем наличие достаточного количества товара
+                if item.product.quantity < item.quantity:
+                    return Response(
+                        {
+                            "error": f"Недостаточно товара '{item.product.name}' в каталоге. Доступно: {item.product.quantity}"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                # Уменьшаем количество товара у админа
+                item.product.reduce_quantity(item.quantity)
+
+                # Создаем запрос SELF
+                request_obj = ProductRequest.objects.create(
                     product=item.product,
                     user=request.user,
                     quantity=item.quantity,
                     request_type='SELF',
-                    status='pending'
+                    status='pending',
+                    batch_id=batch_id
                 )
-                created_requests.append(request.id)
+                created_requests.append({
+                    "id": request_obj.id,
+                    "product_name": item.product.name,
+                    "quantity": item.quantity,
+                    "total_price": float(request_obj.total_price)
+                })
 
                 # Удаляем товар из корзины после создания запроса
                 item.delete()
 
         elif cart_type == 'STORE':
             for item in cart_items:
-                request = ProductRequest.objects.create(
+                # Проверяем наличие достаточного количества товара
+                if item.partner_product.remaining_quantity < item.quantity:
+                    return Response(
+                        {
+                            "error": f"Недостаточно товара '{item.partner_product.product.name}' в вашем каталоге. Доступно: {item.partner_product.remaining_quantity}"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                # Уменьшаем количество товара в каталоге партнера
+                item.partner_product.update_quantity(item.quantity, operation='subtract')
+
+                # Создаем запрос STORE (сразу со статусом approved)
+                request_obj = ProductRequest.objects.create(
                     product=item.partner_product.product,
                     user=request.user,
                     quantity=item.quantity,
                     request_type='STORE',
                     store=item.store,
                     partner_product=item.partner_product,
+                    status='approved',  # Сразу approved по новой логике
                     payment_method='debt',
-                    status='pending'
+                    batch_id=batch_id
                 )
-                created_requests.append(request.id)
+
+                # Создаем долг магазина
+                StoreDebt.objects.create(
+                    store=item.store,
+                    amount=request_obj.total_price,
+                    request=request_obj,
+                    created_by=request.user
+                )
+
+                created_requests.append({
+                    "id": request_obj.id,
+                    "product_name": item.partner_product.product.name,
+                    "quantity": item.quantity,
+                    "bonus_quantity": request_obj.bonus_quantity,
+                    "total_price": float(request_obj.total_price)
+                })
 
                 # Удаляем товар из корзины после создания запроса
                 item.delete()
 
+        # Обновляем статистику
+        from apps.finance.services import update_partner_daily_stats
+        update_partner_daily_stats(request.user, timezone.now().date())
+
+        if cart_type == 'STORE' and created_requests:
+            from apps.finance.services import update_store_daily_stats
+            stores_updated = set()
+            for item in cart_items:
+                if item.store and item.store.id not in stores_updated:
+                    update_store_daily_stats(item.store, timezone.now().date())
+                    stores_updated.add(item.store.id)
+
         return Response({
             "message": f"Успешно создано {len(created_requests)} запросов из корзины '{cart_type}'",
-            "request_ids": created_requests
+            "batch_id": str(batch_id),
+            "created_requests": created_requests
         }, status=status.HTTP_201_CREATED)
+
+
 
     @action(detail=False, methods=['delete'])
     def clear_cart(self, request):

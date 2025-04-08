@@ -87,6 +87,7 @@ class ProductRequest(models.Model):
             if self.store and not self.store.is_active:
                 raise ValidationError("Можно выбрать только активные магазины")
 
+    # Модификация models.py в apps/orders
     def save(self, *args, **kwargs):
         is_new = self.pk is None  # Проверяем, создаем ли новый объект
 
@@ -113,9 +114,6 @@ class ProductRequest(models.Model):
             self.status = 'approved'
 
         super().save(*args, **kwargs)
-
-        # Обновляем previous_status после сохранения
-        self.previous_status = self.status
 
     def __str__(self):
         type_info = "для себя" if self.request_type == 'SELF' else f"для магазина {self.store}"

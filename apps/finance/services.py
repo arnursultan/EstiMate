@@ -261,6 +261,7 @@ def update_partner_statistics(user, income_amount=0, expense_amount=0, date=None
 
 
 # Модифицируем apps/finance/services.py
+# В apps/finance/services.py
 
 def update_partner_daily_stats(user, date=None):
     """
@@ -371,6 +372,7 @@ def update_partner_daily_stats(user, date=None):
     total_damaged_quantity = damaged_entries.aggregate(total=Sum('quantity'))['total'] or 0
 
     # Детали по бракованным товарам
+    # Детали по бракованным товарам
     damaged_details = {}
     for entry in damaged_entries:
         if not entry.partner_product or not entry.partner_product.product:
@@ -443,6 +445,7 @@ def update_store_daily_stats(store, date=None):
             'total_debt': 0,
             'total_paid_debt': 0,
             'total_partner_expenses': 0,
+            'profit': 0,
             'detailed_data': {}
         }
     )
@@ -518,4 +521,13 @@ def update_store_daily_stats(store, date=None):
     }
 
     stats.save()
+
+    # Обновляем метки календаря
+    update_calendar_statistics(
+        date,
+        store=store,
+        has_sales=(total_received_quantity > 0),
+        has_debt_payment=(total_paid_debt > 0)
+    )
+
     return stats

@@ -68,6 +68,8 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    # В apps/orders/views.py - метод update_status
+
     @action(detail=True, methods=['patch'], permission_classes=[IsAdminUser])
     def update_status(self, request, pk=None):
         """Обновление статуса запроса (только для администратора)"""
@@ -128,24 +130,6 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
-    def mark_received(self, request, pk=None):
-        """Отметить запрос как полученный (для создателя запроса)"""
-        instance = self.get_object()
-
-        # Проверка прав доступа
-        if instance.user != request.user:
-            return Response({"error": "Вы можете подтверждать получение только своих запросов"},
-                            status=status.HTTP_403_FORBIDDEN)
-
-        serializer = self.get_serializer(instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            instance.mark_as_received()
-            return Response(ProductRequestSerializer(instance).data)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
     def report_damaged(self, request, pk=None):
@@ -181,6 +165,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
         responses={201: ProductRequestSerializer()}
     )
     @action(detail=False, methods=['post'])
+    # В apps/orders/views.py - метод create_self_request
     def create_self_request(self, request):
         """Создать запрос 'для себя' (SELF)"""
         serializer = self.get_serializer(data=request.data)
@@ -199,7 +184,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Уменьшаем количество товара у админа
+            # ИЗМЕНЕНО: Уменьшаем количество товара у админа сразу при создании запроса
             product.reduce_quantity(quantity)
 
             # Создаем запрос SELF
@@ -221,12 +206,8 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-    @swagger_auto_schema(
-        method='post',
-        request_body=StoreRequestSerializer,
-        responses={201: ProductRequestSerializer()}
-    )
-    @action(detail=False, methods=['post'])
+    # В apps/orders/views.py - метод create_store_request
+
     def create_store_request(self, request):
         """Создать запрос 'для магазина' (STORE)"""
         serializer = self.get_serializer(data=request.data)
@@ -250,7 +231,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
             # Проверяем магазин
             store = Store.objects.get(id=store_id, status='approved', is_active=True)
 
-            # Уменьшаем количество товара в каталоге партнера
+            # ИЗМЕНЕНО: Уменьшаем количество товара в каталоге партнера
             partner_product.update_quantity(quantity, operation='subtract')
 
             # Создаем запрос STORE (со статусом approved по новой логике)
@@ -262,7 +243,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                 store=store,
                 partner_product=partner_product,
                 payment_method='debt',
-                status='approved'  # Сразу approved, по новой логике
+                status='approved'  # ИЗМЕНЕНО: Сразу approved, по новой логике
             )
 
             # Создаем долг магазина
@@ -334,8 +315,10 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
         ),
         responses={201: "Запросы созданы успешно"}
     )
-    @action(detail=False, methods=["post"], url_path="bulk_self_request")
-    def bulk_self_request(self, request):
+    # В apps/orders/views.py - метод bulk_self_request (для групповых запросов)
+
+    @action(detail=False, methods=["post"], url_path="group_self_request")
+    def group_self_request(self, request):
         """
         Групповой запрос товаров 'для себя' (SELF).
         """
@@ -378,7 +361,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                     })
                     continue
 
-                # Уменьшаем количество товара у админа
+                # ИЗМЕНЕНО: Уменьшаем количество товара у админа
                 product.reduce_quantity(quantity)
 
                 # Создаем запрос SELF с общим batch_id
@@ -418,29 +401,8 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
             "total_amount": total_amount
         }, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(
-        method='post',
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'store_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                'items': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'partner_product_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                            'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, minimum=1)
-                        }
-                    )
-                )
-            },
-            required=['store_id', 'items']
-        ),
-        responses={201: "Запросы созданы успешно"}
-    )
-    @action(detail=False, methods=["post"], url_path="bulk_store_request")
-    def bulk_store_request(self, request):
+    @action(detail=False, methods=["post"], url_path="group_store_request")
+    def group_store_request(self, request):
         """
         Групповой запрос товаров 'для магазина' (STORE).
         """
@@ -500,7 +462,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                     })
                     continue
 
-                # Уменьшаем количество товара в каталоге партнера
+                # ИЗМЕНЕНО: Уменьшаем количество товара в каталоге партнера
                 partner_product.update_quantity(quantity, operation='subtract')
 
                 # Создаем запрос STORE (со статусом approved по новой логике)
@@ -512,7 +474,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
                     store=store,
                     partner_product=partner_product,
                     payment_method='debt',
-                    status='approved',  # Сразу approved по новой логике
+                    status='approved',  # ИЗМЕНЕНО: Сразу approved по новой логике
                     batch_id=batch_id
                 )
 
@@ -570,22 +532,7 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
             "total_amount": total_amount
         }, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(
-        method='post',
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['batch_id', 'status'],
-            properties={
-                'batch_id': openapi.Schema(type=openapi.TYPE_STRING, format='uuid'),
-                'status': openapi.Schema(type=openapi.TYPE_STRING, enum=['approved', 'rejected'])
-            }
-        ),
-        responses={
-            200: "Запросы успешно обработаны",
-            400: "Ошибка при обработке запросов",
-            404: "Группа запросов не найдена"
-        }
-    )
+
     @action(detail=False, methods=['post'], permission_classes=[IsAdminUser])
     def process_batch(self, request):
         """Обработка группы запросов администратором"""
@@ -736,6 +683,8 @@ class ProductRequestViewSet(viewsets.ModelViewSet):
             )
 
 
+# В apps/orders/views.py
+
 class RecordDamageView(APIView):
     """API для записи бракованных товаров"""
     permission_classes = [permissions.IsAuthenticated]
@@ -816,6 +765,9 @@ class RecordDamageView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+
+# В apps/orders/views.py
+
 class RecordExpenseView(APIView):
     """API для записи расходов"""
     permission_classes = [permissions.IsAuthenticated]
@@ -895,8 +847,10 @@ class RecordExpenseView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-class PayDebtView(APIView):
 
+# В apps/orders/views.py
+
+class PayDebtView(APIView):
     """API для оплаты долга магазина"""
     permission_classes = [permissions.IsAuthenticated]
 
@@ -1001,7 +955,7 @@ class PayDebtView(APIView):
                     "is_fully_paid": debt.is_paid
                 })
 
-            # Обновляем статистику магазина
+            # Обновляем статистику
             from apps.finance.services import update_store_daily_stats
             update_store_daily_stats(store, timezone.now().date())
 
@@ -1023,6 +977,7 @@ class PayDebtView(APIView):
         except Exception as e:
             return Response(
                 {"error": f"Ошибка при оплате долга: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
