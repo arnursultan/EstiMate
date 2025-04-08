@@ -16,6 +16,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from datetime import timezone
 import uuid
+from apps.stores.models import StoreDebt
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
