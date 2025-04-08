@@ -1,5 +1,5 @@
 from datetime import date
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.core.exceptions import ValidationError
 from apps.orders.models import ProductRequest
 from apps.products.models import PartnerProduct
@@ -276,6 +276,7 @@ def update_partner_daily_stats(user, date=None):
     from apps.orders.models import ProductRequest
     from apps.products.models import PartnerProduct
     from apps.finance.models import FinanceEntry
+    from django.db.models import Sum
 
     # Получаем или создаем статистику
     from apps.finance.models import PartnerFinanceStat
@@ -292,6 +293,7 @@ def update_partner_daily_stats(user, date=None):
             'total_damaged_quantity': 0,
             'total_bonus_quantity': 0,
             'total_remaining_quantity': 0,
+            'profit': 0,
             'detailed_data': {}
         }
     )
@@ -304,7 +306,7 @@ def update_partner_daily_stats(user, date=None):
     )
 
     total_requested_quantity = self_requests.aggregate(total=Sum('quantity'))['total'] or 0
-    total_requested_amount = sum(r.quantity * r.product.price for r in self_requests if r.product)
+    total_requested_amount = sum(float(r.quantity * r.product.price) for r in self_requests if r.product)
 
     # Детали по запрошенным товарам
     requested_details = {}
@@ -317,18 +319,19 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         requested_details[product_name]['quantity'] += request.quantity
-        requested_details[product_name]['amount'] += request.quantity * request.product.price
+        requested_details[product_name]['amount'] += float(request.quantity * request.product.price)
         requested_details[product_name]['bonus'] += request.bonus_quantity
 
-    # 2. Проданные товары (STORE) за этот день
+    # 2. Проданные товары (STORE) - все подтвержденные заказы для магазинов
     store_requests = ProductRequest.objects.filter(
         user=user,
         request_type='STORE',
+        status__in=['approved', 'received'],
         created_at__date=date
     )
 
     total_sold_quantity = store_requests.aggregate(total=Sum('quantity'))['total'] or 0
-    total_sold_amount = sum(r.quantity * r.partner_product.price for r in store_requests if r.partner_product)
+    total_sold_amount = sum(float(r.total_price) for r in store_requests)
 
     # Детали по проданным товарам
     sold_details = {}
@@ -344,24 +347,17 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         sold_details[product_name]['quantity'] += request.quantity
-        sold_details[product_name]['amount'] += request.quantity * request.partner_product.price
+        sold_details[product_name]['amount'] += float(request.total_price)
         sold_details[product_name]['bonus'] += request.bonus_quantity
 
-    # 3. Долг администратору (по подтвержденным SELF-запросам)
-    debt_to_admin = ProductRequest.objects.filter(
-        user=user,
-        request_type='SELF',
-        status='approved'
-    ).aggregate(total=Sum('total_price'))['total'] or 0
-
-    # 4. Расходы партнера
+    # 3. Расходы партнера
     expenses = FinanceEntry.objects.filter(
         user=user,
         entry_type='expense',
         date=date
     ).aggregate(total=Sum('amount'))['total'] or 0
 
-    # 5. Бракованные товары
+    # 4. Бракованные товары
     damaged_entries = FinanceEntry.objects.filter(
         user=user,
         entry_type='damage',
@@ -381,10 +377,10 @@ def update_partner_daily_stats(user, date=None):
             damaged_details[product_name] = 0
         damaged_details[product_name] += entry.quantity
 
-    # 6. Бонусные товары (общая сумма бонусов из запросов STORE)
+    # 5. Бонусные товары (общая сумма бонусов)
     bonus_quantity = store_requests.aggregate(total=Sum('bonus_quantity'))['total'] or 0
 
-    # 7. Остаток товаров (из PartnerProduct)
+    # 6. Остаток товаров (из PartnerProduct)
     partner_products = PartnerProduct.objects.filter(partner=user)
     remaining_quantity = sum(p.remaining_quantity for p in partner_products)
 
@@ -394,16 +390,19 @@ def update_partner_daily_stats(user, date=None):
         product_name = p.product.name
         remaining_details[product_name] = p.remaining_quantity
 
+    # 7. Прибыль = проданные товары - расходы
+    profit = total_sold_amount - float(expenses)
+
     # Обновляем статистику
     stats.total_requested_quantity = total_requested_quantity
     stats.total_requested_amount = total_requested_amount
     stats.total_sold_quantity = total_sold_quantity
     stats.total_sold_amount = total_sold_amount
-    stats.total_debt_to_admin = debt_to_admin
     stats.total_expenses = expenses
     stats.total_damaged_quantity = total_damaged_quantity
     stats.total_bonus_quantity = bonus_quantity
     stats.total_remaining_quantity = remaining_quantity
+    stats.profit = profit
 
     # Обновляем детализацию
     stats.detailed_data = {
@@ -414,6 +413,16 @@ def update_partner_daily_stats(user, date=None):
     }
 
     stats.save()
+
+    # Обновляем метки календаря
+    update_calendar_statistics(
+        date,
+        user=user,
+        has_sales=(total_sold_quantity > 0),
+        has_requests=(total_requested_quantity > 0),
+        has_expenses=(expenses > 0)
+    )
+
     return stats
 
 
@@ -430,6 +439,7 @@ def update_store_daily_stats(store, date=None):
 
     from apps.orders.models import ProductRequest
     from apps.stores.models import StoreDebt
+    from apps.finance.models import FinanceEntry
 
     # Получаем или создаем статистику
     from apps.finance.models import StoreFinanceStat
@@ -447,7 +457,7 @@ def update_store_daily_stats(store, date=None):
         }
     )
 
-    # 1. Полученные товары
+    # 1. Запрошенные товары
     store_requests = ProductRequest.objects.filter(
         store=store,
         request_type='STORE',
@@ -479,30 +489,28 @@ def update_store_daily_stats(store, date=None):
     # 3. Бракованные товары
     damaged_quantity = store_requests.aggregate(total=Sum('damaged_quantity'))['total'] or 0
 
-    # 4. Долг магазина
-    # Находим все долги, созданные в этот день
-    new_debts = StoreDebt.objects.filter(
+    # 4. Долг магазина (общий)
+    total_debt = StoreDebt.objects.filter(
         store=store,
-        created_at__date=date,
         is_paid=False
-    )
-    total_debt = new_debts.aggregate(total=Sum('amount'))['total'] or 0
+    ).aggregate(total=Sum(F('amount') - F('paid_amount')))['total'] or 0
 
-    # 5. Погашенный долг
+    # 5. Погашенный долг за этот день
     paid_debts = StoreDebt.objects.filter(
         store=store,
-        is_paid=True,
         paid_at__date=date
     )
-    total_paid_debt = paid_debts.aggregate(total=Sum('amount'))['total'] or 0
+    total_paid_debt = sum(float(debt.paid_amount) for debt in paid_debts)
 
     # 6. Расходы партнеров, связанные с этим магазином
-    from apps.finance.models import FinanceEntry
     partner_expenses = FinanceEntry.objects.filter(
         entry_type='expense',
         date=date,
-        store=store  # Предполагается, что в FinanceEntry есть поле store
+        store=store
     ).aggregate(total=Sum('amount'))['total'] or 0
+
+    # 7. Прибыль = погашенный долг - расходы партнеров
+    profit = total_paid_debt - float(partner_expenses)
 
     # Обновляем статистику
     stats.total_received_quantity = total_received_quantity
@@ -511,6 +519,7 @@ def update_store_daily_stats(store, date=None):
     stats.total_debt = total_debt
     stats.total_paid_debt = total_paid_debt
     stats.total_partner_expenses = partner_expenses
+    stats.profit = profit
 
     # Обновляем детализацию
     stats.detailed_data = {

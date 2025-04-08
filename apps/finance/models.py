@@ -77,6 +77,9 @@ class StoreFinanceStat(models.Model):
     total_partner_expenses = models.DecimalField(max_digits=12, decimal_places=2, default=0,
                                                  verbose_name="Расходы партнера")
 
+    # Прибыль (погашенный долг - расходы)
+    profit = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Прибыль")
+
     # Детали по товарам
     detailed_data = models.JSONField(default=dict, blank=True, verbose_name="Детальные данные по товарам")
 
@@ -88,7 +91,6 @@ class StoreFinanceStat(models.Model):
 
     def __str__(self):
         return f"{self.store} - {self.date}"
-
 
 
 class FinanceEntry(models.Model):

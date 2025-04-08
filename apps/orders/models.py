@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.core.exceptions import ValidationError
 from apps.users.models import User
@@ -44,6 +45,15 @@ class ProductRequest(models.Model):
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Добавляем поле для групповых заявок
+    batch_id = models.UUIDField(
+        null=True,
+        blank=True,
+        verbose_name="ID групповой заявки",
+        db_index=True,  # Добавляем индекс для ускорения поиска
+        help_text="Уникальный идентификатор для связывания запросов в группу"
+    )
+
     previous_status = None  # для отслеживания изменений статуса
 
     class Meta:
@@ -78,11 +88,12 @@ class ProductRequest(models.Model):
                 raise ValidationError("Можно выбрать только активные магазины")
 
     def save(self, *args, **kwargs):
-        # Расчет бонусов для запросов SELF
+        is_new = self.pk is None  # Проверяем, создаем ли новый объект
+
+        # Расчет бонусов для запросов
         if self.request_type == 'SELF' and self.product and self.product.is_bonus_eligible:
             self.bonus_quantity = self.product.calculate_bonus(self.quantity)
         elif self.request_type == 'STORE' and self.partner_product and self.partner_product.product.is_bonus_eligible:
-            # Для STORE также можно рассчитать бонусы на основе глобального товара
             self.bonus_quantity = self.partner_product.product.calculate_bonus(self.quantity)
         else:
             self.bonus_quantity = 0
@@ -95,8 +106,11 @@ class ProductRequest(models.Model):
         if self.request_type == 'SELF' and self.product:
             self.total_price = actual_qty * self.product.price
         elif self.request_type == 'STORE' and self.partner_product:
-            # Для STORE используем цену из каталога партнера
             self.total_price = actual_qty * self.partner_product.price
+
+        # НОВАЯ ЛОГИКА: Для новых запросов STORE сразу устанавливаем статус approved
+        if is_new and self.request_type == 'STORE':
+            self.status = 'approved'
 
         super().save(*args, **kwargs)
 
