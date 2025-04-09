@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.utils import timezone
 from django.db import models
 from .models import City, Store, StoreDebt
 

@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.test import APIRequestFactory
 
 from apps.stores.views import IsAdminUser
@@ -41,7 +42,7 @@ def test_non_admin_user_no_permission():
 @pytest.mark.django_db
 def test_anonymous_user_no_permission():
     request = factory.get('/some-path/')
-    request.user = None
+    request.user = AnonymousUser()
     permission = IsAdminUser()
 
     assert permission.has_permission(request, None) is False

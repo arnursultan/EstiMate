@@ -318,7 +318,7 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         requested_details[product_name]['quantity'] += request.quantity
-        requested_details[product_name]['amount'] += request.quantity * request.product.price
+        requested_details[product_name]['amount'] += float(request.quantity * request.product.price)
         requested_details[product_name]['bonus'] += request.bonus_quantity
 
     # 2. Проданные товары (STORE) за этот день
@@ -345,7 +345,7 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         sold_details[product_name]['quantity'] += request.quantity
-        sold_details[product_name]['amount'] += request.quantity * request.partner_product.price
+        sold_details[product_name]['amount'] += float(request.quantity * request.partner_product.price)
         sold_details[product_name]['bonus'] += request.bonus_quantity
 
     # 3. Долг администратору (по подтвержденным SELF-запросам)

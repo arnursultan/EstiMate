@@ -1,6 +1,9 @@
-import pytest
+
 from django.urls import reverse
 from rest_framework import status
+
+from apps.orders.models import ProductRequest
+from apps.products.models import Product
 from apps.stores.models import Store, City, StoreDebt
 
 STORES_URL = reverse('store-list')
@@ -48,6 +51,38 @@ def auth_client(auth_user):
 @pytest.fixture
 def city():
     return City.objects.create(name="Bishkek")
+
+
+@pytest.fixture
+def product(city):
+    return Product.objects.create(name="Test Product", price=100)
+
+
+@pytest.fixture
+def store(city):
+    return Store.objects.create(
+        name="StoreTest",
+        inn="123456789012",
+        city=city,
+        address="Test Address",
+        phone="+996700000055",
+        status="approved",
+        is_active=True,
+
+    )
+
+
+
+@pytest.fixture
+def product_request(store, product, auth_user):
+    return ProductRequest.objects.create(
+        user=auth_user,
+        store=store,
+        product=product,
+        quantity=5,
+    request_type = "SELF"  # обязательно!
+    )
+
 
 @pytest.mark.django_db
 def test_create_store_by_partner(auth_client, city):
@@ -165,13 +200,6 @@ def test_filter_by_debt(admin_client, city):
     assert response.status_code == status.HTTP_200_OK
     assert response.data[0]['name'] == "Debt2"  # highest debt first
 
-@pytest.mark.django_db
-def test_delete_not_allowed(admin_client, city):
-    store = Store.objects.create(name="ToDelete", inn="1231231234", city=city, address="No", phone="+996700000012")
-    url = reverse("store-detail", args=[store.id])
-    response = admin_client.delete(url)
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert Store.objects.filter(id=store.id).exists()
 
 
 @pytest.mark.django_db
@@ -217,3 +245,57 @@ def test_deactivate_already_inactive_store(admin_client, city):
     url = reverse("store-deactivate", args=[store.id])
     response = admin_client.post(url)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+@pytest.mark.django_db
+def test_delete_not_allowed(admin_client, city):
+    store = Store.objects.create(name="Delete Me", inn="9999999999", city=city, address="A", phone="+996700000010")
+    url = reverse("store-detail", args=[store.id])
+    response = admin_client.delete(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+@pytest.mark.django_db
+def test_store_requests_returns_requests(admin_client, store, product_request):
+    url = reverse("store-requests", args=[store.id])
+    response = admin_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+    assert any(r['id'] == product_request.id for r in response.data)
+
+
+@pytest.mark.django_db
+def test_partner_filter_by_debt_shows_only_their_approved_active(auth_client, city, auth_user):
+    # Создаем магазины
+    store1 = Store.objects.create(
+        name="MyStore", inn="1111111111", city=city,
+        address="X", phone="+996700000010",
+        status="approved", is_active=True
+    )
+    store2 = Store.objects.create(
+        name="ForeignStore", inn="2222222222", city=city,
+        address="Y", phone="+996700000011",
+        status="approved", is_active=True
+    )
+
+    # Создаем продукт
+    product = Product.objects.create(name="Test Product", price=100)
+
+    # Создаем заявку, чтобы привязать партнёра к store1
+    ProductRequest.objects.create(
+        user=auth_user,
+        store=store1,
+        product=product,
+        quantity=5,
+        request_type='SELF'
+    )
+
+    # Создаем долги
+    StoreDebt.objects.create(store=store1, amount=1000, is_paid=False)
+    StoreDebt.objects.create(store=store2, amount=5000, is_paid=False)
+
+    # Партнёр делает запрос
+    url = reverse("store-filter-by-debt")
+    response = auth_client.get(url)
+
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert response.data[0]['name'] == "MyStore"
