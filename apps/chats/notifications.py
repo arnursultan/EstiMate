@@ -8,26 +8,26 @@ logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=Message)
-def notify_on_admin_message(sender, instance, created, **kwargs):
-    """Отправка уведомления при получении сообщения от администратора"""
+def notify_on_message(sender, instance, created, **kwargs):
+    """Отправка уведомления при получении сообщения"""
     if not created:
         return
 
     try:
-        # Уведомления только для сообщений от администратора обычным пользователям
-        if instance.sender.is_staff and instance.receiver and not instance.receiver.is_staff:
+        # Уведомления для админа о сообщениях от партнеров
+        if instance.sender.role == 'partner' and instance.chat.admin:
             notify(
-                user=instance.receiver,
-                title="Новое сообщение",
-                message=f"Вы получили новое сообщение от администратора: {instance.text[:50]}..." if instance.text else "Вы получили новый файл от администратора"
+                user=instance.chat.admin,
+                title="Новое сообщение от партнера",
+                message=f"Партнер {instance.sender.first_name} {instance.sender.last_name} отправил вам сообщение: {instance.content[:50]}..." if instance.content else f"Партнер {instance.sender.first_name} {instance.sender.last_name} отправил вам файл"
             )
 
-        # Уведомления администраторам о сообщениях от обычных пользователей
-        elif not instance.sender.is_staff and instance.receiver and instance.receiver.is_staff:
+        # Уведомления для партнеров о сообщениях от админов
+        elif instance.sender.role == 'admin' and instance.chat.partner:
             notify(
-                user=instance.receiver,
-                title="Новое сообщение от партнера",
-                message=f"Партнер {instance.sender.first_name} {instance.sender.last_name} отправил вам сообщение: {instance.text[:50]}..." if instance.text else f"Партнер {instance.sender.first_name} {instance.sender.last_name} отправил вам файл"
+                user=instance.chat.partner,
+                title="Новое сообщение",
+                message=f"Вы получили новое сообщение от администратора: {instance.content[:50]}..." if instance.content else "Вы получили новый файл от администратора"
             )
     except Exception as e:
         logger.error(f"Ошибка при отправке уведомления о сообщении: {str(e)}")

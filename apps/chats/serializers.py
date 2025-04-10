@@ -23,6 +23,8 @@ class MessageSerializer(serializers.ModelSerializer):
     file_url = serializers.SerializerMethodField()
     file_name = serializers.SerializerMethodField()
     file_size = serializers.SerializerMethodField()
+    file_type = serializers.SerializerMethodField()
+    direct_file_url = serializers.SerializerMethodField()  # Прямая ссылка через API
 
     class Meta:
         model = Message
@@ -32,8 +34,10 @@ class MessageSerializer(serializers.ModelSerializer):
             'content',
             'file',
             'file_url',
+            'direct_file_url',  # Добавляем новое поле
             'file_name',
             'file_size',
+            'file_type',
             'message_type',
             'timestamp',
             'is_read'
@@ -47,7 +51,21 @@ class MessageSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             if request:
                 return request.build_absolute_uri(obj.file.url)
-            return obj.file.url
+            # Добавляем базовый URL, если запрос недоступен
+            from django.conf import settings
+            return f"{settings.BASE_URL}{obj.file.url}" if hasattr(settings, 'BASE_URL') else obj.file.url
+        return None
+
+    def get_direct_file_url(self, obj):
+        """Прямая ссылка на файл через наш API (для мобильного приложения)"""
+        if not obj.file:
+            return None
+
+        request = self.context.get('request')
+        if request:
+            from django.urls import reverse
+            url = reverse('chat:message-file', kwargs={'message_id': obj.id})
+            return request.build_absolute_uri(url)
         return None
 
     def get_file_name(self, obj):
@@ -60,6 +78,9 @@ class MessageSerializer(serializers.ModelSerializer):
             return obj.file.size
         return None
 
+    def get_file_type(self, obj):
+        # Используем существующий метод модели для определения типа файла
+        return obj.file_type if obj.file else None
 
 class ChatSerializer(serializers.ModelSerializer):
     """Сериализатор для отображения информации о чате."""
@@ -104,10 +125,13 @@ class ChatCreateSerializer(serializers.ModelSerializer):
 
     def validate_partner_id(self, value):
         try:
-            partner = User.objects.get(id=value, role='partner')
+            partner = User.objects.get(id=value)
+            # Проверка, что указанный пользователь является партнером
+            if partner.role != 'partner':
+                raise serializers.ValidationError("Указанный пользователь не является партнером")
             return value
         except User.DoesNotExist:
-            raise serializers.ValidationError("Партнер не найден")
+            raise serializers.ValidationError("Пользователь не найден")
 
     def create(self, validated_data):
         partner_id = validated_data.pop('partner_id')
@@ -117,6 +141,10 @@ class ChatCreateSerializer(serializers.ModelSerializer):
         # Только администраторы могут создавать чаты
         if user.role != 'admin':
             raise serializers.ValidationError("Только администраторы могут создавать чаты")
+
+        # Проверка, что администратор создает чат именно с партнером
+        if partner.role != 'partner':
+            raise serializers.ValidationError("Чат можно создать только с пользователем, имеющим роль партнера")
 
         # Проверка на существующий чат
         existing_chat = Chat.objects.filter(admin=user, partner=partner).first()

@@ -94,16 +94,43 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }))
                 return
 
+            # Дополнительная проверка для партнеров - могут общаться только с админами
+            if self.user.role == 'partner':
+                chat = await database_sync_to_async(Chat.objects.get)(id=self.chat_id)
+                admin = await database_sync_to_async(lambda: chat.admin)()
+
+                if admin.role != 'admin':
+                    logger.warning(
+                        f"Партнер {self.user.id} пытается отправить сообщение в чат {self.chat_id}, который не с администратором")
+                    await self.send(text_data=json.dumps({
+                        'error': 'Партнеры могут общаться только с администраторами'
+                    }))
+                    return
+
             # Создаем сообщение в базе данных
             message = await self.save_message(message_type, content, file_data, file_name)
 
             # Получаем URL файла, если он был сохранен
             file_url = None
+            actual_file_name = file_name or (message.file.name.split('/')[-1] if message.file else None)
+
             if message.file:
+                from django.conf import settings
                 file_url = message.file.url
                 # Добавляем полный URL
-                if not file_url.startswith(('http://', 'https://')):
+                if hasattr(settings, 'BASE_URL') and not file_url.startswith(('http://', 'https://')):
                     file_url = f"{settings.BASE_URL}{file_url}"
+
+            # Добавляем прямой URL для доступа к файлу через API
+            direct_file_url = None
+            if message.file:
+                from django.urls import reverse
+                api_url = reverse('chat:message-file', kwargs={'message_id': message.id})
+                if hasattr(settings, 'BASE_URL'):
+                    direct_file_url = f"{settings.BASE_URL}{api_url}"
+
+            # Добавляем тип файла в сообщение для клиента
+            file_type = message.file_type if message.file else None
 
             # Отправляем сообщение всем участникам чата
             await self.channel_layer.group_send(
@@ -117,7 +144,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'sender_role': message.sender.role,
                         'content': message.content,
                         'file_url': file_url,
-                        'file_name': file_name,
+                        'direct_file_url': direct_file_url,
+                        'file_name': actual_file_name,
+                        'file_type': file_type,  # Добавляем тип файла
                         'message_type': message.message_type,
                         'timestamp': message.timestamp.isoformat(),
                         'is_read': message.is_read
@@ -155,8 +184,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             chat = Chat.objects.get(id=chat_id)
             # Проверяем, является ли пользователь администратором или партнером в этом чате
-            return (user.role == 'admin' and chat.admin == user) or (user.role == 'partner' and chat.partner == user)
+            if user.role == 'admin' and chat.admin == user:
+                return True
+            elif user.role == 'partner' and chat.partner == user:
+                # Дополнительная проверка: партнеры могут общаться только с админами
+                if chat.admin.role != 'admin':
+                    logger.warning(
+                        f"Партнер {user.id} пытается получить доступ к чату {chat_id}, который не с администратором")
+                    return False
+                return True
+
+            logger.warning(f"Пользователь {user.id} пытается получить доступ к чату {chat_id} без прав")
+            return False
         except Chat.DoesNotExist:
+            logger.warning(f"Попытка доступа к несуществующему чату {chat_id}")
             return False
 
     @database_sync_to_async
@@ -188,8 +229,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         f"Файл слишком большой. Максимальный размер: {settings.FILE_UPLOAD_MAX_MEMORY_SIZE / (1024 * 1024)} MB")
 
                 # Создаем уникальное имя файла
-                ext = file_name.split('.')[-1].lower()
-                new_filename = f"{uuid.uuid4()}.{ext}"
+                ext = file_name.split('.')[-1].lower() if '.' in file_name else ''
+                new_filename = f"{uuid.uuid4()}.{ext}" if ext else f"{uuid.uuid4()}"
 
                 # Сохраняем файл
                 message.file.save(new_filename, ContentFile(file_content), save=False)

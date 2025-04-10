@@ -1,4 +1,6 @@
+from django.http import HttpResponseForbidden
 from rest_framework import generics, permissions, status, filters
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q, Max, OuterRef, Subquery
@@ -15,6 +17,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.pagination import PageNumberPagination
+import os
+from .utils import BetterFileResponse
 
 User = get_user_model()
 
@@ -227,22 +231,43 @@ class MessageCreateView(generics.CreateAPIView):
         }
     )
     def post(self, request, *args, **kwargs):
+        # Дополнительная проверка перед созданием сообщения
+        chat_id = self.kwargs['chat_id']
+        user = self.request.user
+
+        try:
+            chat = Chat.objects.get(id=chat_id)
+
+            # Проверка доступа к чату
+            if user.role == 'admin' and chat.admin != user:
+                return Response(
+                    {"error": "У вас нет доступа к этому чату"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            elif user.role == 'partner' and chat.partner != user:
+                return Response(
+                    {"error": "У вас нет доступа к этому чату"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # Дополнительная проверка для партнеров
+            if user.role == 'partner' and chat.admin.role != 'admin':
+                return Response(
+                    {"error": "Партнеры могут общаться только с администраторами"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        except Chat.DoesNotExist:
+            return Response(
+                {"error": "Чат не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         return super().post(request, *args, **kwargs)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['chat_id'] = self.kwargs['chat_id']
         return context
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        message = serializer.save()
-
-        return Response(
-            MessageSerializer(message, context={'request': request}).data,
-            status=status.HTTP_201_CREATED
-        )
 
 
 class UnreadMessagesCountView(APIView):
@@ -363,3 +388,37 @@ class MarkMessagesAsReadView(APIView):
             'status': 'Сообщения отмечены как прочитанные',
             'marked_count': marked_count
         })
+
+
+class FileAccessView(APIView):
+    """Представление для прямого доступа к файлам чата."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, message_id, *args, **kwargs):
+        # Получаем сообщение
+        message = get_object_or_404(Message, id=message_id)
+
+        # Проверяем доступ пользователя к чату
+        user = request.user
+        if user.role == 'admin' and message.chat.admin != user:
+            return HttpResponseForbidden("У вас нет доступа к этому файлу")
+        elif user.role == 'partner' and message.chat.partner != user:
+            return HttpResponseForbidden("У вас нет доступа к этому файлу")
+
+        # Дополнительная проверка: партнер может общаться только с админом
+        if user.role == 'partner' and message.chat.admin.role != 'admin':
+            return HttpResponseForbidden("Партнеры могут общаться только с администраторами")
+
+        # Проверяем наличие файла
+        if not message.file:
+            return Response({"error": "Файл не найден"}, status=404)
+
+        # Получаем путь к файлу
+        file_path = message.file.path
+        filename = os.path.basename(file_path)
+
+        # Отдаем файл с улучшенными заголовками
+        return BetterFileResponse(
+            open(file_path, 'rb'),
+            filename=filename
+        )
