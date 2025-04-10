@@ -3,7 +3,6 @@ from .models import (
     PartnerFinanceStat, StoreFinanceStat, FinanceEntry,
     CalendarStatistics, ArchivedDailySummary, InventorySummary
 )
-from apps.stores.models import City
 from apps.products.models import PartnerProduct
 
 
@@ -13,14 +12,13 @@ class PartnerFinanceStatSerializer(serializers.ModelSerializer):
     class Meta:
         model = PartnerFinanceStat
         fields = [
-            'id', 'user', 'user_name', 'date', 'total_approved_debt',
-            'total_damaged_loss', 'total_bonus_value', 'total_profit',
-            'total_expenses', 'total_sold', 'total_sold_quantity'
+            'id', 'user', 'user_name', 'date','total_requested_amount',
+            'total_expenses',  'total_sold_quantity'
         ]
         read_only_fields = [
-            'user', 'date', 'total_approved_debt', 'total_damaged_loss',
-            'total_bonus_value', 'total_profit', 'total_expenses',
-            'total_sold', 'total_sold_quantity'
+            'user', 'date',
+                 'total_expenses',
+             'total_sold_quantity','total_requested_amount'
         ]
 
     def get_user_name(self, obj):
@@ -77,47 +75,49 @@ class FinanceEntrySerializer(serializers.ModelSerializer):
 
         # Для записей типа 'sale', 'damage', 'return' нужен partner_product
         if entry_type in ['sale', 'damage', 'return'] and not partner_product:
-            raise serializers.ValidationError(
-                {
-                    "partner_product": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' необходимо указать товар из каталога"}
-            )
+            raise serializers.ValidationError({
+                "partner_product": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' необходимо указать товар из каталога"
+            })
 
-        # Для записей типа 'sale', 'damage', 'return' нужен quantity
+        # Для этих типов quantity обязателен и > 0
         if entry_type in ['sale', 'damage', 'return'] and quantity <= 0:
-            raise serializers.ValidationError(
-                {
-                    "quantity": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' необходимо указать положительное количество"}
-            )
+            raise serializers.ValidationError({
+                "quantity": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' необходимо указать положительное количество"
+            })
 
-        # Проверка, что партнер имеет доступ к выбранному partner_product
+        # Проверка доступа к продукту
         if partner_product:
             user = self.context.get('request').user
             if partner_product.partner.id != user.id and not user.is_staff:
-                raise serializers.ValidationError(
-                    {"partner_product": "Вы можете выбрать только товары из вашего личного каталога"}
-                )
+                raise serializers.ValidationError({
+                    "partner_product": "Вы можете выбрать только товары из вашего личного каталога"
+                })
 
-        # Проверка достаточного количества товара для записей типа 'sale', 'damage'
+        # Проверка остатков
         if entry_type in ['sale', 'damage'] and partner_product:
             if quantity > partner_product.remaining_quantity:
-                raise serializers.ValidationError(
-                    {"quantity": f"Недостаточно товара в каталоге. Доступно: {partner_product.remaining_quantity}"}
-                )
+                raise serializers.ValidationError({
+                    "quantity": f"Недостаточно товара в каталоге. Доступно: {partner_product.remaining_quantity}"
+                })
 
-        # Проверка достаточного проданного количества для записей типа 'return'
+        # Проверка возврата
         if entry_type == 'return' and partner_product:
             if quantity > partner_product.sold_quantity:
-                raise serializers.ValidationError(
-                    {"quantity": f"Возврат не может превышать проданное количество ({partner_product.sold_quantity})"}
-                )
+                raise serializers.ValidationError({
+                    "quantity": f"Возврат не может превышать проданное количество ({partner_product.sold_quantity})"
+                })
 
-        # Для expense и income amount должен быть положительным
+        # Для expense и income
         if entry_type in ['expense', 'income']:
             amount = data.get('amount', 0)
             if amount <= 0:
-                raise serializers.ValidationError(
-                    {"amount": "Сумма должна быть положительной"}
-                )
+                raise serializers.ValidationError({
+                    "amount": "Сумма должна быть положительной"
+                })
+            if quantity > 0:
+                raise serializers.ValidationError({
+                    "quantity": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' не нужно указывать количество"
+                })
 
         return data
 
@@ -191,40 +191,58 @@ class PartnerProductFinanceSerializer(serializers.Serializer):
     """Сериализатор для работы с финансами отдельного товара партнера"""
     partner_product_id = serializers.IntegerField()
     entry_type = serializers.ChoiceField(choices=FinanceEntry.ENTRY_TYPE_CHOICES)
-    quantity = serializers.IntegerField(min_value=1)
+    quantity = serializers.IntegerField(min_value=1, required=False)
+    amount = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
     note = serializers.CharField(required=False, allow_blank=True)
 
     def validate(self, data):
         partner_product_id = data.get('partner_product_id')
         entry_type = data.get('entry_type')
         quantity = data.get('quantity')
+        amount = data.get('amount')
         user = self.context.get('request').user
 
         try:
             partner_product = PartnerProduct.objects.get(id=partner_product_id)
 
-            # Проверка, что партнер имеет доступ к выбранному товару
             if partner_product.partner.id != user.id and not user.is_staff:
-                raise serializers.ValidationError(
-                    {"partner_product_id": "Вы можете выбрать только товары из вашего личного каталога"}
-                )
+                raise serializers.ValidationError({
+                    "partner_product_id": "Вы можете выбрать только товары из вашего личного каталога"
+                })
 
-            # Проверки в зависимости от типа записи
             if entry_type in ['sale', 'damage']:
+                if quantity is None:
+                    raise serializers.ValidationError({
+                        "quantity": "Укажите количество"
+                    })
                 if quantity > partner_product.remaining_quantity:
-                    raise serializers.ValidationError(
-                        {"quantity": f"Недостаточно товара. Доступно: {partner_product.remaining_quantity}"}
-                    )
+                    raise serializers.ValidationError({
+                        "quantity": f"Недостаточно товара. Доступно: {partner_product.remaining_quantity}"
+                    })
+
             elif entry_type == 'return':
+                if quantity is None:
+                    raise serializers.ValidationError({
+                        "quantity": "Укажите количество"
+                    })
                 if quantity > partner_product.sold_quantity:
-                    raise serializers.ValidationError(
-                        {
-                            "quantity": f"Возврат не может превышать проданное количество ({partner_product.sold_quantity})"}
-                    )
+                    raise serializers.ValidationError({
+                        "quantity": f"Возврат не может превышать проданное количество ({partner_product.sold_quantity})"
+                    })
+
+            elif entry_type in ['income', 'expense']:
+                if not amount or amount <= 0:
+                    raise serializers.ValidationError({
+                        "amount": "Сумма должна быть положительной"
+                    })
+                if quantity:
+                    raise serializers.ValidationError({
+                        "quantity": f"Для записи типа '{entry_type}' не нужно указывать количество"
+                    })
 
         except PartnerProduct.DoesNotExist:
-            raise serializers.ValidationError(
-                {"partner_product_id": "Указанный товар не найден"}
-            )
+            raise serializers.ValidationError({
+                "partner_product_id": "Указанный товар не найден"
+            })
 
         return data

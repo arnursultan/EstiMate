@@ -6,7 +6,7 @@ from .views import (
     AdminStatisticsView, CalendarStatisticsView, ArchivedDataView,
     AdminDamagedGoodsReportView, BalanceCalculatorView, ProductRequestHistoryView,
     FinanceSummaryView, FinanceEntryListView, PartnerInventoryView, FinanceEntryCreateView,
-    PartnerProductFinanceView, PartnerCatalogFinanceView, PartnerStatisticsView
+    PartnerProductFinanceView, PartnerCatalogFinanceView, PartnerStatisticsView,ExpenseEntryView
 )
 
 app_name = 'finance'
@@ -25,6 +25,7 @@ urlpatterns = [
     path('summary/', FinanceSummaryView.as_view(), name='finance-summary'),
     path('calendar/', CalendarStatisticsView.as_view(), name='calendar-statistics'),
     path('archives/', ArchivedDataView.as_view(), name='archived-data'),
+    path('expense-entry/', ExpenseEntryView.as_view(), name='expense-entry'),
 
     # Новые маршруты
     path('partner-statistics/', PartnerStatisticsView.as_view(), name='partner-statistics'),

@@ -43,6 +43,32 @@ class PartnerFinanceStat(models.Model):
     # Детали по товарам (для хранения разбивки по товарам)
     detailed_data = models.JSONField(default=dict, blank=True, verbose_name="Детальные данные по товарам")
 
+
+    @property
+    def profit(self):
+        return self.total_sold_amount - self.total_expenses
+
+    @property
+    def total_approved_cash(self):
+        from apps.orders.models import ProductRequest
+        qs = ProductRequest.objects.filter(
+            user=self.user,
+            request_type="SELF",
+            status="approved",
+            created_at__date=self.date
+        )
+        return sum([pr.quantity * pr.product.price for pr in qs])
+
+    @property
+    def total_damaged_loss(self):
+        from apps.orders.models import ProductRequest
+        qs = ProductRequest.objects.filter(
+            user=self.user,
+            status="received",
+            created_at__date=self.date
+        )
+        return sum([pr.damaged_quantity * pr.product.price for pr in qs])
+
     class Meta:
         unique_together = ('user', 'date')
         ordering = ['-date']

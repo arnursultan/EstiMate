@@ -1,9 +1,9 @@
+from django.utils import timezone
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser
-from django.db.models import Q
 from .models import Product, PartnerProduct
 from .serializers import (
     ProductSerializer,
@@ -15,7 +15,6 @@ from .serializers import (
 )
 from django.core.exceptions import  ValidationError
 from apps.finance.serializers import FinanceEntrySerializer
-from datetime import timezone
 
 
 class IsAdminUser(permissions.BasePermission):
@@ -47,6 +46,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
 
+    @property
     def get_queryset(self):
         queryset = Product.objects.all()
 
@@ -82,7 +82,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
-    def add_quantity(self, request, pk=None):
+    def add_quantity(self, request):
         """Добавление количества товара на склад"""
         product = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -98,7 +98,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['get'])
-    def bonus_info(self, request, pk=None):
+    def bonus_info(self, request):
         """Расчет бонусов для товара"""
         product = self.get_object()
         serializer = ProductBonusSerializer(data=request.query_params)
@@ -144,7 +144,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
-    def request_for_self(self, request, pk=None):
+    def request_for_self(self, request):
         """Запросить товар 'для себя' (SELF)"""
         product = self.get_object()
 
@@ -208,7 +208,7 @@ class PartnerProductViewSet(viewsets.ModelViewSet):
         serializer.save(partner=self.request.user)
 
     @action(detail=True, methods=['patch'])
-    def update_quantities(self, request, pk=None):
+    def update_quantities(self, request):
         """Обновление количественных показателей товара партнера"""
         partner_product = self.get_object()
 
@@ -226,7 +226,7 @@ class PartnerProductViewSet(viewsets.ModelViewSet):
         return Response(PartnerProductSerializer(partner_product).data)
 
     @action(detail=True, methods=['post'])
-    def record_sale(self, request, pk=None):
+    def record_sale(self, request):
         """Запись о продаже товара"""
         partner_product = self.get_object()
 
@@ -257,7 +257,7 @@ class PartnerProductViewSet(viewsets.ModelViewSet):
             )
 
     @action(detail=True, methods=['post'])
-    def record_damage(self, request, pk=None):
+    def record_damage(self, request):
         """Запись о бракованном товаре"""
         partner_product = self.get_object()
 
@@ -288,7 +288,7 @@ class PartnerProductViewSet(viewsets.ModelViewSet):
             )
 
     @action(detail=True, methods=['post'])
-    def record_return(self, request, pk=None):
+    def record_return(self, request):
         """Запись о возврате товара"""
         partner_product = self.get_object()
 
@@ -321,7 +321,7 @@ class PartnerProductViewSet(viewsets.ModelViewSet):
     # Добавляем в apps/products/views.py
 
     @action(detail=True, methods=['post'])
-    def record_sold(self, request, pk=None):
+    def record_sold(self, request):
         """Запись о проданных товарах"""
         partner_product = self.get_object()
 
@@ -383,7 +383,7 @@ class PartnerProductViewSet(viewsets.ModelViewSet):
             )
 
     @action(detail=True, methods=['post'])
-    def record_damage(self, request, pk=None):
+    def record_damage(self, request):
         """Запись о бракованных товарах"""
         partner_product = self.get_object()
 
@@ -408,7 +408,7 @@ class PartnerProductViewSet(viewsets.ModelViewSet):
 
             # Создание финансовой записи (без влияния на баланс)
             from apps.finance.models import FinanceEntry
-            entry = FinanceEntry.objects.create(
+            FinanceEntry.objects.create(
                 user=request.user,
                 date=timezone.now().date(),
                 entry_type='damage',

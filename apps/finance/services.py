@@ -1,10 +1,11 @@
 from datetime import date
 from django.db.models import Sum
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+
 from apps.orders.models import ProductRequest
 from apps.products.models import PartnerProduct
 from .models import PartnerFinanceStat, StoreFinanceStat, CalendarStatistics, InventorySummary
-from datetime import timezone
 
 
 def generate_partner_finance_stat(user):

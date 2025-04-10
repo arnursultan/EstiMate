@@ -1,6 +1,7 @@
 import django_filters
 from .models import PartnerFinanceStat, StoreFinanceStat, FinanceEntry, CalendarStatistics, InventorySummary
-
+from django_filters import rest_framework as filters
+from apps.orders.models import ProductRequest
 
 class DateRangeFilter(django_filters.FilterSet):
     from_date = django_filters.DateFilter(field_name="date", lookup_expr='gte')
@@ -39,3 +40,14 @@ class InventorySummaryFilter(DateRangeFilter):
     class Meta:
         model = InventorySummary
         fields = ['user', 'date']
+
+
+
+class ProductRequestFilter(filters.FilterSet):
+    created_at_after = filters.DateTimeFilter(field_name='created_at', lookup_expr='gte')
+    created_at_before = filters.DateTimeFilter(field_name='created_at', lookup_expr='lte')
+
+    class Meta:
+        model = ProductRequest
+        fields = ['status', 'payment_method', 'store', 'created_at']
+

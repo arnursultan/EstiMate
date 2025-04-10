@@ -5,30 +5,27 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from django.db.models import Sum, Q, F, ExpressionWrapper, IntegerField
+from django.db.models import Sum
 from django.utils import timezone
 from datetime import datetime
 from apps.users.models import User
-
 from .models import (
-    PartnerFinanceStat, StoreFinanceStat, FinanceEntry,
+    PartnerFinanceStat, FinanceEntry,
     CalendarStatistics, ArchivedDailySummary
 )
 from .serializers import (
-    PartnerFinanceStatSerializer, StoreFinanceStatSerializer,
-    FinanceEntrySerializer, CalendarStatisticsSerializer,
-    ArchivedDailySummarySerializer, PartnerProductFinanceSerializer, InventorySummarySerializer
+    PartnerFinanceStatSerializer,
+    FinanceEntrySerializer,
+     PartnerProductFinanceSerializer, InventorySummarySerializer
 )
 from .filters import (
-    PartnerFinanceStatFilter, StoreFinanceStatFilter,
-    FinanceEntryFilter, CalendarStatisticsFilter
+    FinanceEntryFilter,ProductRequestFilter
 )
-from apps.stores.models import StoreDebt, Store
+from apps.stores.models import StoreDebt, Store, City
 from apps.orders.models import ProductRequest
-from apps.products.models import Product, PartnerProduct
+from apps.products.models import  PartnerProduct
 from apps.orders.serializers import ProductRequestSerializer
-from django.core.exceptions import  ValidationError
-from .services import generate_inventory_summary, update_partner_statistics
+from .services import generate_inventory_summary, update_partner_statistics, update_store_daily_stats
 import logging
 
 
@@ -172,7 +169,7 @@ class FinanceEntryListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = FinanceEntryFilter
-    ordering_fields = ['date', 'income', 'expense', 'profit']
+    ordering_fields = ['date', 'amount']
 
     def get_queryset(self):
         """Возвращает финансовые записи текущего пользователя или все записи для администратора"""
@@ -181,9 +178,9 @@ class FinanceEntryListView(generics.ListAPIView):
             # Возвращаем пустой QuerySet для Swagger
             return FinanceEntry.objects.none()
 
-        if self.request.user.is_staff:
-            return FinanceEntry.objects.all().order_by('-date')
-        return FinanceEntry.objects.filter(user=self.request.user).order_by('-date')
+        qs = FinanceEntry.objects.all() if self.request.user.is_staff else FinanceEntry.objects.filter(
+            user=self.request.user)
+        return qs  # ⬅️ убери .order_by('-date')
 
 
 # В apps/finance/views.py
@@ -495,15 +492,6 @@ class AdminStatisticsView(APIView):
             )
 
 
-class StoreFinanceStatListView(generics.ListAPIView):
-    """Список финансовой статистики магазинов"""
-    queryset = StoreFinanceStat.objects.all()
-    serializer_class = StoreFinanceStatSerializer
-    permission_classes = [IsAdminUser]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_class = StoreFinanceStatFilter
-    ordering_fields = ['date', 'total_approved', 'total_damaged', 'total_debt']
-
 
 class CalendarStatisticsView(APIView):
     """Получение меток календаря"""
@@ -689,6 +677,7 @@ class BalanceCalculatorView(APIView):
         ]
     )
     def get(self, request):
+        from apps.orders.models import ProductRequest
         try:
             user = request.user
             date = request.query_params.get('date')
@@ -727,8 +716,8 @@ class BalanceCalculatorView(APIView):
             if city_id:
                 expense_filter['city_id'] = city_id
 
-            manual_expenses = FinanceEntry.objects.filter(**expense_filter)
-            total_expenses += sum(float(e.expense) for e in manual_expenses)
+            manual_expenses = FinanceEntry.objects.filter(entry_type='expense', **expense_filter)
+            total_expenses += sum(float(e.amount) for e in manual_expenses)
 
             # Долги магазинов
             total_debt = 0
@@ -738,7 +727,7 @@ class BalanceCalculatorView(APIView):
 
             # Если обычный пользователь, показываем только долги связанных магазинов
             if not user.is_staff:
-                from apps.orders.models import ProductRequest
+
                 store_ids = ProductRequest.objects.filter(user=user).values_list('store_id', flat=True).distinct()
                 debt_filter['store_id__in'] = store_ids
 
@@ -755,7 +744,7 @@ class BalanceCalculatorView(APIView):
 
             # Если обычный пользователь, показываем только долги связанных магазинов
             if not user.is_staff:
-                from apps.orders.models import ProductRequest
+
                 store_ids = ProductRequest.objects.filter(user=user).values_list('store_id', flat=True).distinct()
                 paid_debt_filter['store_id__in'] = store_ids
 
@@ -764,7 +753,8 @@ class BalanceCalculatorView(APIView):
 
             # Бонусы (их стоимость)
             total_bonus = 0
-            bonus_filter = {}
+            bonus_filter = {"status__in": ["approved", "received"]}
+
             if user.is_staff:
                 if store_id:
                     bonus_filter['store_id'] = store_id
@@ -772,18 +762,16 @@ class BalanceCalculatorView(APIView):
                     bonus_filter['store__city_id'] = city_id
             else:
                 bonus_filter['user'] = user
+                bonus_filter['request_type'] = 'SELF'
 
             if date:
                 bonus_filter['created_at__date'] = date
 
-            bonus_requests = ProductRequest.objects.filter(
-                status__in=['approved', 'received'],
-                **bonus_filter
-            )
+            bonus_requests = ProductRequest.objects.filter(**bonus_filter).select_related("product")
 
             for req in bonus_requests:
-                bonus_value = req.bonus_quantity * req.product.price
-                total_bonus += float(bonus_value)
+                if req.bonus_quantity and req.product and req.product.price and req.product.is_active:
+                    total_bonus += float(req.bonus_quantity * req.product.price)
 
             # Расчет общего баланса
             balance = total_income - total_expenses - total_debt + paid_debt + total_bonus
@@ -915,19 +903,15 @@ class ProductRequestHistoryView(generics.ListAPIView):
     serializer_class = ProductRequestSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['status', 'payment_method', 'for_store', 'store', 'created_at']
+    filterset_class = ProductRequestFilter  # <-- подключаем кастомный фильтр
     search_fields = ['product__name']
     ordering_fields = ['created_at', 'quantity', 'total_price']
 
     def get_queryset(self):
         qs = ProductRequest.objects.all()
-
-        # Если пользователь не админ, показываем только его запросы
         if not self.request.user.is_staff:
             qs = qs.filter(user=self.request.user)
-
         return qs
-
 
 class FinanceSummaryView(APIView):
     """Сводка по финансам"""
@@ -937,32 +921,14 @@ class FinanceSummaryView(APIView):
         operation_summary="Финансовая сводка",
         operation_description="Возвращает сводку по финансам за указанный период",
         manual_parameters=[
-            openapi.Parameter(
-                'from',
-                openapi.IN_QUERY,
-                description="Начало периода (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'to',
-                openapi.IN_QUERY,
-                description="Конец периода (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'store',
-                openapi.IN_QUERY,
-                description="ID магазина",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'city',
-                openapi.IN_QUERY,
-                description="ID города",
-                type=openapi.TYPE_INTEGER
-            ),
+            openapi.Parameter('from', openapi.IN_QUERY, description="Начало периода (YYYY-MM-DD)",
+                              type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter('to', openapi.IN_QUERY, description="Конец периода (YYYY-MM-DD)",
+                              type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter('store', openapi.IN_QUERY, description="ID магазина",
+                              type=openapi.TYPE_INTEGER),
+            openapi.Parameter('city', openapi.IN_QUERY, description="ID города",
+                              type=openapi.TYPE_INTEGER),
         ]
     )
     def get(self, request):
@@ -979,71 +945,63 @@ class FinanceSummaryView(APIView):
             if to_date:
                 filters['date__lte'] = to_date
 
-            # Для обычного пользователя показываем только его данные
+            # Получаем queryset партнёрской статистики
             if not user.is_staff:
                 partner_qs = PartnerFinanceStat.objects.filter(user=user, **filters)
             else:
                 partner_qs = PartnerFinanceStat.objects.filter(**filters)
-
-                # Дополнительная фильтрация для админа
                 if store_id:
-                    # Находим партнеров, связанных с этим магазином
                     from apps.orders.models import ProductRequest
-                    partner_ids = ProductRequest.objects.filter(
-                        store_id=store_id
-                    ).values_list('user_id', flat=True).distinct()
+                    partner_ids = ProductRequest.objects.filter(store_id=store_id)\
+                        .values_list('user_id', flat=True).distinct()
                     partner_qs = partner_qs.filter(user_id__in=partner_ids)
-
                 elif city_id:
-                    # Находим партнеров, связанных с магазинами в этом городе
                     from apps.orders.models import ProductRequest
                     store_ids = Store.objects.filter(city_id=city_id).values_list('id', flat=True)
-                    partner_ids = ProductRequest.objects.filter(
-                        store_id__in=store_ids
-                    ).values_list('user_id', flat=True).distinct()
+                    partner_ids = ProductRequest.objects.filter(store_id__in=store_ids)\
+                        .values_list('user_id', flat=True).distinct()
                     partner_qs = partner_qs.filter(user_id__in=partner_ids)
 
-            # Рассчитываем сводные данные
-            summary = partner_qs.aggregate(
-                total_approved_cash=Sum('total_approved_cash'),
-                total_damaged_loss=Sum('total_damaged_loss'),
-                total_profit=Sum('total_profit')
-            )
+            # Считаем суммы вручную по property
+            total_approved_cash = sum(stat.total_approved_cash for stat in partner_qs)
+            total_damaged_loss = sum(stat.total_damaged_loss for stat in partner_qs)
+            total_product_profit = sum(stat.profit for stat in partner_qs)
 
-            # Добавляем данные по ручным финансовым записям
-            expense_filters = {}
+            # Ручные записи
+            entry_filters = {}
             if from_date:
-                expense_filters['date__gte'] = from_date
+                entry_filters['date__gte'] = from_date
             if to_date:
-                expense_filters['date__lte'] = to_date
-
+                entry_filters['date__lte'] = to_date
             if not user.is_staff:
-                expense_filters['user'] = user
-
+                entry_filters['user'] = user
             if city_id:
-                expense_filters['city_id'] = city_id
+                entry_filters['city_id'] = city_id
 
-            manual_entries = FinanceEntry.objects.filter(**expense_filters)
-            total_manual_income = manual_entries.aggregate(total=Sum('income'))['total'] or 0
-            total_manual_expense = manual_entries.aggregate(total=Sum('expense'))['total'] or 0
-            total_manual_profit = manual_entries.aggregate(total=Sum('profit'))['total'] or 0
+            manual_entries = FinanceEntry.objects.filter(**entry_filters)
 
-            # Получаем данные по долгам
+            total_manual_income = manual_entries.filter(entry_type='income').aggregate(
+                total=Sum('amount'))['total'] or 0
+            total_manual_expense = manual_entries.filter(entry_type='expense').aggregate(
+                total=Sum('amount'))['total'] or 0
+            total_manual_profit = total_manual_income - total_manual_expense
+
+            # Долги
             debt_filters = {'is_paid': False}
             if store_id:
                 debt_filters['store_id'] = store_id
             elif city_id:
                 debt_filters['store__city_id'] = city_id
-
-            # Для обычного пользователя показываем только долги связанных магазинов
             if not user.is_staff:
                 from apps.orders.models import ProductRequest
-                store_ids = ProductRequest.objects.filter(user=user).values_list('store_id', flat=True).distinct()
+                store_ids = ProductRequest.objects.filter(user=user)\
+                    .values_list('store_id', flat=True).distinct()
                 debt_filters['store_id__in'] = store_ids
 
-            total_debt = StoreDebt.objects.filter(**debt_filters).aggregate(total=Sum('amount'))['total'] or 0
+            total_debt = StoreDebt.objects.filter(**debt_filters).aggregate(
+                total=Sum('amount'))['total'] or 0
 
-            # Формируем итоговую сводку
+            # Формируем ответ
             result = {
                 "period": {
                     "from": from_date,
@@ -1054,24 +1012,23 @@ class FinanceSummaryView(APIView):
                     "city_id": city_id
                 },
                 "finance_summary": {
-                    "approved_sales": float(summary['total_approved_cash'] or 0),
-                    "damaged_loss": float(summary['total_damaged_loss'] or 0),
-                    "product_profit": float(summary['total_profit'] or 0),
+                    "approved_sales": float(total_approved_cash),
+                    "damaged_loss": float(total_damaged_loss),
+                    "product_profit": float(total_product_profit),
                     "manual_income": float(total_manual_income),
                     "manual_expense": float(total_manual_expense),
                     "manual_profit": float(total_manual_profit),
                     "outstanding_debt": float(total_debt),
-                    "total_profit": float((summary['total_profit'] or 0) + total_manual_profit)
+                    "total_profit": float(total_product_profit + total_manual_profit),
                 }
             }
 
             return Response(result)
+
         except Exception as e:
             logger.error(f"Ошибка при получении финансовой сводки: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
-# Добавить в views.py новые представления
 
 class PartnerInventoryView(APIView):
     """Получение сводки по остаткам товаров партнера"""
@@ -1125,8 +1082,9 @@ class PartnerProductFinanceView(APIView):
 
         partner_product_id = serializer.validated_data['partner_product_id']
         entry_type = serializer.validated_data['entry_type']
-        quantity = serializer.validated_data['quantity']
+        quantity = serializer.validated_data.get('quantity')
         note = serializer.validated_data.get('note', '')
+        amount = serializer.validated_data.get('amount', 0)
 
         try:
             partner_product = PartnerProduct.objects.get(id=partner_product_id)
@@ -1136,7 +1094,8 @@ class PartnerProductFinanceView(APIView):
                 user=request.user,
                 date=timezone.now().date(),
                 entry_type=entry_type,
-                quantity=quantity,
+                quantity=quantity or 0,
+                amount=amount,
                 partner_product=partner_product,
                 note=note
             )
@@ -1160,26 +1119,9 @@ class PartnerCatalogFinanceView(APIView):
         operation_summary="Финансовая сводка по каталогу",
         operation_description="Возвращает финансовую сводку по товарам из каталога партнера",
         manual_parameters=[
-            openapi.Parameter(
-                'from_date',
-                openapi.IN_QUERY,
-                description="Начало периода (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'to_date',
-                openapi.IN_QUERY,
-                description="Конец периода (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'partner_product_id',
-                openapi.IN_QUERY,
-                description="ID товара из каталога",
-                type=openapi.TYPE_INTEGER
-            )
+            openapi.Parameter('from_date', openapi.IN_QUERY, description="Начало периода (YYYY-MM-DD)", type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter('to_date', openapi.IN_QUERY, description="Конец периода (YYYY-MM-DD)", type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter('partner_product_id', openapi.IN_QUERY, description="ID товара из каталога", type=openapi.TYPE_INTEGER),
         ]
     )
     def get(self, request):
@@ -1187,30 +1129,21 @@ class PartnerCatalogFinanceView(APIView):
         to_date = request.query_params.get('to_date')
         partner_product_id = request.query_params.get('partner_product_id')
 
-        # Базовый фильтр - записи текущего пользователя
-        entries_filter = {'user': request.user}
+        user = request.user
 
-        # Добавляем фильтры по дате
+        # Все записи пользователя для товарных операций
+        product_entries = FinanceEntry.objects.filter(user=user).exclude(partner_product=None)
         if from_date:
-            entries_filter['date__gte'] = from_date
+            product_entries = product_entries.filter(date__gte=from_date)
         if to_date:
-            entries_filter['date__lte'] = to_date
-
-        # Фильтр по товару
+            product_entries = product_entries.filter(date__lte=to_date)
         if partner_product_id:
-            entries_filter['partner_product_id'] = partner_product_id
+            product_entries = product_entries.filter(partner_product_id=partner_product_id)
 
-        # Получаем записи
-        entries = FinanceEntry.objects.filter(**entries_filter)
+        sale_entries = product_entries.filter(entry_type='sale')
+        damage_entries = product_entries.filter(entry_type='damage')
+        return_entries = product_entries.filter(entry_type='return')
 
-        # Агрегируем данные по типам записей
-        sale_entries = entries.filter(entry_type='sale')
-        damage_entries = entries.filter(entry_type='damage')
-        return_entries = entries.filter(entry_type='return')
-        expense_entries = entries.filter(entry_type='expense')
-        income_entries = entries.filter(entry_type='income')
-
-        # Суммируем данные
         total_sales = sale_entries.aggregate(total=Sum('amount'))['total'] or 0
         total_sales_quantity = sale_entries.aggregate(total=Sum('quantity'))['total'] or 0
 
@@ -1220,17 +1153,25 @@ class PartnerCatalogFinanceView(APIView):
         total_returns = return_entries.aggregate(total=Sum('amount'))['total'] or 0
         total_returns_quantity = return_entries.aggregate(total=Sum('quantity'))['total'] or 0
 
-        total_expenses = expense_entries.aggregate(total=Sum('amount'))['total'] or 0
-        total_income = income_entries.aggregate(total=Sum('amount'))['total'] or 0
+        # Доходы и расходы считаем всегда по пользователю, без фильтра partner_product
+        income_entries = FinanceEntry.objects.filter(user=user, entry_type='income')
+        expense_entries = FinanceEntry.objects.filter(user=user, entry_type='expense')
+        if from_date:
+            income_entries = income_entries.filter(date__gte=from_date)
+            expense_entries = expense_entries.filter(date__gte=from_date)
+        if to_date:
+            income_entries = income_entries.filter(date__lte=to_date)
+            expense_entries = expense_entries.filter(date__lte=to_date)
 
-        # Расчет прибыли
+        total_income = income_entries.aggregate(total=Sum('amount'))['total'] or 0
+        total_expenses = expense_entries.aggregate(total=Sum('amount'))['total'] or 0
+
         profit = total_sales + total_returns + total_income - total_damages - total_expenses
 
-        # Для отдельного товара добавляем детализацию
         detail = None
         if partner_product_id:
             try:
-                partner_product = PartnerProduct.objects.get(id=partner_product_id, partner=request.user)
+                partner_product = PartnerProduct.objects.get(id=partner_product_id, partner=user)
                 detail = {
                     "product_name": partner_product.product.name,
                     "price": float(partner_product.price),
@@ -1247,33 +1188,22 @@ class PartnerCatalogFinanceView(APIView):
             except PartnerProduct.DoesNotExist:
                 pass
 
-        # Формируем ответ
         result = {
-            "period": {
-                "from": from_date,
-                "to": to_date
-            },
-            "sales": {
-                "amount": float(total_sales),
-                "quantity": total_sales_quantity
-            },
-            "damages": {
-                "amount": float(total_damages),
-                "quantity": total_damages_quantity
-            },
-            "returns": {
-                "amount": float(total_returns),
-                "quantity": total_returns_quantity
-            },
+            "period": {"from": from_date, "to": to_date},
+            "sales": {"amount": float(total_sales), "quantity": total_sales_quantity},
+            "damages": {"amount": float(total_damages), "quantity": total_damages_quantity},
+            "returns": {"amount": float(total_returns), "quantity": total_returns_quantity},
             "expenses": float(total_expenses),
             "income": float(total_income),
-            "profit": float(profit)
+            "profit": float(profit),
         }
 
         if detail:
             result["product_detail"] = detail
 
         return Response(result)
+
+
 
 
 # Добавляем в apps/finance/views.py
@@ -1310,12 +1240,10 @@ class ExpenseEntryView(APIView):
                     {"error": "Сумма расхода должна быть положительной"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
             # Получаем город, если указан
             city = None
             if city_id:
                 try:
-                    from apps.stores.models import City
                     city = City.objects.get(id=city_id)
                 except City.DoesNotExist:
                     return Response(
@@ -1327,7 +1255,6 @@ class ExpenseEntryView(APIView):
             store = None
             if store_id:
                 try:
-                    from apps.stores.models import Store
                     store = Store.objects.get(id=store_id)
                 except Store.DoesNotExist:
                     return Response(
@@ -1346,17 +1273,13 @@ class ExpenseEntryView(APIView):
                 note=note
             )
 
-            # Обновляем статистику
             update_partner_statistics(
                 request.user,
                 expense_amount=amount
             )
-
             # Если указан магазин, обновляем его статистику
             if store:
-                from apps.finance.services import update_store_daily_stats
                 update_store_daily_stats(store, timezone.now().date())
-
             return Response({
                 "message": f"Расход на сумму {amount} успешно добавлен",
                 "entry": FinanceEntrySerializer(entry).data

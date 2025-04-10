@@ -10,7 +10,7 @@ class ProductRequestSerializer(serializers.ModelSerializer):
     total_price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     bonus_quantity = serializers.IntegerField(read_only=True)
     user_email = serializers.EmailField(source='user.email', read_only=True)
-    store_name = serializers.CharField(source='store.name', read_only=True, allow_null=True)
+    store_name = serializers.SerializerMethodField(read_only=True)
     request_type_display = serializers.CharField(source='get_request_type_display', read_only=True)
     partner_product_info = serializers.SerializerMethodField(read_only=True)
     batch_id = serializers.UUIDField(read_only=True)
@@ -25,6 +25,9 @@ class ProductRequestSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['status', 'total_price', 'bonus_quantity', 'created_at', 'is_bonus_marked', 'user',
                             'batch_id']
+
+    def get_store_name(self, obj):
+        return obj.store.name if obj.store else None
 
     def get_price_per_unit(self, obj):
         if obj.request_type == 'SELF' and obj.product:
