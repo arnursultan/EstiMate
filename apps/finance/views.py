@@ -1204,10 +1204,6 @@ class PartnerCatalogFinanceView(APIView):
         return Response(result)
 
 
-
-
-# Добавляем в apps/finance/views.py
-
 class ExpenseEntryView(APIView):
     """API для добавления расходов"""
     permission_classes = [IsAuthenticated]
@@ -1219,27 +1215,35 @@ class ExpenseEntryView(APIView):
             properties={
                 'amount': openapi.Schema(type=openapi.TYPE_NUMBER, description="Сумма расхода"),
                 'note': openapi.Schema(type=openapi.TYPE_STRING, description="Примечание к расходу"),
-                'city': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID города (опционально)")
+                'city': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID города (опционально)"),
+                'store': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID магазина (опционально)")
             },
             required=['amount']
         ),
         responses={201: "Расход успешно добавлен"}
     )
-    # Модифицируем метод post в ExpenseEntryView
-
     def post(self, request):
         amount = request.data.get('amount')
         note = request.data.get('note', '')
         city_id = request.data.get('city')
-        store_id = request.data.get('store')  # Добавляем поддержку store_id
+        store_id = request.data.get('store')
 
         try:
-            amount = float(amount)
+            # Проверяем, что сумма является числом
+            try:
+                amount = float(amount)
+            except (TypeError, ValueError):
+                return Response(
+                    {"error": "Сумма расхода должна быть числом"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             if amount <= 0:
                 return Response(
                     {"error": "Сумма расхода должна быть положительной"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+
             # Получаем город, если указан
             city = None
             if city_id:
@@ -1256,6 +1260,18 @@ class ExpenseEntryView(APIView):
             if store_id:
                 try:
                     store = Store.objects.get(id=store_id)
+                    # Проверяем, имеет ли пользователь доступ к магазину, если не админ
+                    if not request.user.is_staff:
+                        has_access = ProductRequest.objects.filter(
+                            user=request.user,
+                            store=store
+                        ).exists()
+
+                        if not has_access:
+                            return Response(
+                                {"error": "У вас нет доступа к этому магазину"},
+                                status=status.HTTP_403_FORBIDDEN
+                            )
                 except Store.DoesNotExist:
                     return Response(
                         {"error": f"Магазин с ID {store_id} не найден"},
@@ -1273,25 +1289,111 @@ class ExpenseEntryView(APIView):
                 note=note
             )
 
+            # Обновляем статистику партнера
+            from .services import update_partner_statistics
             update_partner_statistics(
                 request.user,
-                expense_amount=amount
+                expense_amount=amount,
+                date=timezone.now().date()
             )
+
             # Если указан магазин, обновляем его статистику
             if store:
+                from .services import update_store_daily_stats
                 update_store_daily_stats(store, timezone.now().date())
+
             return Response({
                 "message": f"Расход на сумму {amount} успешно добавлен",
                 "entry": FinanceEntrySerializer(entry).data
             }, status=status.HTTP_201_CREATED)
+
         except Exception as e:
+            logger.error(f"Ошибка при добавлении расхода: {str(e)}")
             return Response(
                 {"error": f"Ошибка при добавлении расхода: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
-# Добавляем в apps/finance/views.py
+class PartnerStatisticsView(APIView):
+    """API для получения статистики партнера"""
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Статистика партнера",
+        manual_parameters=[
+            openapi.Parameter(
+                'date',
+                openapi.IN_QUERY,
+                description="Дата (YYYY-MM-DD), по умолчанию - сегодня",
+                type=openapi.TYPE_STRING,
+                format='date'
+            )
+        ],
+        responses={200: "Статистика партнера"}
+    )
+    def get(self, request):
+        date_str = request.query_params.get('date')
+
+        if date_str:
+            try:
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                return Response(
+                    {"error": "Некорректный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
+            date_obj = timezone.now().date()
+
+        try:
+            # Обновляем статистику перед выдачей
+            from apps.finance.services import update_partner_daily_stats
+            stats = update_partner_daily_stats(request.user, date_obj)
+
+            # Проверяем, что stats был успешно создан
+            if not stats:
+                return Response(
+                    {"error": "Не удалось получить статистику"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Формируем данные для ответа с безопасным доступом к атрибутам
+            response_data = {
+                "date": date_obj.isoformat(),
+                "requested": {
+                    "quantity": getattr(stats, 'total_requested_quantity', 0),
+                    "amount": float(getattr(stats, 'total_requested_amount', 0)),
+                    "details": stats.detailed_data.get('requested', {}) if hasattr(stats, 'detailed_data') else {}
+                },
+                "sold": {
+                    "quantity": getattr(stats, 'total_sold_quantity', 0),
+                    "amount": float(getattr(stats, 'total_sold_amount', 0)),
+                    "details": stats.detailed_data.get('sold', {}) if hasattr(stats, 'detailed_data') else {}
+                },
+                "expenses": float(getattr(stats, 'total_expenses', 0)),
+                "damaged": {
+                    "quantity": getattr(stats, 'total_damaged_quantity', 0),
+                    "details": stats.detailed_data.get('damaged', {}) if hasattr(stats, 'detailed_data') else {}
+                },
+                "bonus": {
+                    "quantity": getattr(stats, 'total_bonus_quantity', 0)
+                },
+                "remaining": {
+                    "quantity": getattr(stats, 'total_remaining_quantity', 0),
+                    "details": stats.detailed_data.get('remaining', {}) if hasattr(stats, 'detailed_data') else {}
+                },
+                "profit": float(getattr(stats, 'profit', 0))
+            }
+
+            return Response(response_data)
+        except Exception as e:
+            logger.error(f"Ошибка при получении статистики партнера: {str(e)}")
+            return Response(
+                {"error": f"Ошибка при получении статистики: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 class DailyStatisticsView(APIView):
     """API для получения ежедневной статистики"""
@@ -1331,7 +1433,6 @@ class DailyStatisticsView(APIView):
             partner_products = PartnerProduct.objects.filter(partner=request.user)
 
             # 2. Запросы на товары в этот день
-            from apps.orders.models import ProductRequest
             requests = ProductRequest.objects.filter(
                 user=request.user,
                 created_at__date=date_obj
@@ -1345,21 +1446,26 @@ class DailyStatisticsView(APIView):
 
             # 4. Долги магазинов
             from apps.stores.models import StoreDebt
+            # Находим магазины, связанные с пользователем через запросы
+            store_ids = ProductRequest.objects.filter(
+                user=request.user
+            ).values_list('store_id', flat=True).distinct()
+
             debts = StoreDebt.objects.filter(
-                created_by=request.user
+                store_id__in=store_ids
             )
             paid_debts = debts.filter(
                 is_paid=True,
                 paid_at__date=date_obj
             )
 
-            # Расчет суммарных показателей
-            total_quantity = sum(p.quantity for p in partner_products)
-            total_sold = sum(p.sold_quantity for p in partner_products)
-            total_damaged = sum(p.damaged_quantity for p in partner_products)
-            total_bonus = sum(p.bonus_quantity for p in partner_products)
-            total_returned = sum(p.returned_quantity for p in partner_products)
-            total_remaining = sum(p.remaining_quantity for p in partner_products)
+            # Расчет суммарных показателей с обработкой пустых значений
+            total_quantity = sum(getattr(p, 'quantity', 0) for p in partner_products)
+            total_sold = sum(getattr(p, 'sold_quantity', 0) for p in partner_products)
+            total_damaged = sum(getattr(p, 'damaged_quantity', 0) for p in partner_products)
+            total_bonus = sum(getattr(p, 'bonus_quantity', 0) for p in partner_products)
+            total_returned = sum(getattr(p, 'returned_quantity', 0) for p in partner_products)
+            total_remaining = sum(getattr(p, 'remaining_quantity', 0) for p in partner_products)
 
             # Финансовые показатели
             total_income = entries.filter(entry_type='income').aggregate(total=Sum('amount'))['total'] or 0
@@ -1369,8 +1475,8 @@ class DailyStatisticsView(APIView):
             total_paid_debt = paid_debts.aggregate(total=Sum('amount'))['total'] or 0
 
             # Расчет итоговых значений
-            total_revenue = total_income + total_sales
-            total_profit = total_revenue - total_expense
+            total_revenue = float(total_income) + float(total_sales)
+            total_profit = total_revenue - float(total_expense)
 
             # Формируем ответ
             return Response({
@@ -1402,79 +1508,9 @@ class DailyStatisticsView(APIView):
                 }
             })
         except Exception as e:
+            logger.error(f"Ошибка при получении статистики: {str(e)}")
             return Response(
                 {"error": f"Ошибка при получении статистики: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-
-# В apps/finance/views.py
-
-class PartnerStatisticsView(APIView):
-    """API для получения статистики партнера"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Статистика партнера",
-        manual_parameters=[
-            openapi.Parameter(
-                'date',
-                openapi.IN_QUERY,
-                description="Дата (YYYY-MM-DD), по умолчанию - сегодня",
-                type=openapi.TYPE_STRING,
-                format='date'
-            )
-        ],
-        responses={200: "Статистика партнера"}
-    )
-    def get(self, request):
-        date_str = request.query_params.get('date')
-
-        if date_str:
-            try:
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                return Response(
-                    {"error": "Некорректный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        else:
-            date_obj = timezone.now().date()
-
-        try:
-            # Обновляем статистику перед выдачей
-            from apps.finance.services import update_partner_daily_stats
-            stats = update_partner_daily_stats(request.user, date_obj)
-
-            # Формируем данные для ответа
-            return Response({
-                "date": date_obj.isoformat(),
-                "requested": {
-                    "quantity": stats.total_requested_quantity,
-                    "amount": float(stats.total_requested_amount),
-                    "details": stats.detailed_data.get('requested', {})
-                },
-                "sold": {
-                    "quantity": stats.total_sold_quantity,
-                    "amount": float(stats.total_sold_amount),
-                    "details": stats.detailed_data.get('sold', {})
-                },
-                "expenses": float(stats.total_expenses),
-                "damaged": {
-                    "quantity": stats.total_damaged_quantity,
-                    "details": stats.detailed_data.get('damaged', {})
-                },
-                "bonus": {
-                    "quantity": stats.total_bonus_quantity
-                },
-                "remaining": {
-                    "quantity": stats.total_remaining_quantity,
-                    "details": stats.detailed_data.get('remaining', {})
-                },
-                "profit": float(stats.profit)
-            })
-        except Exception as e:
-            return Response(
-                {"error": f"Ошибка при получении статистики: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )

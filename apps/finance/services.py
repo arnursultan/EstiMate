@@ -1,5 +1,5 @@
 from datetime import date
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -23,16 +23,16 @@ def generate_partner_finance_stat(user):
     # Общая сумма долга (отложенный доход)
     total_debt = store_requests.aggregate(total=Sum('total_price'))['total'] or 0
 
-    # Расчет убытков от брака
+    # Расчет убытков от брака - с проверкой наличия partner_product
     damaged_loss = sum([
         max((r.damaged_quantity * r.partner_product.price), 0)
-        for r in store_requests if r.partner_product
+        for r in store_requests if r.partner_product and hasattr(r.partner_product, 'price')
     ])
 
-    # Расчет стоимости бонусов
+    # Расчет стоимости бонусов - с проверкой наличия partner_product
     bonus_value = sum([
         max((r.bonus_quantity * r.partner_product.price), 0)
-        for r in store_requests if r.partner_product
+        for r in store_requests if r.partner_product and hasattr(r.partner_product, 'price')
     ])
 
     # Получаем ручные записи за сегодня
@@ -75,9 +75,22 @@ def generate_store_finance_stat(store):
     )
 
     total_approved = requests.aggregate(total=Sum('total_price'))['total'] or 0
-    total_damaged = sum([max(r.damaged_quantity * r.partner_product.price, 0) for r in requests if r.partner_product])
+
+    # Вычисляем брак с проверкой наличия partner_product и price
+    total_damaged = sum([
+        max(r.damaged_quantity * r.partner_product.price, 0)
+        for r in requests
+        if r.partner_product and hasattr(r.partner_product, 'price')
+    ])
+
     total_debt = requests.aggregate(total=Sum('total_price'))['total'] or 0
-    total_bonus = sum([max(r.bonus_quantity * r.partner_product.price, 0) for r in requests if r.partner_product])
+
+    # Вычисляем бонусы с проверкой наличия partner_product и price
+    total_bonus = sum([
+        max(r.bonus_quantity * r.partner_product.price, 0)
+        for r in requests
+        if r.partner_product and hasattr(r.partner_product, 'price')
+    ])
 
     # Погашенный долг
     from apps.stores.models import StoreDebt
@@ -209,8 +222,6 @@ def generate_inventory_summary(user):
     )[0]  # Возвращаем обновленный или созданный объект
 
 
-# Добавляем в apps/finance/services.py
-
 def update_partner_statistics(user, income_amount=0, expense_amount=0, date=None):
     """
     Обновляет финансовую статистику партнера
@@ -229,24 +240,27 @@ def update_partner_statistics(user, income_amount=0, expense_amount=0, date=None
         user=user,
         date=date,
         defaults={
-            'total_approved_debt': 0,
-            'total_damaged_loss': 0,
-            'total_bonus_value': 0,
-            'total_profit': 0,
+            'total_requested_quantity': 0,
+            'total_requested_amount': 0,
+            'total_sold_quantity': 0,
+            'total_sold_amount': 0,
+            'total_debt_to_admin': 0,
             'total_expenses': 0,
-            'total_sold': 0,
-            'total_sold_quantity': 0
+            'total_damaged_quantity': 0,
+            'total_bonus_quantity': 0,
+            'total_remaining_quantity': 0,
+            'detailed_data': {}
         }
     )
 
     # Обновляем показатели
     if income_amount > 0:
-        stat.total_approved_debt += income_amount
-        stat.total_profit += income_amount
+        stat.total_sold_amount = (stat.total_sold_amount or 0) + income_amount
+        # Обновляем другие поля, связанные с income_amount, если необходимо
 
     if expense_amount > 0:
-        stat.total_expenses += expense_amount
-        stat.total_profit -= expense_amount
+        stat.total_expenses = (stat.total_expenses or 0) + expense_amount
+        # Обновляем другие поля, если необходимо
 
     stat.save()
 
@@ -260,9 +274,6 @@ def update_partner_statistics(user, income_amount=0, expense_amount=0, date=None
 
     return stat
 
-
-# Модифицируем apps/finance/services.py
-# В apps/finance/services.py
 
 def update_partner_daily_stats(user, date=None):
     """
@@ -306,11 +317,19 @@ def update_partner_daily_stats(user, date=None):
     )
 
     total_requested_quantity = self_requests.aggregate(total=Sum('quantity'))['total'] or 0
-    total_requested_amount = sum(r.quantity * r.product.price for r in self_requests if r.product)
+    # Расчет суммы с проверкой на наличие product и price
+    total_requested_amount = sum(
+        r.quantity * r.product.price
+        for r in self_requests
+        if r.product and hasattr(r.product, 'price')
+    )
 
     # Детали по запрошенным товарам
     requested_details = {}
     for request in self_requests:
+        if not request.product:
+            continue
+
         product_name = request.product.name
         if product_name not in requested_details:
             requested_details[product_name] = {
@@ -319,8 +338,14 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         requested_details[product_name]['quantity'] += request.quantity
-        requested_details[product_name]['amount'] += float(request.quantity * request.product.price)
-        requested_details[product_name]['bonus'] += request.bonus_quantity
+
+        # Проверка на наличие price
+        if hasattr(request.product, 'price'):
+            requested_details[product_name]['amount'] += float(request.quantity * request.product.price)
+
+        # Проверка на наличие bonus_quantity
+        if hasattr(request, 'bonus_quantity'):
+            requested_details[product_name]['bonus'] += request.bonus_quantity
 
     # 2. Проданные товары (STORE) за этот день
     store_requests = ProductRequest.objects.filter(
@@ -330,7 +355,12 @@ def update_partner_daily_stats(user, date=None):
     )
 
     total_sold_quantity = store_requests.aggregate(total=Sum('quantity'))['total'] or 0
-    total_sold_amount = sum(r.quantity * r.partner_product.price for r in store_requests if r.partner_product)
+    # Расчет суммы с проверкой на наличие partner_product и price
+    total_sold_amount = sum(
+        r.quantity * r.partner_product.price
+        for r in store_requests
+        if r.partner_product and hasattr(r.partner_product, 'price')
+    )
 
     # Детали по проданным товарам
     sold_details = {}
@@ -346,8 +376,14 @@ def update_partner_daily_stats(user, date=None):
                 'bonus': 0
             }
         sold_details[product_name]['quantity'] += request.quantity
-        sold_details[product_name]['amount'] += float(request.quantity * request.partner_product.price)
-        sold_details[product_name]['bonus'] += request.bonus_quantity
+
+        # Проверка на наличие price
+        if hasattr(request.partner_product, 'price'):
+            sold_details[product_name]['amount'] += float(request.quantity * request.partner_product.price)
+
+        # Проверка на наличие bonus_quantity
+        if hasattr(request, 'bonus_quantity'):
+            sold_details[product_name]['bonus'] += request.bonus_quantity
 
     # 3. Долг администратору (по подтвержденным SELF-запросам)
     debt_to_admin = ProductRequest.objects.filter(
@@ -373,7 +409,6 @@ def update_partner_daily_stats(user, date=None):
     total_damaged_quantity = damaged_entries.aggregate(total=Sum('quantity'))['total'] or 0
 
     # Детали по бракованным товарам
-    # Детали по бракованным товарам
     damaged_details = {}
     for entry in damaged_entries:
         if not entry.partner_product or not entry.partner_product.product:
@@ -394,6 +429,9 @@ def update_partner_daily_stats(user, date=None):
     # Детали по остаткам
     remaining_details = {}
     for p in partner_products:
+        if not p.product:
+            continue
+
         product_name = p.product.name
         remaining_details[product_name] = p.remaining_quantity
 
@@ -415,6 +453,10 @@ def update_partner_daily_stats(user, date=None):
         'damaged': damaged_details,
         'remaining': remaining_details
     }
+
+    # Расчет прибыли (можно добавить как свойство в модель)
+    profit = total_sold_amount - expenses
+    stats.profit = profit
 
     stats.save()
     return stats
@@ -474,8 +516,12 @@ def update_store_daily_stats(store, date=None):
                 'damaged': 0
             }
         received_details[product_name]['quantity'] += request.quantity
-        received_details[product_name]['bonus'] += request.bonus_quantity
-        received_details[product_name]['damaged'] += request.damaged_quantity
+
+        # Проверка наличия bonus_quantity и damaged_quantity
+        if hasattr(request, 'bonus_quantity'):
+            received_details[product_name]['bonus'] += request.bonus_quantity
+        if hasattr(request, 'damaged_quantity'):
+            received_details[product_name]['damaged'] += request.damaged_quantity
 
     # 2. Бонусные товары
     bonus_quantity = store_requests.aggregate(total=Sum('bonus_quantity'))['total'] or 0
@@ -508,6 +554,9 @@ def update_store_daily_stats(store, date=None):
         store=store  # Предполагается, что в FinanceEntry есть поле store
     ).aggregate(total=Sum('amount'))['total'] or 0
 
+    # Расчет прибыли
+    profit = total_paid_debt - partner_expenses
+
     # Обновляем статистику
     stats.total_received_quantity = total_received_quantity
     stats.total_bonus_quantity = bonus_quantity
@@ -515,6 +564,7 @@ def update_store_daily_stats(store, date=None):
     stats.total_debt = total_debt
     stats.total_paid_debt = total_paid_debt
     stats.total_partner_expenses = partner_expenses
+    stats.profit = profit
 
     # Обновляем детализацию
     stats.detailed_data = {
