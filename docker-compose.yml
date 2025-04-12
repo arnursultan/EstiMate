@@ -51,7 +51,8 @@ services:
 
   celery:
     build: .
-    command: celery -A backend worker --loglevel=info
+    command: [ "celery", "-A", "backend", "worker", "--loglevel=info" ]
+    entrypoint: /app/entrypoint.sh
     volumes:
       - .:/app
       - media_volume:/app/media
@@ -64,6 +65,8 @@ services:
     environment:
       - DB_HOST=db
       - REDIS_HOST=redis
+
+
 
 volumes:
   postgres_data:

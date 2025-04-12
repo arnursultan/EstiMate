@@ -65,6 +65,36 @@ class StoreAdmin(admin.ModelAdmin):
 
     remaining_debt.short_description = 'Оставшийся долг'
 
+    def get_urls(self):
+        from django.urls import path
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                '<int:store_id>/statistics/',
+                self.admin_site.admin_view(self.store_statistics_view),
+                name='store_statistics'
+            ),
+        ]
+        return custom_urls + urls
+
+    def store_statistics_view(self, request, store_id):
+        """Представление статистики магазина в админке"""
+        from django.http import JsonResponse
+        from .services import StoreStatisticsService
+
+        try:
+            store = self.get_queryset(request).get(id=store_id)
+            service = StoreStatisticsService()
+
+            statistics = service.get_store_statistics(store_id=store_id)
+
+            if not statistics:
+                return JsonResponse({"error": "Статистика не найдена"}, status=404)
+
+            return JsonResponse(statistics)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
 
 @admin.register(StoreDebt)
 class StoreDebtAdmin(admin.ModelAdmin):

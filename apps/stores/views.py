@@ -11,8 +11,12 @@ from .serializers import (
     StoreDebtSerializer,
     StoreListSerializer
 )
+from datetime import  datetime, timedelta
 from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
 from apps.orders.serializers import StoreDebtPaymentSerializer, StoreExpenseSerializer
+from rest_framework.views import APIView
+from django.core.cache import cache
+from rest_framework.response import Response
 
 
 class CityViewSet(viewsets.ModelViewSet):
@@ -136,40 +140,552 @@ class StoreViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def financial_summary(self, request, pk=None):
-        """Получение финансовой сводки по магазину"""
+        """
+        Получение финансовой сводки по магазину с возможностью фильтрации по датам
+
+        Параметры запроса:
+        - date: конкретная дата (формат YYYY-MM-DD)
+        - start_date: начальная дата диапазона (формат YYYY-MM-DD)
+        - end_date: конечная дата диапазона (формат YYYY-MM-DD)
+        - period: период ('today', 'yesterday', 'this_week', 'last_week', 'this_month',
+                  'last_month', 'this_quarter', 'last_quarter', 'this_year', 'last_year')
+        """
+        from datetime import datetime, timedelta
+        from apps.orders.models import Order, OrderItem, DefectItem
+
         store = self.get_object()
 
-        # Получаем долги
-        debts = StoreDebt.objects.filter(store=store)
-        total_debt = sum(debt.amount for debt in debts)
+        # Получаем город для отображения в информации
+        city_name = store.city.name if store.city else ""
 
-        # Получаем платежи
-        payments = StoreDebtPayment.objects.filter(store=store)
-        total_paid = sum(payment.amount for payment in payments)
+        # Получаем параметры даты из запроса
+        date_str = request.query_params.get('date')
+        start_date_str = request.query_params.get('start_date')
+        end_date_str = request.query_params.get('end_date')
+        period = request.query_params.get('period')
+
+        # Текущая дата для относительных расчетов
+        today = timezone.now().date()
+
+        # Обработка периодов (новый функционал)
+        if period:
+            if period == 'today':
+                start_date = end_date = today
+            elif period == 'yesterday':
+                start_date = end_date = today - timedelta(days=1)
+            elif period == 'this_week':
+                # Начало текущей недели (понедельник)
+                start_date = today - timedelta(days=today.weekday())
+                end_date = today
+            elif period == 'last_week':
+                # Начало прошлой недели (понедельник)
+                start_date = today - timedelta(days=today.weekday() + 7)
+                # Конец прошлой недели (воскресенье)
+                end_date = start_date + timedelta(days=6)
+            elif period == 'this_month':
+                # Начало текущего месяца
+                start_date = today.replace(day=1)
+                end_date = today
+            elif period == 'last_month':
+                # Начало прошлого месяца
+                if today.month == 1:
+                    start_date = today.replace(year=today.year - 1, month=12, day=1)
+                else:
+                    start_date = today.replace(month=today.month - 1, day=1)
+                # Конец прошлого месяца
+                end_date = today.replace(day=1) - timedelta(days=1)
+            elif period == 'this_quarter':
+                # Определение текущего квартала
+                quarter = (today.month - 1) // 3 + 1
+                # Начало текущего квартала
+                start_date = today.replace(month=3 * quarter - 2, day=1)
+                end_date = today
+            elif period == 'last_quarter':
+                # Определение прошлого квартала
+                quarter = (today.month - 1) // 3
+                if quarter == 0:  # Если текущий месяц в 1-м квартале, берем 4-й квартал прошлого года
+                    start_date = today.replace(year=today.year - 1, month=10, day=1)
+                    end_date = today.replace(year=today.year - 1, month=12, day=31)
+                else:
+                    start_date = today.replace(month=3 * quarter - 2, day=1)
+                    # Конец прошлого квартала
+                    end_date = today.replace(month=3 * quarter, day=1) - timedelta(days=1)
+            elif period == 'this_year':
+                # Начало текущего года
+                start_date = today.replace(month=1, day=1)
+                end_date = today
+            elif period == 'last_year':
+                # Прошлый год
+                start_date = today.replace(year=today.year - 1, month=1, day=1)
+                end_date = today.replace(year=today.year - 1, month=12, day=31)
+            else:
+                return Response(
+                    {
+                        "detail": "Неизвестный параметр period. Допустимые значения: today, yesterday, this_week, last_week, this_month, last_month, this_quarter, last_quarter, this_year, last_year"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        # Обработка конкретной даты
+        elif date_str:
+            try:
+                date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                start_date = end_date = date
+            except ValueError:
+                return Response(
+                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        # Обработка диапазона дат
+        elif start_date_str and end_date_str:
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+                if start_date > end_date:
+                    return Response(
+                        {"detail": "Начальная дата не может быть позже конечной даты"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            except ValueError:
+                return Response(
+                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        # По умолчанию - текущая дата
+        else:
+            start_date = end_date = today
+
+        # Получаем все заказы магазина, не только за период
+        all_orders = Order.objects.filter(store=store)
+        period_orders = Order.objects.filter(
+            store=store,
+            created_at__date__gte=start_date,
+            created_at__date__lte=end_date
+        )
+
+        # Получаем элементы заказов
+        all_order_items = OrderItem.objects.filter(order__in=all_orders)
+        period_order_items = OrderItem.objects.filter(order__in=period_orders)
+
+        # Получаем все долги и платежи
+        all_debts = StoreDebt.objects.filter(store=store)
+        period_debts = StoreDebt.objects.filter(
+            store=store,
+            created_at__date__gte=start_date,
+            created_at__date__lte=end_date
+        )
+
+        all_payments = StoreDebtPayment.objects.filter(store=store)
+        period_payments = StoreDebtPayment.objects.filter(
+            store=store,
+            payment_date__date__gte=start_date,
+            payment_date__date__lte=end_date
+        )
 
         # Получаем расходы
-        expenses = StoreExpense.objects.filter(store=store)
-        total_expenses = sum(expense.amount for expense in expenses)
+        all_expenses = StoreExpense.objects.filter(store=store)
+        period_expenses = StoreExpense.objects.filter(
+            store=store,
+            expense_date__gte=start_date,
+            expense_date__lte=end_date
+        )
 
-        # Получаем данные о бракованных товарах
-        from apps.orders.models import DefectItem
-        defect_items = DefectItem.objects.filter(order__store=store)
-        total_defects = sum(defect.quantity for defect in defect_items)
+        # Получаем бракованные товары
+        all_defects = DefectItem.objects.filter(order__store=store)
+        period_defects = DefectItem.objects.filter(order__in=period_orders)
 
-        # Расчет оставшегося долга и прибыли
+        # Вычисляем суммы
+        total_debt = sum(debt.amount for debt in all_debts)
+        period_debt = sum(debt.amount for debt in period_debts)
+
+        total_paid = sum(payment.amount for payment in all_payments)
+        period_paid = sum(payment.amount for payment in period_payments)
+
+        total_expenses = sum(expense.amount for expense in all_expenses)
+        period_expenses_sum = sum(expense.amount for expense in period_expenses)
+
+        # Количество товаров и бонусов
+        total_ordered = sum(item.quantity for item in all_order_items)
+        period_ordered = sum(item.quantity for item in period_order_items)
+
+        total_bonus = sum(item.bonus_quantity or 0 for item in all_order_items)
+        period_bonus = sum(item.bonus_quantity or 0 for item in period_order_items)
+
+        total_defect_quantity = sum(defect.quantity for defect in all_defects)
+        period_defect_quantity = sum(defect.quantity for defect in period_defects)
+
+        # Рассчитываем прибыль и баланс
         remaining_debt = total_debt - total_paid
-        profit = total_paid - total_expenses
+        profit = period_paid - period_expenses_sum
+        total_balance = total_paid - total_expenses
+
+        # Группировка товаров для отображения
+        products_summary = []
+
+        # Сначала получаем все уникальные продукты
+        product_ids = set(item.product_id for item in period_order_items)
+
+        for product_id in product_ids:
+            items = period_order_items.filter(product_id=product_id)
+            if items:
+                product = items[0].product
+                quantity = sum(item.quantity for item in items)
+
+                products_summary.append({
+                    "product_id": product_id,
+                    "product_name": product.name,
+                    "quantity": quantity,
+                    "price": float(product.price),
+                    "total_price": float(product.price * quantity)
+                })
+
+        # Определяем тип примененного фильтра для отображения
+        filter_type = "default"
+        if period:
+            filter_type = f"period:{period}"
+        elif date_str:
+            filter_type = "specific_date"
+        elif start_date_str and end_date_str:
+            filter_type = "date_range"
 
         return Response({
+            "id": store.id,
             "store_id": store.id,
             "store_name": store.name,
-            "total_debt": total_debt,
-            "paid_debt": total_paid,
-            "remaining_debt": remaining_debt,
-            "expenses": total_expenses,
-            "profit": profit,
-            "total_defects": total_defects
+            "city": {
+                "id": store.city.id if store.city else None,
+                "name": city_name
+            },
+            "date": {
+                "start_date": start_date.isoformat(),
+                "end_date": end_date.isoformat(),
+                "formatted": start_date.strftime("%d.%m.%Y") if start_date == end_date else
+                f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}",
+                "filter_type": filter_type
+            },
+            "orders_count": period_orders.count(),
+            "total_ordered_quantity": period_ordered,
+
+            # Финансовые показатели
+            "debt": float(total_debt),
+            "pay_debt": float(total_paid),
+            "remaining_debt": float(remaining_debt),
+
+            # Данные за период
+            "period_debt": float(period_debt),
+            "period_paid": float(period_paid),
+
+            # Расходы и прибыль
+            "expenses": float(total_expenses),
+            "period_expenses": float(period_expenses_sum),
+
+            # Бонусы и брак
+            "bonus_quantity": total_bonus,
+            "defect_quantity": total_defect_quantity,
+
+            # Финансовые показатели
+            "profit": float(profit),
+            "total_balance": float(total_balance),
+
+            # Товары в заказах
+            "products": products_summary
         })
+
+    @action(detail=False, methods=['get'])
+    def stores_summary(self, request):
+        """
+        Получение статистики по всем магазинам (для администраторов и партнеров)
+        с возможностью фильтрации по датам и городам
+
+        Параметры запроса:
+        - date: конкретная дата (формат YYYY-MM-DD)
+        - start_date: начальная дата диапазона (формат YYYY-MM-DD)
+        - end_date: конечная дата диапазона (формат YYYY-MM-DD)
+        - period: период ('today', 'yesterday', 'this_week', 'last_week', 'this_month',
+                  'last_month', 'this_quarter', 'last_quarter', 'this_year', 'last_year')
+        - city_id: идентификатор города для фильтрации
+        """
+        from datetime import datetime, timedelta
+        from apps.orders.models import Order, OrderItem, DefectItem
+        from .models import City
+
+        user = request.user
+
+        # Получаем параметры из запроса
+        date_str = request.query_params.get('date')
+        start_date_str = request.query_params.get('start_date')
+        end_date_str = request.query_params.get('end_date')
+        period = request.query_params.get('period')
+        city_id = request.query_params.get('city_id')
+
+        # Текущая дата для относительных расчетов
+        today = timezone.now().date()
+
+        # Обработка периодов
+        if period:
+            if period == 'today':
+                start_date = end_date = today
+            elif period == 'yesterday':
+                start_date = end_date = today - timedelta(days=1)
+            elif period == 'this_week':
+                # Начало текущей недели (понедельник)
+                start_date = today - timedelta(days=today.weekday())
+                end_date = today
+            elif period == 'last_week':
+                # Начало прошлой недели (понедельник)
+                start_date = today - timedelta(days=today.weekday() + 7)
+                # Конец прошлой недели (воскресенье)
+                end_date = start_date + timedelta(days=6)
+            elif period == 'this_month':
+                # Начало текущего месяца
+                start_date = today.replace(day=1)
+                end_date = today
+            elif period == 'last_month':
+                # Начало прошлого месяца
+                if today.month == 1:
+                    start_date = today.replace(year=today.year - 1, month=12, day=1)
+                else:
+                    start_date = today.replace(month=today.month - 1, day=1)
+                # Конец прошлого месяца
+                end_date = today.replace(day=1) - timedelta(days=1)
+            elif period == 'this_quarter':
+                # Определение текущего квартала
+                quarter = (today.month - 1) // 3 + 1
+                # Начало текущего квартала
+                start_date = today.replace(month=3 * quarter - 2, day=1)
+                end_date = today
+            elif period == 'last_quarter':
+                # Определение прошлого квартала
+                quarter = (today.month - 1) // 3
+                if quarter == 0:  # Если текущий месяц в 1-м квартале, берем 4-й квартал прошлого года
+                    start_date = today.replace(year=today.year - 1, month=10, day=1)
+                    end_date = today.replace(year=today.year - 1, month=12, day=31)
+                else:
+                    start_date = today.replace(month=3 * quarter - 2, day=1)
+                    # Конец прошлого квартала
+                    end_date = today.replace(month=3 * quarter, day=1) - timedelta(days=1)
+            elif period == 'this_year':
+                # Начало текущего года
+                start_date = today.replace(month=1, day=1)
+                end_date = today
+            elif period == 'last_year':
+                # Прошлый год
+                start_date = today.replace(year=today.year - 1, month=1, day=1)
+                end_date = today.replace(year=today.year - 1, month=12, day=31)
+            else:
+                return Response(
+                    {
+                        "detail": "Неизвестный параметр period. Допустимые значения: today, yesterday, this_week, last_week, this_month, last_month, this_quarter, last_quarter, this_year, last_year"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        # Обработка конкретной даты
+        elif date_str:
+            try:
+                date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                start_date = end_date = date
+            except ValueError:
+                return Response(
+                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        # Обработка диапазона дат
+        elif start_date_str and end_date_str:
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+                if start_date > end_date:
+                    return Response(
+                        {"detail": "Начальная дата не может быть позже конечной даты"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            except ValueError:
+                return Response(
+                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        # По умолчанию - текущая дата
+        else:
+            start_date = end_date = today
+
+        # Получаем магазины с фильтрацией по правам доступа и городу
+        if user.role == 'admin':
+            stores_queryset = Store.objects.all()
+        else:
+            # Партнеры видят только свои магазины
+            stores_queryset = Store.objects.filter(partner=user)
+
+        # Фильтруем по городу, если указан
+        if city_id:
+            stores_queryset = stores_queryset.filter(city_id=city_id)
+
+        # Фильтруем только одобренные магазины
+        stores_queryset = stores_queryset.filter(status='approved')
+
+        # Сначала получим все города для возможности выбора пользователем
+        all_cities = City.objects.all()
+        cities_data = [{"id": city.id, "name": city.name} for city in all_cities]
+
+        # Получаем все нужные данные для выбранных магазинов
+        # Получаем все нужные данные для выбранных магазинов
+        stores_data = []
+        total_stats = {
+            "orders_count": 0,
+            "total_ordered_quantity": 0,
+            "total_debt": 0.0,  # Явно указываем float
+            "total_paid": 0.0,  # Явно указываем float
+            "expenses": 0.0,  # Явно указываем float
+            "bonus_quantity": 0,
+            "defect_quantity": 0,
+            "profit": 0.0  # Явно указываем float
+        }
+
+        # Список уникальных городов в результатах
+        result_cities = set()
+
+        # Идем по каждому магазину и собираем статистику
+        for store in stores_queryset:
+            # Получаем заказы магазина за период
+            orders = Order.objects.filter(
+                store=store,
+                created_at__date__gte=start_date,
+                created_at__date__lte=end_date
+            )
+
+            # Получаем элементы заказов
+            order_items = OrderItem.objects.filter(order__in=orders)
+
+            # Получаем долги и платежи за период
+            debts = StoreDebt.objects.filter(
+                store=store,
+                created_at__date__gte=start_date,
+                created_at__date__lte=end_date
+            )
+
+            payments = StoreDebtPayment.objects.filter(
+                store=store,
+                payment_date__date__gte=start_date,
+                payment_date__date__lte=end_date
+            )
+
+            # Получаем расходы за период
+            expenses = StoreExpense.objects.filter(
+                store=store,
+                expense_date__gte=start_date,
+                expense_date__lte=end_date
+            )
+
+            # Получаем бракованные товары за период
+            defects = DefectItem.objects.filter(order__in=orders)
+
+            # Рассчитываем показатели
+            # Рассчитываем показатели
+            store_orders_count = orders.count()
+            store_ordered_quantity = sum(item.quantity for item in order_items)
+            store_debt = float(sum(debt.amount for debt in debts))  # Преобразуем в float
+            store_paid = float(sum(payment.amount for payment in payments))  # Преобразуем в float
+            store_expenses = float(sum(expense.amount for expense in expenses))  # Преобразуем в float
+            store_bonus = sum(item.bonus_quantity or 0 for item in order_items)
+            store_defects = sum(defect.quantity for defect in defects)
+            store_profit = store_paid - store_expenses
+
+            # Добавляем в общую статистику
+            total_stats["orders_count"] += store_orders_count
+            total_stats["total_ordered_quantity"] += store_ordered_quantity
+            total_stats["total_debt"] += store_debt  # Теперь складываем float с float
+            total_stats["total_paid"] += store_paid  # Теперь складываем float с float
+            total_stats["expenses"] += store_expenses  # Теперь складываем float с float
+            total_stats["bonus_quantity"] += store_bonus
+            total_stats["defect_quantity"] += store_defects
+            total_stats["profit"] += store_profit
+
+            # Добавляем город в список уникальных городов
+            if store.city:
+                result_cities.add(store.city.name)
+
+            # Добавляем данные магазина
+            store_data = {
+                "id": store.id,
+                "name": store.name,
+                "city": store.city.name if store.city else "",
+                "address": store.address,
+                "orders_count": store_orders_count,
+                "total_ordered_quantity": store_ordered_quantity,
+                "debt": float(store_debt),
+                "paid": float(store_paid),
+                "expenses": float(store_expenses),
+                "bonus_quantity": store_bonus,
+                "defect_quantity": store_defects,
+                "profit": float(store_profit)
+            }
+            stores_data.append(store_data)
+
+        # Формируем итоговый ответ
+        result = {
+            "date_range": {
+                "start_date": start_date.isoformat(),
+                "end_date": end_date.isoformat(),
+                "formatted": start_date.strftime("%d.%m.%Y") if start_date == end_date else
+                f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}"
+            },
+            "filters": {
+                "city_id": city_id,
+                "all_cities": cities_data,  # Все доступные города
+                "result_cities": list(result_cities)  # Города в результатах
+            },
+            "total": {
+                "stores_count": stores_queryset.count(),
+                "orders_count": total_stats["orders_count"],
+                "total_ordered_quantity": total_stats["total_ordered_quantity"],
+                "total_debt": float(total_stats["total_debt"]),
+                "total_paid": float(total_stats["total_paid"]),
+                "expenses": float(total_stats["expenses"]),
+                "bonus_quantity": total_stats["bonus_quantity"],
+                "defect_quantity": total_stats["defect_quantity"],
+                "profit": float(total_stats["profit"])
+            },
+            "stores": stores_data
+        }
+
+        return Response(result)
+
+    @action(detail=False, methods=['get'])
+    def city_summary(self, request):
+        """
+        Получение статистики по всем магазинам в конкретном городе
+
+        Параметры запроса:
+        - city_id: идентификатор города (обязательный)
+        - date/start_date/end_date/period: параметры для фильтрации по датам (как в других методах)
+        """
+        city_id = request.query_params.get('city_id')
+        if not city_id:
+            return Response(
+                {"detail": "Параметр city_id обязателен"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            city = City.objects.get(id=city_id)
+        except City.DoesNotExist:
+            return Response(
+                {"detail": "Город не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Устанавливаем параметр city_id в request.query_params для использования в stores_summary
+        request.query_params._mutable = True
+        request.query_params['city_id'] = city_id
+        request.query_params._mutable = False
+
+        # Используем тот же метод stores_summary с установленным параметром city_id
+        response = self.stores_summary(request)
+
+        # Добавляем информацию о городе в ответ
+        response.data['city'] = {
+            'id': city.id,
+            'name': city.name
+        }
+
+        return response
+
 
     @action(detail=True, methods=['post'])
     def add_expense(self, request, pk=None):
@@ -329,3 +845,7 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
             "total_amount": total_amount,
             "count": queryset.count()
         })
+
+
+
+

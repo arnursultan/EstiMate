@@ -3,6 +3,7 @@ from django.utils import timezone
 from .models import City, Store, StoreDebt, StoreDebtPayment, StoreExpense
 
 
+
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
@@ -92,3 +93,55 @@ class StoreListSerializer(serializers.ModelSerializer):
 
     def get_partner_name(self, obj):
         return f"{obj.partner.first_name} {obj.partner.last_name}"
+
+
+
+class DateRangeSerializer(serializers.Serializer):
+    start_date = serializers.DateField(required=False)
+    end_date = serializers.DateField(required=False)
+    date = serializers.DateField(required=False)
+    city_id = serializers.IntegerField(required=False)
+
+    def validate(self, data):
+        if 'date' not in data and ('start_date' not in data or 'end_date' not in data):
+            data['date'] = timezone.now().date()
+        return data
+
+
+class StoreStatisticsSerializer(serializers.Serializer):
+    store_id = serializers.IntegerField()
+    store_name = serializers.CharField()
+    date_range = serializers.DictField()
+    orders_count = serializers.IntegerField()
+    total_ordered_quantity = serializers.IntegerField()
+    total_ordered_price = serializers.FloatField()
+    total_bonus_quantity = serializers.IntegerField()
+    total_defect_quantity = serializers.IntegerField()
+    total_defect_price = serializers.FloatField()
+    total_debt = serializers.FloatField()
+    total_paid_debt = serializers.FloatField()
+    remaining_debt = serializers.FloatField()
+    period_debt = serializers.FloatField()
+    period_paid = serializers.FloatField()
+    period_expenses = serializers.FloatField()
+    profit = serializers.FloatField()
+    products = serializers.ListField(child=serializers.DictField())
+
+
+class MultipleStoresStatisticsSerializer(serializers.Serializer):
+    date_range = serializers.DictField()
+    stores_count = serializers.IntegerField()
+    orders_count = serializers.IntegerField()
+    total_ordered_quantity = serializers.IntegerField()
+    total_ordered_price = serializers.FloatField()
+    total_bonus_quantity = serializers.IntegerField()
+    total_defect_quantity = serializers.IntegerField()
+    total_defect_price = serializers.FloatField()
+    total_debt = serializers.FloatField()
+    total_paid_debt = serializers.FloatField()
+    remaining_debt = serializers.FloatField()
+    period_debt = serializers.FloatField()
+    period_paid = serializers.FloatField()
+    period_expenses = serializers.FloatField()
+    profit = serializers.FloatField()
+    stores = serializers.ListField(child=serializers.DictField())

@@ -169,7 +169,7 @@ SIMPLE_JWT = {
 }
 
 CELERY_BROKER_CONNECTION_TIMEOUT = 1000000
-CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
@@ -182,12 +182,16 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'apps.finance.tasks.archive_daily_data',
         'schedule': crontab(hour=23, minute=55),
     },
+    'calculate-stores-statistics': {
+        'task': 'apps.stores.tasks.calculate_stores_statistics',
+        'schedule': crontab(hour=1, minute=30),  # Ежедневно в 1:30
+    },
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_URL", "redis://localhost:6379/0"),
+        "LOCATION": os.getenv("REDIS_URL", "redis://redis:6379/0"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

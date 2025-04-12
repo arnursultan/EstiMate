@@ -2,6 +2,12 @@
 
 set -e
 
+# Если это запуск celery — не выполнять миграции
+if [[ "$1" == "celery" ]]; then
+  echo "Starting Celery worker..."
+  exec "$@"
+fi
+
 # Встроенная проверка соединения с PostgreSQL
 echo "Testing database connection..."
 python -c "
@@ -31,14 +37,11 @@ else:
     sys.exit(1)
 "
 
-# Применение миграций
 echo "Applying database migrations..."
 python manage.py migrate
 
-# Сборка статических файлов
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Запуск команды
 echo "Starting the application..."
 exec "$@"

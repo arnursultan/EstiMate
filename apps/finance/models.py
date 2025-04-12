@@ -1,8 +1,9 @@
-from django.db import models
-from django.core.validators import MinValueValidator
 from decimal import Decimal
 from apps.users.models import User
 from apps.stores.models import Store
+from django.db import models
+from django.core.validators import MinValueValidator
+from django.utils import timezone
 
 
 class FinanceEntry(models.Model):
@@ -159,3 +160,104 @@ class ProductDailyStatistics(models.Model):
 
     def __str__(self):
         return f"{self.product_name} - {self.statistics.date}"
+
+
+
+class ManualFinanceEntry(models.Model):
+    """Модель для ручного ввода финансовых данных (расходы, доходы и т.д.)"""
+    ENTRY_TYPES = [
+        ('income', 'Доход'),
+        ('expense', 'Расход'),
+        ('other', 'Другое'),
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='manual_finance_entries',
+        verbose_name='Пользователь'
+    )
+    entry_type = models.CharField(
+        max_length=10,
+        choices=ENTRY_TYPES,
+        default='expense',
+        verbose_name='Тип записи'
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name='Сумма'
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name='Описание'
+    )
+    date = models.DateField(
+        default=timezone.now,
+        verbose_name='Дата'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
+
+    class Meta:
+        verbose_name = 'Финансовая запись'
+        verbose_name_plural = 'Финансовые записи'
+        ordering = ['-date', '-created_at']
+
+    def __str__(self):
+        return f"{self.get_entry_type_display()} ({self.amount}) - {self.date}"
+
+
+class FinanceStatistics(models.Model):
+    """Модель для хранения рассчитанной статистики"""
+    date = models.DateField(
+        unique=True,
+        verbose_name='Дата'
+    )
+    total_orders = models.IntegerField(
+        default=0,
+        verbose_name='Всего заказов'
+    )
+    total_sales = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name='Всего продаж'
+    )
+    total_expenses = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name='Всего расходов'
+    )
+    total_defects = models.IntegerField(
+        default=0,
+        verbose_name='Всего бракованных товаров'
+    )
+    total_bonuses = models.IntegerField(
+        default=0,
+        verbose_name='Всего бонусных товаров'
+    )
+    data_json = models.JSONField(
+        default=dict,
+        verbose_name='Дополнительные данные (JSON)'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Дата обновления'
+    )
+
+    class Meta:
+        verbose_name = 'Финансовая статистика'
+        verbose_name_plural = 'Финансовая статистика'
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"Статистика за {self.date}"

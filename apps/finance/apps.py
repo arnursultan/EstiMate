@@ -7,4 +7,3 @@ class FinanceConfig(AppConfig):
 
     def ready(self):
         import apps.finance.signals
-        import apps.finance.notifications
