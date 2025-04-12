@@ -1,9 +1,11 @@
 from django.db import models
-from django.utils import timezone
+from django.core.validators import MinValueValidator
 from apps.users.models import User
-from django.core.exceptions import ValidationError
+from django.db.models import Sum
+
 
 class City(models.Model):
+    """Модель города"""
     name = models.CharField(max_length=100, unique=True, verbose_name="Название города")
 
     class Meta:
@@ -16,41 +18,44 @@ class City(models.Model):
 
 
 class Store(models.Model):
-    STATUS_CHOICES = (
-        ('pending', 'На рассмотрении'),
-        ('approved', 'Подтвержден'),
+    """Модель магазина"""
+    APPROVAL_STATUS = [
+        ('pending', 'Ожидает одобрения'),
+        ('approved', 'Одобрен'),
         ('rejected', 'Отклонен'),
-    )
+    ]
 
-    name = models.CharField(max_length=255, verbose_name="Название магазина")
-    inn = models.CharField(max_length=14, unique=True, verbose_name="ИНН")
+    name = models.CharField(max_length=100, verbose_name="Название магазина")
+    inn = models.CharField(max_length=20, verbose_name="ИНН")
+    phone = models.CharField(max_length=15, verbose_name="Телефон")
     city = models.ForeignKey(
         City,
-        on_delete=models.CASCADE,
-        related_name='stores',
+        on_delete=models.PROTECT,
+        related_name="stores",
         verbose_name="Город"
     )
-    address = models.CharField(max_length=255, verbose_name="Адрес")
-    phone = models.CharField(max_length=15, verbose_name="Телефон")
+    address = models.CharField(max_length=200, verbose_name="Адрес")
+    expenses = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(0)],
+        verbose_name="Расходы"
+    )
+    partner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="stores",
+        verbose_name="Партнер"
+    )
     status = models.CharField(
         max_length=10,
-        choices=STATUS_CHOICES,
+        choices=APPROVAL_STATUS,
         default='pending',
         verbose_name="Статус"
     )
-    is_active = models.BooleanField(default=True, verbose_name="Активен")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-
-    # Добавляем поле "создатель" для хранения информации о партнере, создавшем заявку на магазин
-    creator = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='created_stores',
-        verbose_name="Создатель"
-    )
 
     class Meta:
         verbose_name = "Магазин"
@@ -58,59 +63,119 @@ class Store(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.name} (ИНН: {self.inn})"
+        return f"{self.name} ({self.city})"
+
+    @property
+    def total_debt(self):
+        """Общая сумма всех долгов магазина"""
+        return self.debts.aggregate(Sum('amount'))['amount__sum'] or 0
+
+    @property
+    def total_paid_debt(self):
+        """Общая сумма оплаченных долгов магазина"""
+        return self.debt_payments.aggregate(Sum('amount'))['amount__sum'] or 0
+
+    @property
+    def remaining_debt(self):
+        """Оставшаяся сумма долга"""
+        return self.total_debt - self.total_paid_debt
 
 
 class StoreDebt(models.Model):
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='debts')
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
-    request = models.ForeignKey('orders.ProductRequest', on_delete=models.SET_NULL,
-                                null=True, blank=True, related_name='debts')
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_debts')
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_paid = models.BooleanField(default=False)
-    paid_at = models.DateTimeField(null=True, blank=True)
-
-    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0,
-                                      verbose_name="Погашенная сумма")
+    """Модель долга магазина"""
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name="debts",
+        verbose_name="Магазин"
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name="Сумма долга"
+    )
+    description = models.TextField(blank=True, verbose_name="Описание")
+    is_paid = models.BooleanField(default=False, verbose_name="Оплачено")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
     class Meta:
-        ordering = ['-created_at']
         verbose_name = "Долг магазина"
         verbose_name_plural = "Долги магазинов"
+        ordering = ['-created_at']
 
     def __str__(self):
-        status = "Оплачен" if self.is_paid else "Не оплачен"
-        return f"{self.store.name}: {self.amount} сом ({status})"
+        status = "оплачен" if self.is_paid else "не оплачен"
+        return f"{self.store.name} - {self.amount} сом ({status})"
 
-    def mark_as_paid(self):
-        """Отметить долг как оплаченный"""
-        if not self.is_paid:
-            self.is_paid = True
-            self.paid_at = timezone.now()
-            self.save()
-            return True
-        return False
 
-    def pay_partial(self, amount):
-        """Частичная оплата долга"""
-        if amount <= 0:
-            raise ValidationError("Сумма погашения должна быть положительной")
+class StoreDebtPayment(models.Model):
+    """Модель частичной оплаты долга магазина"""
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name="debt_payments",
+        verbose_name="Магазин"
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name="Сумма оплаты"
+    )
+    description = models.TextField(blank=True, verbose_name="Комментарий к оплате")
+    payment_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата оплаты")
 
-        if amount > (self.amount - self.paid_amount):
-            raise ValidationError(f"Сумма погашения превышает оставшийся долг ({self.amount - self.paid_amount})")
+    class Meta:
+        verbose_name = "Оплата долга"
+        verbose_name_plural = "Оплаты долгов"
+        ordering = ['-payment_date']
 
-        self.paid_amount += amount
+    def __str__(self):
+        return f"{self.store.name} - Оплата {self.amount} сом"
 
-        # Если погашена вся сумма, отмечаем как полностью оплаченный
-        if self.paid_amount >= self.amount:
-            self.is_paid = True
-            self.paid_at = timezone.now()
+    def save(self, *args, **kwargs):
+        """Переопределение метода сохранения для проверки оплаты долга"""
+        super().save(*args, **kwargs)
 
-        self.save()
+        # После сохранения платежа проверяем, полностью ли погашен долг
+        store = self.store
+        if store.total_paid_debt >= store.total_debt:
+            # Если общие выплаты больше или равны сумме долга, отмечаем все долги как оплаченные
+            store.debts.filter(is_paid=False).update(is_paid=True)
 
-        # Обновляем статистику магазина
-        from apps.finance.services import update_store_daily_stats
-        update_store_daily_stats(self.store, timezone.now().date())
 
-        return self.paid_amount
+class StoreExpense(models.Model):
+    """Модель расходов магазина"""
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name="expense_records",
+        verbose_name="Магазин"
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name="Сумма расхода"
+    )
+    description = models.TextField(blank=True, verbose_name="Описание расхода")
+    expense_date = models.DateField(verbose_name="Дата расхода")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Расход магазина"
+        verbose_name_plural = "Расходы магазинов"
+        ordering = ['-expense_date', '-created_at']
+
+    def __str__(self):
+        return f"{self.store.name} - Расход {self.amount} сом ({self.expense_date})"
+
+    def save(self, *args, **kwargs):
+        """При сохранении расхода увеличиваем общие расходы магазина"""
+        super().save(*args, **kwargs)
+
+        # Обновляем общую сумму расходов магазина
+        self.store.expenses += self.amount
+        self.store.save(update_fields=['expenses'])

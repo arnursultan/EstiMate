@@ -1,88 +1,85 @@
 from django.contrib import admin
 from .models import (
-    PartnerFinanceStat, StoreFinanceStat, FinanceEntry,
-    CalendarStatistics, ArchivedDailySummary
+    PartnerFinanceEntry,
+    StoreFinanceEntry,
+    DailyStatistics,
+    ProductDailyStatistics
 )
-from django.utils.html import format_html
-from django.db.models import Sum
 
 
-class PartnerFinanceStatAdmin(admin.ModelAdmin):
-    list_display = ['user', 'date', 'total_requested_quantity', 'total_sold_quantity',
-                    'total_damaged_quantity', 'total_bonus_quantity', 'total_remaining_quantity',
-                    ]
-    list_filter = ['date', 'user']
-    search_fields = ['user__email', 'user__first_name', 'user__last_name']
+class ProductDailyStatisticsInline(admin.TabularInline):
+    model = ProductDailyStatistics
+    extra = 0
+    readonly_fields = (
+        'product_id', 'product_name', 'requested_quantity', 'sold_quantity',
+        'bonus_quantity', 'defect_quantity', 'remaining_quantity', 'income_amount'
+    )
+    can_delete = False
+    show_change_link = False
+
+
+@admin.register(DailyStatistics)
+class DailyStatisticsAdmin(admin.ModelAdmin):
+    list_display = (
+        'date', 'get_partner_or_store', 'total_income', 'total_expense',
+        'total_balance', 'total_defect_items', 'total_bonus_items'
+    )
+    list_filter = ('date', 'partner', 'store__city')
+    search_fields = ('partner__first_name', 'partner__last_name', 'store__name')
     date_hierarchy = 'date'
+    readonly_fields = (
+        'date', 'partner', 'store', 'total_income', 'total_expense',
+        'total_debt', 'total_debt_paid', 'total_bonus_amount', 'total_bonus_items',
+        'total_defect_items', 'total_remaining_items', 'total_balance',
+        'created_at', 'updated_at'
+    )
+    inlines = [ProductDailyStatisticsInline]
+
+    def get_partner_or_store(self, obj):
+        if obj.partner:
+            return f"{obj.partner.first_name} {obj.partner.last_name} (Партнер)"
+        elif obj.store:
+            return f"{obj.store.name} (Магазин)"
+        return "Общая статистика"
+
+    get_partner_or_store.short_description = "Партнер/Магазин"
 
 
-
-class StoreFinanceStatAdmin(admin.ModelAdmin):
-    list_display = ['store', 'date', 'total_received_quantity', 'total_damaged_quantity',
-                    'total_bonus_quantity', 'get_total_debt', 'get_total_paid_debt']
-    list_filter = ['date', 'store', 'store__city']
-    search_fields = ['store__name']
+@admin.register(PartnerFinanceEntry)
+class PartnerFinanceEntryAdmin(admin.ModelAdmin):
+    list_display = ('partner', 'entry_type', 'amount', 'date', 'created_at')
+    list_filter = ('entry_type', 'date', 'partner')
+    search_fields = ('partner__first_name', 'partner__last_name', 'description')
     date_hierarchy = 'date'
+    raw_id_fields = ('partner',)
 
-    def get_total_debt(self, obj):
-        # Отображаем долг с цветовым форматированием
-        debt = float(obj.total_debt or 0)
-        color = 'red' if debt > 0 else 'green'
-        return format_html('<span style="color: {};">{:.2f}</span>', color, debt)
-
-    get_total_debt.short_description = "Долг"
-
-    def get_total_paid_debt(self, obj):
-        # Отображаем оплаченный долг
-        paid = float(obj.total_paid_debt or 0)
-        return format_html('<span style="color: green;">{:.2f}</span>', paid)
-
-    get_total_paid_debt.short_description = "Оплачено"
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('partner', 'entry_type', 'amount', 'date')
+        }),
+        ('Дополнительно', {
+            'fields': ('description', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    readonly_fields = ('created_at', 'updated_at')
 
 
-class FinanceEntryAdmin(admin.ModelAdmin):
-    list_display = ['user', 'date', 'entry_type', 'quantity', 'amount', 'note']
-    list_filter = ['date', 'entry_type', 'user']
-    search_fields = ['user__email', 'note']
+@admin.register(StoreFinanceEntry)
+class StoreFinanceEntryAdmin(admin.ModelAdmin):
+    list_display = ('store', 'entry_type', 'amount', 'date', 'created_at')
+    list_filter = ('entry_type', 'date', 'store__city')
+    search_fields = ('store__name', 'description')
     date_hierarchy = 'date'
+    raw_id_fields = ('store',)
 
-
-class CalendarStatisticsAdmin(admin.ModelAdmin):
-    list_display = ['date', 'user', 'has_sales', 'has_requests', 'has_expenses', 'has_debt_payment']
-    list_filter = ['date', 'user', 'has_sales', 'has_requests', 'has_expenses', 'has_debt_payment']
-    date_hierarchy = 'date'
-
-
-class ArchivedDailySummaryAdmin(admin.ModelAdmin):
-    list_display = ['date', 'user', 'total_requests', 'get_total_sales', 'get_total_expenses', 'get_total_profit']
-    list_filter = ['date', 'user']
-    search_fields = ['user__email']
-    date_hierarchy = 'date'
-
-    def get_total_sales(self, obj):
-        # Форматируем продажи
-        return f"{float(obj.total_sales):.2f}"
-
-    get_total_sales.short_description = "Продажи"
-
-    def get_total_expenses(self, obj):
-        # Форматируем расходы
-        return f"{float(obj.total_expenses):.2f}"
-
-    get_total_expenses.short_description = "Расходы"
-
-    def get_total_profit(self, obj):
-        # Форматируем прибыль с цветом
-        profit = float(obj.total_profit)
-        color = 'green' if profit >= 0 else 'red'
-        return format_html('<span style="color: {};">{:.2f}</span>', color, profit)
-
-    get_total_profit.short_description = "Прибыль"
-
-
-# Регистрация моделей с классами админки
-admin.site.register(PartnerFinanceStat, PartnerFinanceStatAdmin)
-admin.site.register(StoreFinanceStat, StoreFinanceStatAdmin)
-admin.site.register(FinanceEntry, FinanceEntryAdmin)
-admin.site.register(CalendarStatistics, CalendarStatisticsAdmin)
-admin.site.register(ArchivedDailySummary, ArchivedDailySummaryAdmin)
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('store', 'entry_type', 'amount', 'date')
+        }),
+        ('Дополнительно', {
+            'fields': ('description', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    readonly_fields = ('created_at', 'updated_at')

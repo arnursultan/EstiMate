@@ -1,37 +1,18 @@
-# В apps/finance/urls.py
-
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views import (
-    MyFinanceStatView, StoreStatisticsView, ManualFinanceEntryView,
-    AdminStatisticsView, CalendarStatisticsView, ArchivedDataView,
-    AdminDamagedGoodsReportView, BalanceCalculatorView, ProductRequestHistoryView,
-    FinanceSummaryView, FinanceEntryListView, PartnerInventoryView, FinanceEntryCreateView,
-    PartnerProductFinanceView, PartnerCatalogFinanceView, PartnerStatisticsView,ExpenseEntryView
+    PartnerFinanceEntryViewSet,
+    StoreFinanceEntryViewSet,
+    StatisticsViewSet
 )
 
 app_name = 'finance'
 
+router = DefaultRouter()
+router.register(r'partner-entries', PartnerFinanceEntryViewSet, basename='partner-finance')
+router.register(r'store-entries', StoreFinanceEntryViewSet, basename='store-finance')
+router.register(r'statistics', StatisticsViewSet, basename='statistics')
+
 urlpatterns = [
-    # Партнерские маршруты
-    path('my/', MyFinanceStatView.as_view(), name='my-finance'),
-    path('manual/', ManualFinanceEntryView.as_view(), name='manual-finance'),
-    path('manual/list/', FinanceEntryListView.as_view(), name='finance-entry-list'),
-    path('entries/create/', FinanceEntryCreateView.as_view(), name='finance-entry-create'),
-    path('product/finance/', PartnerProductFinanceView.as_view(), name='partner-product-finance'),
-    path('catalog/finance/', PartnerCatalogFinanceView.as_view(), name='partner-catalog-finance'),
-    path('inventory/', PartnerInventoryView.as_view(), name='inventory-summary'),
-    path('balance/', BalanceCalculatorView.as_view(), name='balance-calculator'),
-    path('history/requests/', ProductRequestHistoryView.as_view(), name='request-history'),
-    path('summary/', FinanceSummaryView.as_view(), name='finance-summary'),
-    path('calendar/', CalendarStatisticsView.as_view(), name='calendar-statistics'),
-    path('archives/', ArchivedDataView.as_view(), name='archived-data'),
-    path('expense-entry/', ExpenseEntryView.as_view(), name='expense-entry'),
-
-    # Новые маршруты
-    path('partner-statistics/', PartnerStatisticsView.as_view(), name='partner-statistics'),
-    path('store-statistics/', StoreStatisticsView.as_view(), name='store-statistics'),
-
-    # Административные маршруты
-    path('admin/damaged-report/', AdminDamagedGoodsReportView.as_view(), name='damaged-goods-report'),
-    path('admin-statistics/', AdminStatisticsView.as_view(), name='admin-statistics'),
+    path('', include(router.urls)),
 ]

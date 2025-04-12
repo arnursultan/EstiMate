@@ -1,248 +1,150 @@
 from rest_framework import serializers
 from .models import (
-    PartnerFinanceStat, StoreFinanceStat, FinanceEntry,
-    CalendarStatistics, ArchivedDailySummary, InventorySummary
+    PartnerFinanceEntry,
+    StoreFinanceEntry,
+    DailyStatistics,
+    ProductDailyStatistics
 )
-from apps.products.models import PartnerProduct
+from apps.stores.models import Store
+from django.utils import timezone
+from decimal import Decimal
 
 
-class PartnerFinanceStatSerializer(serializers.ModelSerializer):
-    user_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = PartnerFinanceStat
-        fields = [
-            'id', 'user', 'user_name', 'date','total_requested_amount',
-            'total_expenses',  'total_sold_quantity'
-        ]
-        read_only_fields = [
-            'user', 'date',
-                 'total_expenses',
-             'total_sold_quantity','total_requested_amount'
-        ]
-
-    def get_user_name(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}"
-
-
-class StoreFinanceStatSerializer(serializers.ModelSerializer):
-    store_name = serializers.CharField(source='store.name', read_only=True)
-    city_name = serializers.CharField(source='store.city.name', read_only=True)
-    creator_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = StoreFinanceStat
-        fields = ['id', 'store', 'date', 'total_received_quantity', 'total_damaged_quantity',
-                  'total_debt', 'total_bonus_quantity', 'total_paid_debt', 'total_partner_expenses',
-                  'detailed_data', 'city_name', 'store_name', 'creator_name']
-        read_only_fields = [
-            'date', 'store', 'total_approved', 'total_damaged', 'total_debt', 'total_bonus', 'total_paid'
-        ]
-
-    def get_creator_name(self, obj):
-        if obj.store.creator:
-            return f"{obj.store.creator.first_name} {obj.store.creator.last_name}"
-        return None
-
-
-class FinanceEntrySerializer(serializers.ModelSerializer):
-    city_name = serializers.CharField(source='city.name', read_only=True)
+class PartnerFinanceEntrySerializer(serializers.ModelSerializer):
+    """Сериализатор для финансовых записей партнера"""
+    partner_name = serializers.SerializerMethodField()
     entry_type_display = serializers.CharField(source='get_entry_type_display', read_only=True)
-    partner_product_info = serializers.SerializerMethodField()
 
     class Meta:
-        model = FinanceEntry
+        model = PartnerFinanceEntry
         fields = [
-            'id', 'user', 'date', 'entry_type', 'entry_type_display', 'amount', 'quantity',
-            'city', 'city_name', 'partner_product', 'partner_product_info', 'note'
+            'id', 'partner', 'partner_name', 'amount', 'description',
+            'entry_type', 'entry_type_display', 'date', 'created_at'
         ]
-        read_only_fields = ['user']
+        read_only_fields = ['created_at']
 
-    def get_partner_product_info(self, obj):
-        if obj.partner_product:
-            return {
-                'id': obj.partner_product.id,
-                'product_name': obj.partner_product.product.name,
-                'price': float(obj.partner_product.price),
-                'remaining_quantity': obj.partner_product.remaining_quantity
-            }
-        return None
+    def get_partner_name(self, obj):
+        return f"{obj.partner.first_name} {obj.partner.last_name}"
 
     def validate(self, data):
-        entry_type = data.get('entry_type')
-        partner_product = data.get('partner_product')
-        quantity = data.get('quantity', 0)
+        if not data.get('date'):
+            data['date'] = timezone.now().date()
 
-        # Для записей типа 'sale', 'damage', 'return' нужен partner_product
-        if entry_type in ['sale', 'damage', 'return'] and not partner_product:
-            raise serializers.ValidationError({
-                "partner_product": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' необходимо указать товар из каталога"
-            })
-
-        # Для этих типов quantity обязателен и > 0
-        if entry_type in ['sale', 'damage', 'return'] and quantity <= 0:
-            raise serializers.ValidationError({
-                "quantity": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' необходимо указать положительное количество"
-            })
-
-        # Проверка доступа к продукту
-        if partner_product:
-            user = self.context.get('request').user
-            if partner_product.partner.id != user.id and not user.is_staff:
-                raise serializers.ValidationError({
-                    "partner_product": "Вы можете выбрать только товары из вашего личного каталога"
-                })
-
-        # Проверка остатков
-        if entry_type in ['sale', 'damage'] and partner_product:
-            if quantity > partner_product.remaining_quantity:
-                raise serializers.ValidationError({
-                    "quantity": f"Недостаточно товара в каталоге. Доступно: {partner_product.remaining_quantity}"
-                })
-
-        # Проверка возврата
-        if entry_type == 'return' and partner_product:
-            if quantity > partner_product.sold_quantity:
-                raise serializers.ValidationError({
-                    "quantity": f"Возврат не может превышать проданное количество ({partner_product.sold_quantity})"
-                })
-
-        # Для expense и income
-        if entry_type in ['expense', 'income']:
-            amount = data.get('amount', 0)
-            if amount <= 0:
-                raise serializers.ValidationError({
-                    "amount": "Сумма должна быть положительной"
-                })
-            if quantity > 0:
-                raise serializers.ValidationError({
-                    "quantity": f"Для записи типа '{dict(FinanceEntry.ENTRY_TYPE_CHOICES)[entry_type]}' не нужно указывать количество"
-                })
+        if data.get('amount', 0) <= 0:
+            raise serializers.ValidationError("Сумма должна быть больше нуля")
 
         return data
 
-    def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
 
-
-class CalendarStatisticsSerializer(serializers.ModelSerializer):
-    user_name = serializers.SerializerMethodField(read_only=True)
+class StoreFinanceEntrySerializer(serializers.ModelSerializer):
+    """Сериализатор для финансовых записей магазина"""
     store_name = serializers.CharField(source='store.name', read_only=True)
-    city_name = serializers.CharField(source='city.name', read_only=True)
+    entry_type_display = serializers.CharField(source='get_entry_type_display', read_only=True)
 
     class Meta:
-        model = CalendarStatistics
+        model = StoreFinanceEntry
         fields = [
-            'id', 'date', 'user', 'user_name', 'store', 'store_name', 'city', 'city_name',
-            'has_sales', 'has_requests', 'has_expenses', 'has_debt_payment',
-            'has_damages', 'has_returns'
+            'id', 'store', 'store_name', 'amount', 'description',
+            'entry_type', 'entry_type_display', 'date', 'created_at'
         ]
-
-    def get_user_name(self, obj):
-        if obj.user:
-            return f"{obj.user.first_name} {obj.user.last_name}"
-        return None
-
-
-class ArchivedDailySummarySerializer(serializers.ModelSerializer):
-    user_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ArchivedDailySummary
-        fields = [
-            'id', 'date', 'user', 'user_name', 'total_requests', 'total_sales',
-            'total_expenses', 'total_profit', 'total_damages', 'total_returns',
-            'total_bonus', 'data'
-        ]
-        read_only_fields = [
-            'date', 'user', 'total_requests', 'total_sales',
-            'total_expenses', 'total_profit', 'total_damages', 'total_returns',
-            'total_bonus', 'data'
-        ]
-
-    def get_user_name(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}"
-
-
-class InventorySummarySerializer(serializers.ModelSerializer):
-    user_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = InventorySummary
-        fields = [
-            'id', 'user', 'user_name', 'date', 'total_quantity', 'total_sold',
-            'total_damaged', 'total_bonus', 'total_returned', 'total_remaining',
-            'total_value', 'total_sold_value', 'total_damaged_value',
-            'total_bonus_value', 'total_remaining_value', 'data'
-        ]
-        read_only_fields = [
-            'user', 'date', 'total_quantity', 'total_sold',
-            'total_damaged', 'total_bonus', 'total_returned', 'total_remaining',
-            'total_value', 'total_sold_value', 'total_damaged_value',
-            'total_bonus_value', 'total_remaining_value', 'data'
-        ]
-
-    def get_user_name(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}"
-
-
-class PartnerProductFinanceSerializer(serializers.Serializer):
-    """Сериализатор для работы с финансами отдельного товара партнера"""
-    partner_product_id = serializers.IntegerField()
-    entry_type = serializers.ChoiceField(choices=FinanceEntry.ENTRY_TYPE_CHOICES)
-    quantity = serializers.IntegerField(min_value=1, required=False)
-    amount = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
-    note = serializers.CharField(required=False, allow_blank=True)
+        read_only_fields = ['created_at']
 
     def validate(self, data):
-        partner_product_id = data.get('partner_product_id')
-        entry_type = data.get('entry_type')
-        quantity = data.get('quantity')
-        amount = data.get('amount')
-        user = self.context.get('request').user
+        if not data.get('date'):
+            data['date'] = timezone.now().date()
 
-        try:
-            partner_product = PartnerProduct.objects.get(id=partner_product_id)
+        if data.get('amount', 0) <= 0:
+            raise serializers.ValidationError("Сумма должна быть больше нуля")
 
-            if partner_product.partner.id != user.id and not user.is_staff:
-                raise serializers.ValidationError({
-                    "partner_product_id": "Вы можете выбрать только товары из вашего личного каталога"
-                })
+        # Проверка доступа к магазину для партнеров
+        request = self.context.get('request')
+        if request and request.user.role == 'partner':
+            store = data.get('store')
+            if store and store.partner != request.user:
+                raise serializers.ValidationError("У вас нет доступа к этому магазину")
 
-            if entry_type in ['sale', 'damage']:
-                if quantity is None:
-                    raise serializers.ValidationError({
-                        "quantity": "Укажите количество"
-                    })
-                if quantity > partner_product.remaining_quantity:
-                    raise serializers.ValidationError({
-                        "quantity": f"Недостаточно товара. Доступно: {partner_product.remaining_quantity}"
-                    })
+        return data
 
-            elif entry_type == 'return':
-                if quantity is None:
-                    raise serializers.ValidationError({
-                        "quantity": "Укажите количество"
-                    })
-                if quantity > partner_product.sold_quantity:
-                    raise serializers.ValidationError({
-                        "quantity": f"Возврат не может превышать проданное количество ({partner_product.sold_quantity})"
-                    })
 
-            elif entry_type in ['income', 'expense']:
-                if not amount or amount <= 0:
-                    raise serializers.ValidationError({
-                        "amount": "Сумма должна быть положительной"
-                    })
-                if quantity:
-                    raise serializers.ValidationError({
-                        "quantity": f"Для записи типа '{entry_type}' не нужно указывать количество"
-                    })
+class ProductDailyStatisticsSerializer(serializers.ModelSerializer):
+    """Сериализатор для детальной статистики по товарам"""
 
-        except PartnerProduct.DoesNotExist:
-            raise serializers.ValidationError({
-                "partner_product_id": "Указанный товар не найден"
-            })
+    class Meta:
+        model = ProductDailyStatistics
+        fields = [
+            'product_id', 'product_name', 'requested_quantity', 'sold_quantity',
+            'bonus_quantity', 'defect_quantity', 'remaining_quantity', 'income_amount'
+        ]
+
+
+class DailyStatisticsSerializer(serializers.ModelSerializer):
+    """Сериализатор для ежедневной статистики"""
+    product_stats = ProductDailyStatisticsSerializer(many=True, read_only=True)
+    store_name = serializers.SerializerMethodField(read_only=True)
+    partner_name = serializers.SerializerMethodField(read_only=True)
+    city = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = DailyStatistics
+        fields = [
+            'id', 'date', 'partner', 'partner_name', 'store', 'store_name', 'city',
+            'total_income', 'total_expense', 'total_debt', 'total_debt_paid',
+            'total_bonus_amount', 'total_bonus_items', 'total_defect_items',
+            'total_remaining_items', 'total_balance', 'product_stats'
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+    def get_store_name(self, obj):
+        return obj.store.name if obj.store else None
+
+    def get_partner_name(self, obj):
+        if obj.partner:
+            return f"{obj.partner.first_name} {obj.partner.last_name}"
+        return None
+
+    def get_city(self, obj):
+        return obj.store.city if obj.store else None
+
+
+class FinanceSummarySerializer(serializers.Serializer):
+    """Сериализатор для финансовой сводки"""
+    date_from = serializers.DateField()
+    date_to = serializers.DateField()
+    total_income = serializers.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    total_expense = serializers.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    total_debt = serializers.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    total_debt_paid = serializers.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    total_bonus_items = serializers.IntegerField(default=0)
+    total_defect_items = serializers.IntegerField(default=0)
+    total_balance = serializers.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    product_summaries = serializers.ListField(child=serializers.DictField(), default=list)
+
+
+class StoreFilterSerializer(serializers.Serializer):
+    """Сериализатор для фильтрации по магазинам"""
+    store_id = serializers.IntegerField(required=False)
+    city = serializers.CharField(required=False)
+    date_from = serializers.DateField(required=False)
+    date_to = serializers.DateField(required=False)
+
+    def validate(self, data):
+        # Проверка доступа к магазину для партнеров
+        request = self.context.get('request')
+        if request and request.user.role == 'partner' and 'store_id' in data:
+            try:
+                store = Store.objects.get(id=data['store_id'])
+                if store.partner != request.user:
+                    raise serializers.ValidationError("У вас нет доступа к этому магазину")
+            except Store.DoesNotExist:
+                raise serializers.ValidationError("Магазин не найден")
+
+        # Установка дат по умолчанию, если не указаны
+        if 'date_from' not in data and 'date_to' not in data:
+            data['date_from'] = timezone.now().date()
+            data['date_to'] = timezone.now().date()
+        elif 'date_from' in data and 'date_to' not in data:
+            data['date_to'] = data['date_from']
+        elif 'date_to' in data and 'date_from' not in data:
+            data['date_from'] = data['date_to']
 
         return data

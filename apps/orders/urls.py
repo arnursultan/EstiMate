@@ -1,23 +1,31 @@
-# В apps/orders/urls.py
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProductRequestViewSet, RecordDamageView, RecordExpenseView, PayDebtView
+from rest_framework_nested import routers
+from .views import (
+    OrderViewSet,
+    OrderItemViewSet,
+    DefectItemViewSet,
+    StoreDebtPaymentViewSet,
+    StoreExpenseViewSet
+)
 
+# Основной роутер
 router = DefaultRouter()
-router.register(r'product-requests', ProductRequestViewSet, basename='product-requests')
+router.register(r'orders', OrderViewSet, basename='order')
+router.register(r'defects', DefectItemViewSet, basename='defect')
+router.register(r'debt-payments', StoreDebtPaymentViewSet, basename='debt-payment')
+router.register(r'expenses', StoreExpenseViewSet, basename='expense')
+
+# Вложенный роутер для элементов заказа
+order_items_router = routers.NestedSimpleRouter(router, r'orders', lookup='order')
+order_items_router.register(r'items', OrderItemViewSet, basename='order-items')
+
+# Вложенный роутер для бракованных товаров в заказе
+order_defects_router = routers.NestedSimpleRouter(router, r'orders', lookup='order')
+order_defects_router.register(r'defects', DefectItemViewSet, basename='order-defects')
 
 urlpatterns = [
     path('', include(router.urls)),
-    # Пути для запросов товаров
-    path('group-self-request/', ProductRequestViewSet.as_view({'post': 'group_self_request'}),
-         name='group-self-request'),
-    path('group-store-request/', ProductRequestViewSet.as_view({'post': 'group_store_request'}),
-         name='group-store-request'),
-    path('process-batch/', ProductRequestViewSet.as_view({'post': 'process_batch'}), name='process-batch'),
-
-    # Пути для финансовых операций
-    path('record-damage/', RecordDamageView.as_view(), name='record-damage'),
-    path('record-expense/', RecordExpenseView.as_view(), name='record-expense'),
-    path('pay-debt/', PayDebtView.as_view(), name='pay-debt'),
+    path('', include(order_items_router.urls)),
+    path('', include(order_defects_router.urls)),
 ]

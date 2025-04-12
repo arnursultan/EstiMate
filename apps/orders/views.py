@@ -1,969 +1,448 @@
-import uuid
-from decimal import Decimal
-
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.views import APIView
-from django.utils import timezone
-
-
-from .models import ProductRequest
+from django.db.models import Q, Sum, Count
+from .models import Order, OrderItem, DefectItem
 from .serializers import (
-    ProductRequestSerializer,
-    AdminProductRequestStatusSerializer,
-    PartnerMarkReceivedSerializer,
-    ReportDamagedSerializer,
-    SelfRequestSerializer,
-    StoreRequestSerializer
+    OrderSerializer,
+    OrderWithItemsSerializer,
+    OrderStatusUpdateSerializer,
+    OrderItemSerializer,
+    DefectItemSerializer,
+    DefectGroupSerializer,
+    StoreDebtPaymentSerializer,
+    StoreExpenseSerializer
 )
-from apps.products.models import Product, PartnerProduct
-from apps.stores.models import Store, StoreDebt
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from apps.stores.models import Store, StoreDebt, StoreDebtPayment, StoreExpense
+from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
 
 
-class IsAdminUser(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user and request.user.is_staff
-
-
-class ProductRequestViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductRequestSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с заказами
+    """
+    serializer_class = OrderSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['status', 'payment_method', 'request_type', 'store', 'product', 'batch_id']
-    search_fields = ['product__name', 'store__name']
-    ordering_fields = ['created_at', 'quantity', 'total_price']
+    filterset_fields = ['order_type', 'status', 'is_group_order', 'store', 'partner']
+    search_fields = ['store__name', 'partner__email', 'partner__first_name']
+    ordering_fields = ['created_at', 'updated_at']
 
     def get_queryset(self):
-        """
-        Возвращает запросы в зависимости от роли пользователя:
-        - Для администраторов - все запросы
-        - Для обычных пользователей - только свои запросы
-        """
-        # Проверяем, не является ли это запросом для генерации схемы Swagger
-        if getattr(self, 'swagger_fake_view', False):
-            # Возвращаем пустой QuerySet для Swagger
-            return ProductRequest.objects.none()
-
         user = self.request.user
-        if user.is_staff:
-            return ProductRequest.objects.all()
-        return ProductRequest.objects.filter(user=user)
-
-    def get_serializer_class(self):
-        """Выбор сериализатора в зависимости от действия"""
-        if self.action == 'update_status':
-            return AdminProductRequestStatusSerializer
-        elif self.action == 'mark_received':
-            return PartnerMarkReceivedSerializer
-        elif self.action == 'report_damaged':
-            return ReportDamagedSerializer
-        elif self.action == 'create_self_request':
-            return SelfRequestSerializer
-        elif self.action == 'create_store_request':
-            return StoreRequestSerializer
-        return self.serializer_class
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-    # В apps/orders/views.py - метод update_status
-
-    @action(detail=True, methods=['patch'], permission_classes=[IsAdminUser])
-    def update_status(self, request, pk=None):
-        """Обновление статуса запроса (только для администратора)"""
-        instance = self.get_object()
-
-        # Проверяем, что это SELF запрос
-        if instance.request_type != 'SELF':
-            return Response(
-                {"error": "Можно обновлять статус только для запросов типа SELF"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        serializer = self.get_serializer(instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            # Сохраняем предыдущий статус
-            old_status = instance.status
-            new_status = serializer.validated_data['status']
-
-            # Если статус меняется с pending на approved
-            if old_status == 'pending' and new_status == 'approved':
-                # Товар уже был уменьшен из каталога админа при создании запроса
-                # Теперь просто меняем статус на approved
-                serializer.save()
-
-                # После сохранения статуса, добавляем товар в каталог партнера
-                from apps.products.models import PartnerProduct
-                partner_product, created = PartnerProduct.objects.get_or_create(
-                    partner=instance.user,
-                    product=instance.product,
-                    defaults={
-                        'price': instance.product.price,
-                        'quantity': 0
-                    }
-                )
-
-                # Увеличиваем количество товара у партнера
-                partner_product.quantity += instance.quantity
-                if instance.bonus_quantity > 0:
-                    partner_product.bonus_quantity += instance.bonus_quantity
-                partner_product.save()
-
-                # Обновляем статистику
-                from apps.finance.services import update_partner_daily_stats
-                update_partner_daily_stats(instance.user, instance.created_at.date())
-
-            # Если статус меняется с pending на rejected
-            elif old_status == 'pending' and new_status == 'rejected':
-                # Возвращаем товар в каталог администратора
-                instance.product.add_quantity(instance.quantity)
-                serializer.save()
-            else:
-                # Любой другой переход статусов
-                serializer.save()
-
-            return Response(ProductRequestSerializer(instance).data)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-    @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
-    def report_damaged(self, request, pk=None):
-        """Отметить поврежденные товары (для создателя запроса)"""
-        instance = self.get_object()
-
-        # Проверка прав доступа
-        if instance.user != request.user:
-            return Response({"error": "Вы можете отмечать брак только в своих запросах"},
-                            status=status.HTTP_403_FORBIDDEN)
-
-        serializer = self.get_serializer(instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            damaged_quantity = serializer.validated_data['damaged_quantity']
-            instance.report_damaged(damaged_quantity)
-
-            # Обновляем статистику
-            from apps.finance.services import update_partner_daily_stats
-            if instance.store:
-                from apps.finance.services import update_store_daily_stats
-                update_store_daily_stats(instance.store, instance.created_at.date())
-            update_partner_daily_stats(instance.user, instance.created_at.date())
-
-            return Response(ProductRequestSerializer(instance).data)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    @swagger_auto_schema(
-        method='post',
-        request_body=SelfRequestSerializer,
-        responses={201: ProductRequestSerializer()}
-    )
-    @action(detail=False, methods=['post'])
-    # В apps/orders/views.py - метод create_self_request
-    def create_self_request(self, request):
-        """Создать запрос 'для себя' (SELF)"""
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        product_id = serializer.validated_data['product_id']
-        quantity = serializer.validated_data['quantity']
-
-        try:
-            product = Product.objects.get(id=product_id, is_active=True)
-
-            # Проверяем наличие достаточного количества товара у админа
-            if product.quantity < quantity:
-                return Response(
-                    {"error": f"Недостаточно товара в каталоге. Доступно: {product.quantity}"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # ИЗМЕНЕНО: Уменьшаем количество товара у админа сразу при создании запроса
-            product.reduce_quantity(quantity)
-
-            # Создаем запрос SELF
-            product_request = ProductRequest.objects.create(
-                product=product,
-                user=request.user,
-                quantity=quantity,
-                request_type='SELF',
-                status='pending'
-            )
-
-            return Response(
-                ProductRequestSerializer(product_request).data,
-                status=status.HTTP_201_CREATED
-            )
-        except Product.DoesNotExist:
-            return Response(
-                {"error": "Указанный товар не найден или неактивен"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-    @swagger_auto_schema(
-        method='post',
-        request_body=StoreRequestSerializer,
-        responses={201: ProductRequestSerializer()}
-    )
-    @action(detail=False, methods=['post'], url_path='create_store_request')
-
-    def create_store_request(self, request):
-        """Создать запрос 'для магазина' (STORE)"""
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        partner_product_id = serializer.validated_data['partner_product_id']
-        store_id = serializer.validated_data['store_id']
-        quantity = serializer.validated_data['quantity']
-
-        try:
-            # Проверяем, что указан товар из личного каталога
-            partner_product = PartnerProduct.objects.get(id=partner_product_id, partner=request.user)
-
-            # Проверяем, что товара достаточно
-            if partner_product.remaining_quantity < quantity:
-                return Response(
-                    {"error": f"Недостаточно товара в вашем каталоге. Доступно: {partner_product.remaining_quantity}"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Проверяем магазин
-            store = Store.objects.get(id=store_id, status='approved', is_active=True)
-
-            # ИЗМЕНЕНО: Уменьшаем количество товара в каталоге партнера
-            partner_product.update_quantity(quantity, operation='subtract')
-
-            # Создаем запрос STORE (со статусом approved по новой логике)
-            product_request = ProductRequest.objects.create(
-                product=partner_product.product,  # Используем глобальный товар
-                user=request.user,
-                quantity=quantity,
-                request_type='STORE',
-                store=store,
-                partner_product=partner_product,
-                payment_method='debt',
-                status='approved'  # ИЗМЕНЕНО: Сразу approved, по новой логике
-            )
-
-            # Создаем долг магазина
-            StoreDebt.objects.create(
-                store=store,
-                amount=product_request.total_price,
-                request=product_request,
-                created_by=request.user
-            )
-
-            # Обновляем статистику
-            from apps.finance.services import update_partner_daily_stats, update_store_daily_stats
-            update_partner_daily_stats(request.user, product_request.created_at.date())
-            update_store_daily_stats(store, product_request.created_at.date())
-
-            return Response(
-                ProductRequestSerializer(product_request).data,
-                status=status.HTTP_201_CREATED
-            )
-        except PartnerProduct.DoesNotExist:
-            return Response(
-                {"error": "Указанный товар не найден в вашем каталоге"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        except Store.DoesNotExist:
-            return Response(
-                {"error": "Указанный магазин не найден или не активен"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-    @action(detail=False, methods=['get'], permission_classes=[IsAdminUser])
-    def pending_self_requests(self, request):
-        """Получение всех ожидающих запросов 'для себя' (для администратора)"""
-        queryset = ProductRequest.objects.filter(status='pending', request_type='SELF')
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def self_requests(self, request):
-        """Получение всех запросов 'для себя' текущего пользователя"""
-        queryset = ProductRequest.objects.filter(user=request.user, request_type='SELF')
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def store_requests(self, request):
-        """Получение всех запросов 'для магазина' текущего пользователя"""
-        queryset = ProductRequest.objects.filter(user=request.user, request_type='STORE')
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @swagger_auto_schema(
-        method='post',
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'items': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'product_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                            'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, minimum=1)
-                        }
-                    )
-                )
-            },
-            required=['items']
-        ),
-        responses={201: "Запросы созданы успешно"}
-    )
-    # В apps/orders/views.py - метод bulk_self_request (для групповых запросов)
-
-    @action(detail=False, methods=["post"], url_path="group_self_request")
-    def group_self_request(self, request):
-        """
-        Групповой запрос товаров 'для себя' (SELF).
-        """
-        items = request.data.get('items', [])
-
-        if not items:
-            return Response(
-                {"error": "Необходимо указать хотя бы один товар"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Генерируем общий batch_id для группы запросов
-        batch_id = uuid.uuid4()
-
-        created_requests = []
-        errors = []
-        total_amount = 0
-
-        for item in items:
-            product_id = item.get('product_id')
-            quantity = item.get('quantity', 1)
-
-            # Валидация данных
-            if not product_id:
-                errors.append({"error": "Не указан ID товара", "item": item})
-                continue
-
-            if quantity <= 0:
-                errors.append({"error": "Количество должно быть положительным числом", "item": item})
-                continue
-
-            try:
-                product = Product.objects.get(id=product_id, is_active=True)
-
-                # Проверяем наличие достаточного количества товара
-                if product.quantity < quantity:
-                    errors.append({
-                        "error": f"Недостаточно товара '{product.name}' в каталоге. Доступно: {product.quantity}",
-                        "item": item
-                    })
-                    continue
-
-                # ИЗМЕНЕНО: Уменьшаем количество товара у админа
-                product.reduce_quantity(quantity)
-
-                # Создаем запрос SELF с общим batch_id
-                product_request = ProductRequest.objects.create(
-                    product=product,
-                    user=request.user,
-                    quantity=quantity,
-                    request_type='SELF',
-                    status='pending',
-                    batch_id=batch_id
-                )
-
-                total_amount += float(product_request.total_price)
-
-                created_requests.append({
-                    "id": product_request.id,
-                    "product_name": product.name,
-                    "quantity": quantity,
-                    "price": float(product.price),
-                    "total": float(product_request.total_price)
-                })
-
-            except Product.DoesNotExist:
-                errors.append({"error": f"Товар с ID {product_id} не найден или неактивен", "item": item})
-
-        if not created_requests:
-            return Response(
-                {"error": "Не удалось создать ни один запрос", "details": errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        return Response({
-            "batch_id": str(batch_id),
-            "created_requests": created_requests,
-            "errors": errors,
-            "total_items": len(created_requests),
-            "total_amount": total_amount
-        }, status=status.HTTP_201_CREATED)
-
-    @action(detail=False, methods=["post"], url_path="group_store_request")
-    def group_store_request(self, request):
-        """
-        Групповой запрос товаров 'для магазина' (STORE).
-        """
-        store_id = request.data.get('store_id')
-        items = request.data.get('items', [])
-
-        if not store_id:
-            return Response(
-                {"error": "Необходимо указать ID магазина"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if not items:
-            return Response(
-                {"error": "Необходимо указать хотя бы один товар"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Проверяем существование и статус магазина
-        try:
-            store = Store.objects.get(id=store_id, status='approved', is_active=True)
-        except Store.DoesNotExist:
-            return Response(
-                {"error": "Указанный магазин не найден или не активен"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        # Генерируем общий batch_id для группы запросов
-        batch_id = uuid.uuid4()
-
-        created_requests = []
-        errors = []
-        total_amount = 0
-        bonus_items = []
-
-        for item in items:
-            partner_product_id = item.get('partner_product_id')
-            quantity = item.get('quantity', 1)
-
-            # Валидация данных
-            if not partner_product_id:
-                errors.append({"error": "Не указан ID товара из каталога", "item": item})
-                continue
-
-            if quantity <= 0:
-                errors.append({"error": "Количество должно быть положительным числом", "item": item})
-                continue
-
-            try:
-                partner_product = PartnerProduct.objects.get(id=partner_product_id, partner=request.user)
-
-                # Проверка достаточного количества товара
-                if partner_product.remaining_quantity < quantity:
-                    errors.append({
-                        "error": f"Недостаточно товара '{partner_product.product.name}' в каталоге. Доступно: {partner_product.remaining_quantity}",
-                        "item": item
-                    })
-                    continue
-
-                # ИЗМЕНЕНО: Уменьшаем количество товара в каталоге партнера
-                partner_product.update_quantity(quantity, operation='subtract')
-
-                # Создаем запрос STORE (со статусом approved по новой логике)
-                product_request = ProductRequest.objects.create(
-                    product=partner_product.product,
-                    user=request.user,
-                    quantity=quantity,
-                    request_type='STORE',
-                    store=store,
-                    partner_product=partner_product,
-                    payment_method='debt',
-                    status='approved',  # ИЗМЕНЕНО: Сразу approved по новой логике
-                    batch_id=batch_id
-                )
-
-                # Создаем долг магазина для этого запроса
-                StoreDebt.objects.create(
-                    store=store,
-                    amount=product_request.total_price,
-                    request=product_request,
-                    created_by=request.user
-                )
-
-                total_amount += float(product_request.total_price)
-
-                # Добавляем информацию о бонусах, если есть
-                if product_request.bonus_quantity > 0:
-                    bonus_items.append({
-                        "product_name": partner_product.product.name,
-                        "bonus_quantity": product_request.bonus_quantity
-                    })
-
-                created_requests.append({
-                    "id": product_request.id,
-                    "product_name": partner_product.product.name,
-                    "quantity": quantity,
-                    "price": float(partner_product.price),
-                    "bonus_quantity": product_request.bonus_quantity,
-                    "total": float(product_request.total_price)
-                })
-
-            except PartnerProduct.DoesNotExist:
-                errors.append({"error": f"Товар с ID {partner_product_id} не найден в вашем каталоге", "item": item})
-
-        # Если созданы запросы, обновляем статистику
-        if created_requests:
-            from apps.finance.services import update_partner_daily_stats, update_store_daily_stats
-            update_partner_daily_stats(request.user, timezone.now().date())
-            update_store_daily_stats(store, timezone.now().date())
-
-        if not created_requests:
-            return Response(
-                {"error": "Не удалось создать ни один запрос", "details": errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        return Response({
-            "batch_id": str(batch_id),
-            "store": {
-                "id": store.id,
-                "name": store.name
-            },
-            "created_requests": created_requests,
-            "bonus_items": bonus_items,
-            "errors": errors,
-            "total_items": len(created_requests),
-            "total_amount": total_amount
-        }, status=status.HTTP_201_CREATED)
-
-
-    @action(detail=False, methods=['post'], permission_classes=[IsAdminUser])
-    def process_batch(self, request):
-        """Обработка группы запросов администратором"""
-        batch_id = request.data.get('batch_id')
-        status_value = request.data.get('status')
-
-        if not batch_id or not status_value:
-            return Response(
-                {"error": "Необходимо указать batch_id и status"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if status_value not in ['approved', 'rejected']:
-            return Response(
-                {"error": "Статус может быть только 'approved' или 'rejected'"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Находим все запросы SELF в группе со статусом pending
-        # Согласно новой логике, STORE запросы сразу одобряются и не требуют обработки админом
-        requests = ProductRequest.objects.filter(
-            batch_id=batch_id,
-            status='pending',
-            request_type='SELF'
+        if user.role == 'admin':
+            return Order.objects.all()
+
+        # Партнеры видят только свои заказы (созданные ими или для них)
+        return Order.objects.filter(
+            Q(created_by=user) | Q(partner=user)
         )
 
-        if not requests.exists():
-            return Response(
-                {"error": f"Запросы с batch_id={batch_id} не найдены или уже обработаны"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+    def get_serializer_class(self):
+        if self.action == 'create' and 'items' in self.request.data:
+            return OrderWithItemsSerializer
+        elif self.action in ['update', 'partial_update'] and 'status' in self.request.data:
+            return OrderStatusUpdateSerializer
+        return OrderSerializer
 
-        processed = []
-        errors = []
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
 
-        for req in requests:
-            try:
-                old_status = req.status
-                req.status = status_value
+        # Добавляем данные о товарах для создания заказа
+        if self.action == 'create' and 'items' in self.request.data:
+            context['items'] = self.request.data.get('items', [])
 
-                # Если статус меняется с pending на approved
-                if old_status == 'pending' and status_value == 'approved':
-                    # Товар уже был уменьшен в каталоге админа при создании запроса
-                    # Теперь добавляем товар в каталог партнера
-                    from apps.products.models import PartnerProduct
-                    partner_product, created = PartnerProduct.objects.get_or_create(
-                        partner=req.user,
-                        product=req.product,
-                        defaults={
-                            'price': req.product.price,
-                            'quantity': 0
-                        }
-                    )
+        return context
 
-                    # Увеличиваем количество товара у партнера
-                    partner_product.quantity += req.quantity
-                    if req.bonus_quantity > 0:
-                        partner_product.bonus_quantity += req.bonus_quantity
-                    partner_product.save()
-
-                # Если статус меняется с pending на rejected
-                elif old_status == 'pending' and status_value == 'rejected':
-                    # Возвращаем товар в каталог администратора
-                    req.product.add_quantity(req.quantity)
-
-                req.save()
-
-                processed.append({
-                    "id": req.id,
-                    "product": req.product.name if req.product else None,
-                    "quantity": req.quantity,
-                    "status": req.status
-                })
-
-                # Обновляем статистику для каждого запроса
-                from apps.finance.services import update_partner_daily_stats
-                update_partner_daily_stats(req.user, req.created_at.date())
-
-            except Exception as e:
-                errors.append({
-                    "id": req.id,
-                    "product": req.product.name if req.product else None,
-                    "error": str(e)
-                })
-
-        return Response({
-            "batch_id": batch_id,
-            "status": status_value,
-            "processed_count": len(processed),
-            "processed": processed,
-            "errors": errors
-        })
+    def get_permissions(self):
+        if self.action == 'destroy':
+            return [IsAdminUser()]
+        elif self.action in ['update', 'partial_update']:
+            return [IsOwnerOrAdmin()]
+        return [permissions.IsAuthenticated()]
 
     @action(detail=True, methods=['post'])
-    def confirm_receipt(self, request, pk=None):
-        """Подтверждение получения товара партнером"""
-        instance = self.get_object()
+    def update_status(self, request, pk=None):
+        """Обновление статуса заказа"""
+        order = self.get_object()
+        serializer = OrderStatusUpdateSerializer(
+            instance=order,
+            data=request.data,
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        # Проверяем, что товар принадлежит этому пользователю
-        if instance.user != request.user:
-            return Response(
-                {"error": "Вы можете подтверждать получение только своих запросов"},
-                status=status.HTTP_403_FORBIDDEN
+        return Response(OrderSerializer(order).data)
+
+    @action(detail=False, methods=['get'])
+    def admin_orders(self, request):
+        """Получение заказов от партнера к администратору"""
+        queryset = self.get_queryset().filter(order_type='admin_to_partner')
+
+        # Фильтрация по статусу
+        status = request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        serializer = OrderSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def store_orders(self, request):
+        """Получение заказов от партнера к магазину"""
+        queryset = self.get_queryset().filter(order_type='partner_to_store')
+
+        # Фильтрация по статусу
+        status = request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        # Фильтрация по магазину
+        store_id = request.query_params.get('store_id')
+        if store_id:
+            queryset = queryset.filter(store_id=store_id)
+
+        serializer = OrderSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def in_process(self, request):
+        """Получение заказов в обработке (аналог корзины)"""
+        queryset = self.get_queryset().filter(status='in_process')
+        serializer = OrderSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def statistics(self, request):
+        """Получение статистики по заказам"""
+        user = request.user
+
+        # Определяем набор заказов в зависимости от роли пользователя
+        if user.role == 'admin':
+            orders = Order.objects.all()
+        else:
+            orders = Order.objects.filter(
+                Q(created_by=user) | Q(partner=user)
             )
 
+        # Общее количество заказов
+        total_orders = orders.count()
 
-        # Проверяем статус запроса
-        # Отсекаем неподходящие статусы (только approved допустим)
-        if instance.status == 'received':
-            return Response(
-                {"error": "Товар уже был отмечен как полученный"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        elif instance.status != 'approved':
-            return Response(
-                {"error": f"Товар в статусе '{instance.get_status_display()}' не может быть отмечен как полученный"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            # Отмечаем товар как полученный
-            instance.status = 'received'
-            instance.save()
-
-            # Для запросов типа SELF создаем или обновляем товар в каталоге партнера
-            if instance.request_type == 'SELF':
-                from apps.products.models import PartnerProduct
-                partner_product, created = PartnerProduct.objects.get_or_create(
-                    partner=instance.user,
-                    product=instance.product,
-                    defaults={
-                        'price': instance.product.price,
-                        'quantity': 0
-                    }
-                )
-
-                # Увеличиваем количество товара
-                partner_product.quantity += instance.quantity
-                if instance.bonus_quantity > 0:
-                    partner_product.bonus_quantity += instance.bonus_quantity
-                partner_product.save()
-
-                # Обновляем статистику
-                from apps.finance.services import update_partner_daily_stats
-                update_partner_daily_stats(instance.user, instance.created_at.date())
-
-            return Response({
-                "message": f"Товар '{instance.product.name}' успешно отмечен как полученный",
-                "request": ProductRequestSerializer(instance).data
-            })
-        except Exception as e:
-            return Response(
-                {"error": f"Ошибка при подтверждении получения: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-
-class RecordDamageView(APIView):
-    """API для записи бракованных товаров"""
-    permission_classes = [permissions.IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Запись бракованных товаров",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['partner_product_id', 'quantity'],
-            properties={
-                'partner_product_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, minimum=1),
-                'reason': openapi.Schema(type=openapi.TYPE_STRING)
-            }
-        ),
-        responses={
-            200: "Брак успешно записан",
-            400: "Ошибка при записи брака",
-            404: "Товар не найден"
+        # Разбивка по статусам
+        status_counts = {
+            'in_process': orders.filter(status='in_process').count(),
+            'confirmed': orders.filter(status='confirmed').count(),
+            'rejected': orders.filter(status='rejected').count(),
         }
-    )
-    def post(self, request):
-        partner_product_id = request.data.get('partner_product_id')
-        quantity = request.data.get('quantity')
-        reason = request.data.get('reason', '')
 
-        if not partner_product_id or not quantity:
-            return Response(
-                {"error": "Необходимо указать partner_product_id и quantity"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            quantity = int(quantity)
-            if quantity <= 0:
-                return Response(
-                    {"error": "Количество должно быть положительным числом"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Находим товар в каталоге партнера
-            partner_product = PartnerProduct.objects.get(
-                id=partner_product_id,
-                partner=request.user
-            )
-
-            # Записываем брак
-            partner_product.record_damage(quantity)
-
-            # Создаем финансовую запись
-            from apps.finance.models import FinanceEntry
-            entry = FinanceEntry.objects.create(
-                user=request.user,
-                date=timezone.now().date(),
-                entry_type='damage',
-                partner_product=partner_product,
-                quantity=quantity,
-                note=reason
-            )
-
-            # Обновляем статистику
-            from apps.finance.services import update_partner_daily_stats
-            update_partner_daily_stats(request.user, timezone.now().date())
-
-            return Response({
-                "message": f"Брак {quantity} шт. товара '{partner_product.product.name}' успешно записан",
-                "damaged_quantity": partner_product.damaged_quantity,
-                "entry_id": entry.id
-            })
-        except PartnerProduct.DoesNotExist:
-            return Response(
-                {"error": "Товар не найден в вашем каталоге"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        except Exception as e:
-            return Response(
-                {"error": f"Ошибка при записи брака: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-
-# В apps/orders/views.py
-
-class RecordExpenseView(APIView):
-    """API для записи расходов"""
-    permission_classes = [permissions.IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Запись расходов",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['amount'],
-            properties={
-                'amount': openapi.Schema(type=openapi.TYPE_NUMBER, minimum=0),
-                'store_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                'note': openapi.Schema(type=openapi.TYPE_STRING)
-            }
-        ),
-        responses={
-            200: "Расход успешно записан",
-            400: "Ошибка при записи расхода"
+        # Разбивка по типам
+        type_counts = {
+            'admin_to_partner': orders.filter(order_type='admin_to_partner').count(),
+            'partner_to_store': orders.filter(order_type='partner_to_store').count(),
         }
-    )
-    def post(self, request):
-        amount = request.data.get('amount')
-        store_id = request.data.get('store_id')
-        note = request.data.get('note', '')
 
-        if amount is None:
-            return Response(
-                {"error": "Необходимо указать сумму расхода"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            amount = float(amount)
-            if amount <= 0:
-                return Response(
-                    {"error": "Сумма расхода должна быть положительным числом"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Проверяем существование магазина, если указан
-            store = None
-            if store_id:
-                try:
-                    store = Store.objects.get(id=store_id)
-                except Store.DoesNotExist:
-                    return Response(
-                        {"error": f"Магазин с ID {store_id} не найден"},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
-
-            # Создаем финансовую запись
-            from apps.finance.models import FinanceEntry
-            entry = FinanceEntry.objects.create(
-                user=request.user,
-                date=timezone.now().date(),
-                entry_type='expense',
-                amount=amount,
-                store=store,
-                note=note
-            )
-
-            # Обновляем статистику
-            from apps.finance.services import update_partner_daily_stats
-            update_partner_daily_stats(request.user, timezone.now().date())
-
-            if store:
-                from apps.finance.services import update_store_daily_stats
-                update_store_daily_stats(store, timezone.now().date())
-
-            return Response({
-                "message": f"Расход на сумму {amount} успешно записан",
-                "entry_id": entry.id
-            })
-        except Exception as e:
-            return Response(
-                {"error": f"Ошибка при записи расхода: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-
-# В apps/orders/views.py
-
-class PayDebtView(APIView):
-    """API для оплаты долга магазина"""
-    permission_classes = [permissions.IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Оплата долга магазина",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['store_id', 'amount'],
-            properties={
-                'store_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-                'amount': openapi.Schema(type=openapi.TYPE_NUMBER, minimum=0)
-            }
-        ),
-        responses={
-            200: "Долг успешно оплачен",
-            400: "Ошибка при оплате долга",
-            404: "Магазин не найден"
+        # Разбивка по типу заказа (групповой/одиночный)
+        order_type_counts = {
+            'group': orders.filter(is_group_order=True).count(),
+            'single': orders.filter(is_group_order=False).count(),
         }
-    )
-    def post(self, request):
-        store_id = request.data.get('store_id')
-        amount = request.data.get('amount')
 
-        if not store_id or amount is None:
+        # Общая стоимость подтвержденных заказов
+        confirmed_orders_price = sum(
+            order.total_price for order in orders.filter(status='confirmed')
+        )
+
+        return Response({
+            'total_orders': total_orders,
+            'status_counts': status_counts,
+            'type_counts': type_counts,
+            'order_type_counts': order_type_counts,
+            'confirmed_orders_price': confirmed_orders_price,
+        })
+
+
+class OrderItemViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с элементами заказа
+    """
+    serializer_class = OrderItemSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['order', 'product']
+    search_fields = ['product__name']
+    ordering_fields = ['created_at', 'quantity', 'price']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return OrderItem.objects.all()
+
+        # Партнеры видят только элементы своих заказов
+        return OrderItem.objects.filter(
+            Q(order__created_by=user) | Q(order__partner=user)
+        )
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+
+        # Добавляем заказ в контекст
+        order_id = self.kwargs.get('order_pk')
+        if order_id:
+            context['order'] = Order.objects.get(id=order_id)
+
+        return context
+
+    def get_permissions(self):
+        if self.action == 'destroy':
+            return [permissions.IsAuthenticated(), IsOwnerOrAdmin()]
+        elif self.action in ['update', 'partial_update']:
+            return [permissions.IsAuthenticated(), IsOwnerOrAdmin()]
+        return [permissions.IsAuthenticated()]
+
+
+class DefectItemViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с бракованными товарами
+    """
+    serializer_class = DefectItemSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['order', 'product']
+    search_fields = ['product__name', 'description']
+    ordering_fields = ['created_at', 'quantity']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return DefectItem.objects.all()
+
+        # Партнеры видят только бракованные товары в своих заказах
+        return DefectItem.objects.filter(order__created_by=user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+
+        # Добавляем заказ в контекст
+        order_id = self.kwargs.get('order_pk')
+        if order_id:
+            context['order'] = Order.objects.get(id=order_id)
+
+        return context
+
+    @action(detail=False, methods=['post'])
+    def add_group(self, request):
+        """Добавление группы бракованных товаров для заказа"""
+        serializer = DefectGroupSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        defects = serializer.save()
+
+        return Response(
+            DefectItemSerializer(defects, many=True).data,
+            status=status.HTTP_201_CREATED
+        )
+
+    @action(detail=False, methods=['get'])
+    def order_defects(self, request):
+        """Получение бракованных товаров по конкретному заказу"""
+        order_id = request.query_params.get('order_id')
+        if not order_id:
             return Response(
-                {"error": "Необходимо указать store_id и amount"},
+                {"detail": "Необходимо указать ID заказа"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        try:
-            amount = Decimal(str(amount))
-            if amount <= 0:
-                return Response(
-                    {"error": "Сумма оплаты должна быть положительным числом"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        queryset = self.get_queryset().filter(order_id=order_id)
+        serializer = DefectItemSerializer(queryset, many=True)
 
+        # Рассчитываем общую стоимость бракованных товаров
+        total_defect_price = sum(defect.total_price for defect in queryset)
+
+        return Response({
+            "defects": serializer.data,
+            "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
+            "total_price": total_defect_price
+        })
+
+    @action(detail=False, methods=['get'])
+    def store_defects(self, request):
+        """Получение бракованных товаров по магазину"""
+        store_id = request.query_params.get('store_id')
+        if not store_id:
+            return Response(
+                {"detail": "Необходимо указать ID магазина"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        queryset = self.get_queryset().filter(order__store_id=store_id)
+        serializer = DefectItemSerializer(queryset, many=True)
+
+        # Рассчитываем общую стоимость бракованных товаров
+        total_defect_price = sum(defect.total_price for defect in queryset)
+
+        # Группируем по товарам
+        product_summary = {}
+        for defect in queryset:
+            product_id = defect.product_id
+            if product_id not in product_summary:
+                product_summary[product_id] = {
+                    "product_id": product_id,
+                    "product_name": defect.product.name,
+                    "total_quantity": 0,
+                    "total_price": 0
+                }
+
+            product_summary[product_id]["total_quantity"] += defect.quantity
+            product_summary[product_id]["total_price"] += defect.total_price
+
+        return Response({
+            "defects": serializer.data,
+            "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
+            "total_price": total_defect_price,
+            "products_summary": list(product_summary.values())
+        })
+
+    @action(detail=False, methods=['get'])
+    def store_total_defects(self, request):
+        """Получение только количества бракованных товаров по магазину"""
+        store_id = request.query_params.get('store_id')
+        if not store_id:
+            return Response(
+                {"detail": "Необходимо указать ID магазина"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        total_defects = DefectItem.objects.filter(order__store_id=store_id).aggregate(
+            total_quantity=Sum('quantity'),
+            total_price=Sum('quantity')  # Здесь нужно умножить на цену, но агрегацией это сложно сделать
+        )
+
+        return Response({
+            "store_id": store_id,
+            "total_defect_quantity": total_defects['total_quantity'] or 0
+        })
+
+
+class StoreDebtPaymentViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с платежами по долгам магазинов
+    """
+    serializer_class = StoreDebtPaymentSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['store']
+    ordering_fields = ['payment_date', 'amount']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return StoreDebtPayment.objects.all()
+
+        # Партнеры видят только платежи своих магазинов
+        return StoreDebtPayment.objects.filter(store__partner=user)
+
+    def get_permissions(self):
+        if self.action in ['destroy', 'update', 'partial_update']:
+            return [IsOwnerOrAdmin()]
+        return [permissions.IsAuthenticated()]
+
+    @action(detail=False, methods=['get'])
+    def store_payments(self, request):
+        """Получение всех платежей по долгам конкретного магазина"""
+        store_id = request.query_params.get('store_id')
+        if not store_id:
+            return Response(
+                {"detail": "Необходимо указать ID магазина"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Проверка доступа к магазину
+        try:
             store = Store.objects.get(id=store_id)
-
-            # Только партнер может оплачивать долг своего магазина
-            if not request.user.is_staff:
-                has_access = ProductRequest.objects.filter(user=request.user, store=store).exists()
-                if not has_access:
-                    return Response(
-                        {"error": "У вас нет прав на оплату долга этого магазина"},
-                        status=status.HTTP_403_FORBIDDEN
-                    )
-
-            debts = StoreDebt.objects.filter(store=store, is_paid=False).order_by('created_at')
-            if not debts.exists():
+            if request.user.role != 'admin' and store.partner != request.user:
                 return Response(
-                    {"error": "У магазина нет неоплаченных долгов"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {"detail": "У вас нет доступа к этому магазину"},
+                    status=status.HTTP_403_FORBIDDEN
                 )
-
-            total_debt = sum(debt.amount - debt.paid_amount for debt in debts)
-            if amount > total_debt:
-                return Response(
-                    {"error": f"Сумма оплаты ({amount}) превышает общий долг ({total_debt})"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            remaining = amount
-            paid_debts = []
-
-            for debt in debts:
-                if remaining <= 0:
-                    break
-                debt_remaining = debt.amount - debt.paid_amount
-
-                payment = min(debt_remaining, remaining)
-                debt.pay_partial(payment)
-                remaining -= payment
-
-                paid_debts.append({
-                    "debt_id": debt.id,
-                    "request_id": debt.request.id if debt.request else None,
-                    "amount": float(debt.amount),
-                    "paid_amount": float(debt.paid_amount),
-                    "is_fully_paid": debt.is_paid
-                })
-
-            return Response({
-                "store": {
-                    "id": store.id,
-                    "name": store.name
-                },
-                "total_debt_before": float(total_debt),
-                "paid_amount": float(amount),
-                "remaining_debt": float(total_debt - amount),
-                "paid_debts": paid_debts
-            })
-
         except Store.DoesNotExist:
             return Response(
-                {"error": f"Магазин с ID {store_id} не найден"},
+                {"detail": "Магазин не найден"},
                 status=status.HTTP_404_NOT_FOUND
             )
-        except Exception as e:
+
+        # Получаем платежи и долги
+        payments = StoreDebtPayment.objects.filter(store_id=store_id).order_by('-payment_date')
+        debts = StoreDebt.objects.filter(store_id=store_id)
+
+        # Рассчитываем общие суммы
+        total_debt = sum(debt.amount for debt in debts)
+        total_paid = sum(payment.amount for payment in payments)
+        remaining_debt = total_debt - total_paid
+
+        return Response({
+            "store_id": store_id,
+            "store_name": store.name,
+            "total_debt": total_debt,
+            "total_paid": total_paid,
+            "remaining_debt": remaining_debt,
+            "payments": StoreDebtPaymentSerializer(payments, many=True).data
+        })
+
+
+class StoreExpenseViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с расходами магазинов
+    """
+    serializer_class = StoreExpenseSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['store', 'expense_date']
+    search_fields = ['description']
+    ordering_fields = ['expense_date', 'amount', 'created_at']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return StoreExpense.objects.all()
+
+        # Партнеры видят только расходы своих магазинов
+        return StoreExpense.objects.filter(store__partner=user)
+
+    def get_permissions(self):
+        if self.action in ['destroy', 'update', 'partial_update']:
+            return [IsOwnerOrAdmin()]
+        return [permissions.IsAuthenticated()]
+
+    @action(detail=False, methods=['get'])
+    def store_expenses(self, request):
+        """Получение всех расходов конкретного магазина"""
+        store_id = request.query_params.get('store_id')
+        if not store_id:
             return Response(
-                {"error": f"Ошибка при оплате долга: {str(e)}"},
+                {"detail": "Необходимо указать ID магазина"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Проверка доступа к магазину
+        try:
+            store = Store.objects.get(id=store_id)
+            if request.user.role != 'admin' and store.partner != request.user:
+                return Response(
+                    {"detail": "У вас нет доступа к этому магазину"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        except Store.DoesNotExist:
+            return Response(
+                {"detail": "Магазин не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Получаем расходы
+        expenses = StoreExpense.objects.filter(store_id=store_id).order_by('-expense_date')
+        total_expenses = sum(expense.amount for expense in expenses)
+
+        return Response({
+            "store_id": store_id,
+            "store_name": store.name,
+            "total_expenses": total_expenses,
+            "expenses": StoreExpenseSerializer(expenses, many=True).data
+        })

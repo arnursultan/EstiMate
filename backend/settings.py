@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "apps.finance",
     "apps.chats",
     "apps.notifications",
-    "apps.cart",
 ]
 
 MIDDLEWARE = [
@@ -169,7 +168,7 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-
+CELERY_BROKER_CONNECTION_TIMEOUT = 1000000
 CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -188,7 +187,7 @@ CELERY_BEAT_SCHEDULE = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_URL", "redis://redis:6379/0"),
+        "LOCATION": os.getenv("REDIS_URL", "redis://localhost:6379/0"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -310,5 +309,5 @@ LOGGING = {
 }
 
 
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# USE_X_FORWARDED_HOST = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

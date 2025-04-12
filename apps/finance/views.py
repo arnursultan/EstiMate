@@ -1,1516 +1,987 @@
-from rest_framework import generics, permissions, status, filters
-from rest_framework.views import APIView
+from rest_framework import viewsets, permissions, status, filters
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from django.db.models import Sum
+from django.db.models import Q, Sum, F, Count, Prefetch
 from django.utils import timezone
-from datetime import datetime
-from apps.users.models import User
+from datetime import datetime, timedelta
+from decimal import Decimal
+
 from .models import (
-    PartnerFinanceStat, FinanceEntry,
-    CalendarStatistics, ArchivedDailySummary
+    PartnerFinanceEntry,
+    StoreFinanceEntry,
+    DailyStatistics,
+    ProductDailyStatistics
 )
 from .serializers import (
-    PartnerFinanceStatSerializer,
-    FinanceEntrySerializer,
-     PartnerProductFinanceSerializer, InventorySummarySerializer
+    PartnerFinanceEntrySerializer,
+    StoreFinanceEntrySerializer,
+    DailyStatisticsSerializer,
+    FinanceSummarySerializer,
+    StoreFilterSerializer
 )
-from .filters import (
-    FinanceEntryFilter,ProductRequestFilter
-)
-from apps.stores.models import StoreDebt, Store, City
-from apps.orders.models import ProductRequest
-from apps.products.models import  PartnerProduct
-from apps.orders.serializers import ProductRequestSerializer
-from .services import generate_inventory_summary, update_partner_statistics, update_store_daily_stats
-import logging
 
+from apps.users.models import User
+from apps.stores.models import Store
+from apps.products.models import Product, PartnerInventory
+from apps.orders.models import Order, OrderItem, DefectItem
+from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
 
-logger = logging.getLogger(__name__)
 
-
-class MyFinanceStatView(APIView):
-    """Получение финансовой статистики для текущего пользователя"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Финансовая статистика пользователя",
-        operation_description="Возвращает финансовую статистику текущего пользователя"
-    )
-    def get(self, request):
-        stats = PartnerFinanceStat.objects.filter(user=request.user).order_by('-date')
-        serializer = PartnerFinanceStatSerializer(stats, many=True)
-        return Response(serializer.data)
-
-
-# В apps/finance/views.py
-
-class StoreStatisticsView(APIView):
-    """API для получения статистики магазина"""
-    permission_classes = [permissions.IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Статистика магазина",
-        manual_parameters=[
-            openapi.Parameter(
-                'store_id',
-                openapi.IN_QUERY,
-                description="ID магазина",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-            openapi.Parameter(
-                'date',
-                openapi.IN_QUERY,
-                description="Дата (YYYY-MM-DD), по умолчанию - сегодня",
-                type=openapi.TYPE_STRING,
-                format='date'
-            )
-        ],
-        responses={200: "Статистика магазина"}
-    )
-    def get(self, request):
-        store_id = request.query_params.get('store_id')
-        date_str = request.query_params.get('date')
-
-        if not store_id:
-            return Response(
-                {"error": "Необходимо указать ID магазина"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            store = Store.objects.get(id=store_id)
-
-            # Для обычных пользователей проверяем, что они взаимодействовали с этим магазином
-            if not request.user.is_staff:
-                has_interaction = ProductRequest.objects.filter(
-                    user=request.user,
-                    store=store
-                ).exists()
-
-                if not has_interaction:
-                    return Response(
-                        {"error": "У вас нет доступа к статистике этого магазина"},
-                        status=status.HTTP_403_FORBIDDEN
-                    )
-        except Store.DoesNotExist:
-            return Response(
-                {"error": f"Магазин с ID {store_id} не найден"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        if date_str:
-            try:
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                return Response(
-                    {"error": "Некорректный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        else:
-            date_obj = timezone.now().date()
-
-        try:
-            # Обновляем статистику перед выдачей
-            from apps.finance.services import update_store_daily_stats
-            stats = update_store_daily_stats(store, date_obj)
-
-            # Формируем данные для ответа
-            return Response({
-                "date": date_obj.isoformat(),
-                "store": {
-                    "id": store.id,
-                    "name": store.name,
-                    "city": store.city.name if store.city else None
-                },
-                "requested": {
-                    "quantity": stats.total_received_quantity,
-                    "details": stats.detailed_data.get('received', {})
-                },
-                "bonus": {
-                    "quantity": stats.total_bonus_quantity
-                },
-                "damaged": {
-                    "quantity": stats.total_damaged_quantity
-                },
-                "debt": {
-                    "current": float(stats.total_debt),
-                    "paid": float(stats.total_paid_debt)
-                },
-                "expenses": float(stats.total_partner_expenses),
-                "profit": float(stats.profit)
-            })
-        except Exception as e:
-            return Response(
-                {"error": f"Ошибка при получении статистики магазина: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-class ManualFinanceEntryView(generics.CreateAPIView):
-    """Создание ручных финансовых записей"""
-    serializer_class = FinanceEntrySerializer
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Создание финансовой записи",
-        operation_description="Создает новую финансовую запись (доход/расход)"
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
-class FinanceEntryListView(generics.ListAPIView):
-    """Получение списка финансовых записей"""
-    serializer_class = FinanceEntrySerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_class = FinanceEntryFilter
-    ordering_fields = ['date', 'amount']
-
-    def get_queryset(self):
-        """Возвращает финансовые записи текущего пользователя или все записи для администратора"""
-        # Проверяем, не является ли это запросом для генерации схемы Swagger
-        if getattr(self, 'swagger_fake_view', False):
-            # Возвращаем пустой QuerySet для Swagger
-            return FinanceEntry.objects.none()
-
-        qs = FinanceEntry.objects.all() if self.request.user.is_staff else FinanceEntry.objects.filter(
-            user=self.request.user)
-        return qs  # ⬅️ убери .order_by('-date')
-
-
-# В apps/finance/views.py
-
-class AdminStatisticsView(APIView):
-    """API для получения общей статистики (только для администратора)"""
-    permission_classes = [IsAdminUser]
-
-    @swagger_auto_schema(
-        operation_summary="Общая статистика (для администратора)",
-        manual_parameters=[
-            openapi.Parameter(
-                'date',
-                openapi.IN_QUERY,
-                description="Дата (YYYY-MM-DD), по умолчанию - сегодня",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'partner_id',
-                openapi.IN_QUERY,
-                description="ID партнера (опционально)",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'store_id',
-                openapi.IN_QUERY,
-                description="ID магазина (опционально)",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'city_id',
-                openapi.IN_QUERY,
-                description="ID города (опционально)",
-                type=openapi.TYPE_INTEGER
-            )
-        ],
-        responses={200: "Общая статистика"}
-    )
-    def get(self, request):
-        date_str = request.query_params.get('date')
-        partner_id = request.query_params.get('partner_id')
-        store_id = request.query_params.get('store_id')
-        city_id = request.query_params.get('city_id')
-
-        if date_str:
-            try:
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                return Response(
-                    {"error": "Некорректный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        else:
-            date_obj = timezone.now().date()
-
-        try:
-            result = {}
-
-            # 1. Если указан ID партнера, показываем статистику партнера
-            if partner_id:
-                try:
-                    partner = User.objects.get(id=partner_id, is_staff=False)
-                    from apps.finance.services import update_partner_daily_stats
-                    stats = update_partner_daily_stats(partner, date_obj)
-
-                    result['partner'] = {
-                        "id": partner.id,
-                        "email": partner.email,
-                        "name": f"{partner.first_name} {partner.last_name}",
-                        "requested": {
-                            "quantity": stats.total_requested_quantity,
-                            "amount": float(stats.total_requested_amount),
-                            "details": stats.detailed_data.get('requested', {})
-                        },
-                        "sold": {
-                            "quantity": stats.total_sold_quantity,
-                            "amount": float(stats.total_sold_amount),
-                            "details": stats.detailed_data.get('sold', {})
-                        },
-                        "expenses": float(stats.total_expenses),
-                        "damaged": {
-                            "quantity": stats.total_damaged_quantity,
-                            "details": stats.detailed_data.get('damaged', {})
-                        },
-                        "bonus": {
-                            "quantity": stats.total_bonus_quantity
-                        },
-                        "remaining": {
-                            "quantity": stats.total_remaining_quantity,
-                            "details": stats.detailed_data.get('remaining', {})
-                        },
-                        "profit": float(stats.profit)
-                    }
-                except User.DoesNotExist:
-                    return Response(
-                        {"error": f"Партнер с ID {partner_id} не найден"},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
-
-            # 2. Если указан ID магазина, показываем статистику магазина
-            if store_id:
-                try:
-                    store = Store.objects.get(id=store_id)
-                    from apps.finance.services import update_store_daily_stats
-                    stats = update_store_daily_stats(store, date_obj)
-
-                    result['store'] = {
-                        "id": store.id,
-                        "name": store.name,
-                        "city": store.city.name if store.city else None,
-                        "requested": {
-                            "quantity": stats.total_received_quantity,
-                            "details": stats.detailed_data.get('received', {})
-                        },
-                        "bonus": {
-                            "quantity": stats.total_bonus_quantity
-                        },
-                        "damaged": {
-                            "quantity": stats.total_damaged_quantity
-                        },
-                        "debt": {
-                            "current": float(stats.total_debt),
-                            "paid": float(stats.total_paid_debt)
-                        },
-                        "expenses": float(stats.total_partner_expenses),
-                        "profit": float(stats.profit)
-                    }
-                except Store.DoesNotExist:
-                    return Response(
-                        {"error": f"Магазин с ID {store_id} не найден"},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
-
-            # 3. Если указан ID города, показываем сводную статистику по городу
-            if city_id:
-                try:
-                    from apps.stores.models import City
-                    city = City.objects.get(id=city_id)
-
-                    # Статистика по магазинам в этом городе
-                    stores = Store.objects.filter(city=city)
-
-                    # Суммарная статистика по всем магазинам города
-                    city_stats = {
-                        "stores_count": stores.count(),
-                        "total_received": 0,
-                        "total_bonus": 0,
-                        "total_damaged": 0,
-                        "total_debt": 0,
-                        "total_paid_debt": 0,
-                        "total_expenses": 0,
-                        "stores": []
-                    }
-
-                    for store in stores:
-                        from apps.finance.services import update_store_daily_stats
-                        stats = update_store_daily_stats(store, date_obj)
-
-                        # Добавляем информацию о магазине
-                        city_stats["stores"].append({
-                            "id": store.id,
-                            "name": store.name,
-                            "received": stats.total_received_quantity,
-                            "bonus": stats.total_bonus_quantity,
-                            "damaged": stats.total_damaged_quantity,
-                            "debt": float(stats.total_debt),
-                            "paid_debt": float(stats.total_paid_debt),
-                            "expenses": float(stats.total_partner_expenses)
-                        })
-
-                        # Суммируем показатели
-                        city_stats["total_received"] += stats.total_received_quantity
-                        city_stats["total_bonus"] += stats.total_bonus_quantity
-                        city_stats["total_damaged"] += stats.total_damaged_quantity
-                        city_stats["total_debt"] += float(stats.total_debt)
-                        city_stats["total_paid_debt"] += float(stats.total_paid_debt)
-                        city_stats["total_expenses"] += float(stats.total_partner_expenses)
-
-                    result['city'] = {
-                        "id": city.id,
-                        "name": city.name,
-                        "stats": city_stats
-                    }
-                except City.DoesNotExist:
-                    return Response(
-                        {"error": f"Город с ID {city_id} не найден"},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
-
-            # 4. Общая статистика, если не указаны фильтры
-            if not (partner_id or store_id or city_id):
-                # Статистика по партнерам
-                partners = User.objects.filter(is_staff=False)
-
-                # Суммарная статистика по всем партнерам
-                partners_stats = {
-                    "count": partners.count(),
-                    "total_requested": 0,
-                    "total_sold": 0,
-                    "total_expenses": 0,
-                    "total_damaged": 0,
-                    "total_bonus": 0,
-                    "total_remaining": 0,
-                    "total_profit": 0
-                }
-
-                for partner in partners:
-                    from apps.finance.models import PartnerFinanceStat
-                    try:
-                        stats = PartnerFinanceStat.objects.get(user=partner, date=date_obj)
-                        partners_stats["total_requested"] += stats.total_requested_quantity
-                        partners_stats["total_sold"] += stats.total_sold_quantity
-                        partners_stats["total_expenses"] += float(stats.total_expenses)
-                        partners_stats["total_damaged"] += stats.total_damaged_quantity
-                        partners_stats["total_bonus"] += stats.total_bonus_quantity
-                        partners_stats["total_remaining"] += stats.total_remaining_quantity
-                        partners_stats["total_profit"] += float(stats.profit)
-                    except PartnerFinanceStat.DoesNotExist:
-                        # Обновляем статистику если её нет
-                        try:
-                            stats = update_partner_daily_stats(partner, date_obj)
-                            partners_stats["total_requested"] += stats.total_requested_quantity
-                            partners_stats["total_sold"] += stats.total_sold_quantity
-                            partners_stats["total_expenses"] += float(stats.total_expenses)
-                            partners_stats["total_damaged"] += stats.total_damaged_quantity
-                            partners_stats["total_bonus"] += stats.total_bonus_quantity
-                            partners_stats["total_remaining"] += stats.total_remaining_quantity
-                            partners_stats["total_profit"] += float(stats.profit)
-                        except Exception:
-                            pass
-
-                # Статистика по магазинам
-                stores = Store.objects.filter(status='approved')
-
-                # Суммарная статистика по всем магазинам
-                stores_stats = {
-                    "count": stores.count(),
-                    "total_received": 0,
-                    "total_debt": 0,
-                    "total_paid_debt": 0,
-                    "total_bonus": 0,
-                    "total_damaged": 0,
-                    "total_expenses": 0,
-                    "total_profit": 0
-                }
-
-                for store in stores:
-                    from apps.finance.models import StoreFinanceStat
-                    try:
-                        stats = StoreFinanceStat.objects.get(store=store, date=date_obj)
-                        stores_stats["total_received"] += stats.total_received_quantity
-                        stores_stats["total_debt"] += float(stats.total_debt)
-                        stores_stats["total_paid_debt"] += float(stats.total_paid_debt)
-                        stores_stats["total_bonus"] += stats.total_bonus_quantity
-                        stores_stats["total_damaged"] += stats.total_damaged_quantity
-                        stores_stats["total_expenses"] += float(stats.total_partner_expenses)
-                        stores_stats["total_profit"] += float(stats.profit)
-                    except StoreFinanceStat.DoesNotExist:
-                        # Обновляем статистику если её нет
-                        try:
-                            stats = update_store_daily_stats(store, date_obj)
-                            stores_stats["total_received"] += stats.total_received_quantity
-                            stores_stats["total_debt"] += float(stats.total_debt)
-                            stores_stats["total_paid_debt"] += float(stats.total_paid_debt)
-                            stores_stats["total_bonus"] += stats.total_bonus_quantity
-                            stores_stats["total_damaged"] += stats.total_damaged_quantity
-                            stores_stats["total_expenses"] += float(stats.total_partner_expenses)
-                            stores_stats["total_profit"] += float(stats.profit)
-                        except Exception:
-                            pass
-
-                # Статистика по запросам
-                from apps.orders.models import ProductRequest
-                requests_stats = {
-                    "total": ProductRequest.objects.filter(created_at__date=date_obj).count(),
-                    "self_requests": ProductRequest.objects.filter(created_at__date=date_obj,
-                                                                   request_type='SELF').count(),
-                    "store_requests": ProductRequest.objects.filter(created_at__date=date_obj,
-                                                                    request_type='STORE').count(),
-                    "pending": ProductRequest.objects.filter(created_at__date=date_obj, status='pending').count(),
-                    "approved": ProductRequest.objects.filter(created_at__date=date_obj, status='approved').count(),
-                    "rejected": ProductRequest.objects.filter(created_at__date=date_obj, status='rejected').count(),
-                    "received": ProductRequest.objects.filter(created_at__date=date_obj, status='received').count()
-                }
-
-                # Общий баланс администратора
-                total_income = partners_stats["total_requested"]  # Доход от запросов партнеров
-                total_expenses = partners_stats["total_expenses"]  # Расходы партнеров
-                total_bonus_value = partners_stats["total_bonus"]  # Стоимость бонусов
-
-                admin_balance = float(total_income) - float(total_expenses) - float(total_bonus_value)
-
-                result['summary'] = {
-                    "partners": partners_stats,
-                    "stores": stores_stats,
-                    "requests": requests_stats,
-                    "admin_balance": admin_balance
-                }
-
-            # Добавляем информацию о дате
-            result['date'] = date_obj.isoformat()
-
-            return Response(result)
-        except Exception as e:
-            return Response(
-                {"error": f"Ошибка при получении статистики: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-
-
-class CalendarStatisticsView(APIView):
-    """Получение меток календаря"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Получение меток календаря",
-        operation_description="Возвращает даты, на которые есть какие-либо данные (продажи, запросы, расходы)",
-        manual_parameters=[
-            openapi.Parameter(
-                'year',
-                openapi.IN_QUERY,
-                description="Год (YYYY)",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'month',
-                openapi.IN_QUERY,
-                description="Месяц (1-12)",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'store',
-                openapi.IN_QUERY,
-                description="ID магазина",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'city',
-                openapi.IN_QUERY,
-                description="ID города",
-                type=openapi.TYPE_INTEGER
-            ),
-        ]
-    )
-    def get(self, request):
-        try:
-            # Получаем параметры запроса
-            year = request.query_params.get('year')
-            month = request.query_params.get('month')
-            store_id = request.query_params.get('store')
-            city_id = request.query_params.get('city')
-
-            # Базовый QuerySet
-            queryset = CalendarStatistics.objects.all()
-
-            # Ограничиваем данные по пользователю, если не админ
-            if not request.user.is_staff:
-                queryset = queryset.filter(user=request.user)
-
-            # Применяем фильтры
-            if year:
-                queryset = queryset.filter(date__year=year)
-            if month:
-                queryset = queryset.filter(date__month=month)
-            if store_id:
-                queryset = queryset.filter(store_id=store_id)
-            if city_id:
-                queryset = queryset.filter(city_id=city_id)
-
-            # Формируем результат
-            dates_with_data = {}
-            for stat in queryset:
-                date_str = stat.date.isoformat()
-
-                if date_str not in dates_with_data:
-                    dates_with_data[date_str] = {
-                        'has_sales': False,
-                        'has_requests': False,
-                        'has_expenses': False,
-                        'has_debt_payment': False
-                    }
-
-                # Обновляем флаги для даты
-                if stat.has_sales:
-                    dates_with_data[date_str]['has_sales'] = True
-                if stat.has_requests:
-                    dates_with_data[date_str]['has_requests'] = True
-                if stat.has_expenses:
-                    dates_with_data[date_str]['has_expenses'] = True
-                if stat.has_debt_payment:
-                    dates_with_data[date_str]['has_debt_payment'] = True
-
-            return Response({
-                'dates': dates_with_data
-            })
-        except Exception as e:
-            logger.error(f"Ошибка при получении меток календаря: {str(e)}")
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ArchivedDataView(APIView):
-    """Получение архивных данных"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Получение архивных данных",
-        operation_description="Возвращает архивные данные по запросам за указанную дату",
-        manual_parameters=[
-            openapi.Parameter(
-                'date',
-                openapi.IN_QUERY,
-                description="Дата (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date',
-                required=True
-            )
-        ]
-    )
-    def get(self, request):
-        try:
-            date_str = request.query_params.get('date')
-
-            if not date_str:
-                return Response({"error": "Параметр 'date' обязателен"}, status=400)
-
-            try:
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                return Response({"error": "Неверный формат даты. Используйте YYYY-MM-DD"}, status=400)
-
-            # Получаем архивные данные
-            if request.user.is_staff:
-                # Для админа - данные по всем пользователям
-                archives = ArchivedDailySummary.objects.filter(date=date_obj)
-            else:
-                # Для партнера - только его данные
-                archives = ArchivedDailySummary.objects.filter(date=date_obj, user=request.user)
-
-            if not archives.exists():
-                return Response({"message": "Нет данных за указанную дату"}, status=404)
-
-            # Формируем ответ
-            result = []
-            for archive in archives:
-                result.append({
-                    "user": {
-                        "id": archive.user.id,
-                        "email": archive.user.email,
-                        "name": f"{archive.user.first_name} {archive.user.last_name}"
-                    },
-                    "date": archive.date,
-                    "total_requests": archive.total_requests,
-                    "total_sales": float(archive.total_sales),
-                    "total_expenses": float(archive.total_expenses),
-                    "total_profit": float(archive.total_profit),
-                    "details": archive.data
-                })
-
-            return Response(result)
-        except Exception as e:
-            logger.error(f"Ошибка при получении архивных данных: {str(e)}")
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class BalanceCalculatorView(APIView):
-    """Расчет общего баланса"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Расчет общего баланса",
-        operation_description="Возвращает общий баланс с учетом доходов, расходов, долгов и бонусов",
-        manual_parameters=[
-            openapi.Parameter(
-                'date',
-                openapi.IN_QUERY,
-                description="Дата (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'store',
-                openapi.IN_QUERY,
-                description="ID магазина",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'city',
-                openapi.IN_QUERY,
-                description="ID города",
-                type=openapi.TYPE_INTEGER
-            ),
-        ]
-    )
-    def get(self, request):
-        from apps.orders.models import ProductRequest
-        try:
-            user = request.user
-            date = request.query_params.get('date')
-            store_id = request.query_params.get('store')
-            city_id = request.query_params.get('city')
-
-            # Базовые параметры фильтрации
-            filter_params = {}
-            if date:
-                filter_params['date'] = date
-
-            # Для партнера - только его статистика
-            if not user.is_staff:
-                filter_params['user'] = user
-
-            # Рассчитываем компоненты баланса
-            from apps.finance.models import PartnerFinanceStat
-            from apps.stores.models import StoreDebt
-
-            # Доход (подтвержденные запросы)
-            total_income = 0
-            income_stats = PartnerFinanceStat.objects.filter(**filter_params)
-            for stat in income_stats:
-                total_income += float(stat.total_approved_cash)
-
-            # Расходы (ручные записи + убытки от брака)
-            total_expenses = 0
-            expense_stats = PartnerFinanceStat.objects.filter(**filter_params)
-            for stat in expense_stats:
-                total_expenses += float(stat.total_damaged_loss)
-
-            # Добавляем ручные расходы
-            expense_filter = {'user': user} if not user.is_staff else {}
-            if date:
-                expense_filter['date'] = date
-            if city_id:
-                expense_filter['city_id'] = city_id
-
-            manual_expenses = FinanceEntry.objects.filter(entry_type='expense', **expense_filter)
-            total_expenses += sum(float(e.amount) for e in manual_expenses)
-
-            # Долги магазинов
-            total_debt = 0
-            debt_filter = {}
-            if store_id:
-                debt_filter['store_id'] = store_id
-
-            # Если обычный пользователь, показываем только долги связанных магазинов
-            if not user.is_staff:
-
-                store_ids = ProductRequest.objects.filter(user=user).values_list('store_id', flat=True).distinct()
-                debt_filter['store_id__in'] = store_ids
-
-            store_debts = StoreDebt.objects.filter(is_paid=False, **debt_filter)
-            total_debt = sum(float(d.amount) for d in store_debts)
-
-            # Погашенные долги
-            paid_debt = 0
-            paid_debt_filter = {'is_paid': True}
-            if store_id:
-                paid_debt_filter['store_id'] = store_id
-            if date:
-                paid_debt_filter['paid_at__date'] = date
-
-            # Если обычный пользователь, показываем только долги связанных магазинов
-            if not user.is_staff:
-
-                store_ids = ProductRequest.objects.filter(user=user).values_list('store_id', flat=True).distinct()
-                paid_debt_filter['store_id__in'] = store_ids
-
-            paid_debts = StoreDebt.objects.filter(**paid_debt_filter)
-            paid_debt = sum(float(d.amount) for d in paid_debts)
-
-            # Бонусы (их стоимость)
-            total_bonus = 0
-            bonus_filter = {"status__in": ["approved", "received"]}
-
-            if user.is_staff:
-                if store_id:
-                    bonus_filter['store_id'] = store_id
-                if city_id:
-                    bonus_filter['store__city_id'] = city_id
-            else:
-                bonus_filter['user'] = user
-                bonus_filter['request_type'] = 'SELF'
-
-            if date:
-                bonus_filter['created_at__date'] = date
-
-            bonus_requests = ProductRequest.objects.filter(**bonus_filter).select_related("product")
-
-            for req in bonus_requests:
-                if req.bonus_quantity and req.product and req.product.price and req.product.is_active:
-                    total_bonus += float(req.bonus_quantity * req.product.price)
-
-            # Расчет общего баланса
-            balance = total_income - total_expenses - total_debt + paid_debt + total_bonus
-
-            return Response({
-                "balance_components": {
-                    "income": total_income,
-                    "expenses": total_expenses,
-                    "outstanding_debt": total_debt,
-                    "paid_debt": paid_debt,
-                    "bonus_value": total_bonus
-                },
-                "total_balance": balance
-            })
-        except Exception as e:
-            logger.error(f"Ошибка при расчете баланса: {str(e)}")
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AdminDamagedGoodsReportView(APIView):
-    """Отчет по бракованным товарам"""
-    permission_classes = [IsAdminUser]
-
-    @swagger_auto_schema(
-        operation_summary="Отчет по бракованным товарам",
-        operation_description="Возвращает детальный отчет по бракованным товарам за период",
-        manual_parameters=[
-            openapi.Parameter(
-                'date_from',
-                openapi.IN_QUERY,
-                description="Начало периода (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'date_to',
-                openapi.IN_QUERY,
-                description="Конец периода (YYYY-MM-DD)",
-                type=openapi.TYPE_STRING,
-                format='date'
-            ),
-            openapi.Parameter(
-                'store',
-                openapi.IN_QUERY,
-                description="ID магазина",
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'city',
-                openapi.IN_QUERY,
-                description="ID города",
-                type=openapi.TYPE_INTEGER
-            ),
-        ]
-    )
-    def get(self, request):
-        try:
-            date_from = request.query_params.get('date_from')
-            date_to = request.query_params.get('date_to')
-            store_id = request.query_params.get('store')
-            city_id = request.query_params.get('city')
-
-            # Базовый фильтр - только запросы с браком
-            queryset = ProductRequest.objects.filter(damaged_quantity__gt=0)
-
-            # Применяем фильтры
-            if date_from and date_to:
-                queryset = queryset.filter(created_at__date__range=[date_from, date_to])
-            if store_id:
-                queryset = queryset.filter(store_id=store_id)
-            elif city_id:
-                queryset = queryset.filter(store__city_id=city_id)
-
-            # Группируем по товарам
-            from django.db.models import Sum, F
-            product_damages = queryset.values(
-                'product__id', 'product__name'
-            ).annotate(
-                total_damaged=Sum('damaged_quantity'),
-                total_loss=Sum(F('damaged_quantity') * F('product__price'))
-            ).order_by('-total_damaged')
-
-            # Группируем по партнерам
-            partner_damages = queryset.values(
-                'user__id', 'user__email', 'user__first_name', 'user__last_name'
-            ).annotate(
-                total_damaged=Sum('damaged_quantity'),
-                total_loss=Sum(F('damaged_quantity') * F('product__price'))
-            ).order_by('-total_damaged')
-
-            # Группируем по магазинам (если применимо)
-            store_damages = []
-            if queryset.filter(store__isnull=False).exists():
-                store_damages = queryset.filter(store__isnull=False).values(
-                    'store__id', 'store__name', 'store__city__name'
-                ).annotate(
-                    total_damaged=Sum('damaged_quantity'),
-                    total_loss=Sum(F('damaged_quantity') * F('product__price'))
-                ).order_by('-total_damaged')
-
-            # Общая статистика
-            total_damaged = queryset.aggregate(
-                total=Sum('damaged_quantity'),
-                total_loss=Sum(F('damaged_quantity') * F('product__price'))
-            )
-
-            return Response({
-                "filters": {
-                    "date_from": date_from,
-                    "date_to": date_to,
-                    "store_id": store_id,
-                    "city_id": city_id
-                },
-                "summary": {
-                    "total_damaged_items": total_damaged['total'] or 0,
-                    "total_loss": float(total_damaged['total_loss'] or 0)
-                },
-                "by_product": list(product_damages),
-                "by_partner": list(partner_damages),
-                "by_store": list(store_damages)
-            })
-        except Exception as e:
-            logger.error(f"Ошибка при формировании отчета по бракованным товарам: {str(e)}")
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProductRequestHistoryView(generics.ListAPIView):
-    """История запросов на товары"""
-    serializer_class = ProductRequestSerializer
-    permission_classes = [IsAuthenticated]
+class FinanceEntryViewSet(viewsets.ModelViewSet):
+    """Базовый класс для финансовых записей"""
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_class = ProductRequestFilter  # <-- подключаем кастомный фильтр
-    search_fields = ['product__name']
-    ordering_fields = ['created_at', 'quantity', 'total_price']
+    filterset_fields = ['entry_type', 'date']
+    search_fields = ['description']
+    ordering_fields = ['date', 'amount', 'created_at']
+    ordering = ['-date', '-created_at']
+
+    def get_permissions(self):
+        if self.action in ['destroy', 'update', 'partial_update']:
+            return [IsOwnerOrAdmin()]
+        return [permissions.IsAuthenticated()]
+
+
+class PartnerFinanceEntryViewSet(FinanceEntryViewSet):
+    """Представление для финансовых записей партнера"""
+    serializer_class = PartnerFinanceEntrySerializer
 
     def get_queryset(self):
-        qs = ProductRequest.objects.all()
-        if not self.request.user.is_staff:
-            qs = qs.filter(user=self.request.user)
-        return qs
+        user = self.request.user
+        if user.role == 'admin':
+            return PartnerFinanceEntry.objects.all()
+        # Партнеры видят только свои финансовые записи
+        return PartnerFinanceEntry.objects.filter(partner=user)
 
-class FinanceSummaryView(APIView):
-    """Сводка по финансам"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Финансовая сводка",
-        operation_description="Возвращает сводку по финансам за указанный период",
-        manual_parameters=[
-            openapi.Parameter('from', openapi.IN_QUERY, description="Начало периода (YYYY-MM-DD)",
-                              type=openapi.TYPE_STRING, format='date'),
-            openapi.Parameter('to', openapi.IN_QUERY, description="Конец периода (YYYY-MM-DD)",
-                              type=openapi.TYPE_STRING, format='date'),
-            openapi.Parameter('store', openapi.IN_QUERY, description="ID магазина",
-                              type=openapi.TYPE_INTEGER),
-            openapi.Parameter('city', openapi.IN_QUERY, description="ID города",
-                              type=openapi.TYPE_INTEGER),
-        ]
-    )
-    def get(self, request):
-        try:
-            user = request.user
-            from_date = request.query_params.get('from')
-            to_date = request.query_params.get('to')
-            store_id = request.query_params.get('store')
-            city_id = request.query_params.get('city')
-
-            filters = {}
-            if from_date:
-                filters['date__gte'] = from_date
-            if to_date:
-                filters['date__lte'] = to_date
-
-            # Получаем queryset партнёрской статистики
-            if not user.is_staff:
-                partner_qs = PartnerFinanceStat.objects.filter(user=user, **filters)
-            else:
-                partner_qs = PartnerFinanceStat.objects.filter(**filters)
-                if store_id:
-                    from apps.orders.models import ProductRequest
-                    partner_ids = ProductRequest.objects.filter(store_id=store_id)\
-                        .values_list('user_id', flat=True).distinct()
-                    partner_qs = partner_qs.filter(user_id__in=partner_ids)
-                elif city_id:
-                    from apps.orders.models import ProductRequest
-                    store_ids = Store.objects.filter(city_id=city_id).values_list('id', flat=True)
-                    partner_ids = ProductRequest.objects.filter(store_id__in=store_ids)\
-                        .values_list('user_id', flat=True).distinct()
-                    partner_qs = partner_qs.filter(user_id__in=partner_ids)
-
-            # Считаем суммы вручную по property
-            total_approved_cash = sum(stat.total_approved_cash for stat in partner_qs)
-            total_damaged_loss = sum(stat.total_damaged_loss for stat in partner_qs)
-            total_product_profit = sum(stat.profit for stat in partner_qs)
-
-            # Ручные записи
-            entry_filters = {}
-            if from_date:
-                entry_filters['date__gte'] = from_date
-            if to_date:
-                entry_filters['date__lte'] = to_date
-            if not user.is_staff:
-                entry_filters['user'] = user
-            if city_id:
-                entry_filters['city_id'] = city_id
-
-            manual_entries = FinanceEntry.objects.filter(**entry_filters)
-
-            total_manual_income = manual_entries.filter(entry_type='income').aggregate(
-                total=Sum('amount'))['total'] or 0
-            total_manual_expense = manual_entries.filter(entry_type='expense').aggregate(
-                total=Sum('amount'))['total'] or 0
-            total_manual_profit = total_manual_income - total_manual_expense
-
-            # Долги
-            debt_filters = {'is_paid': False}
-            if store_id:
-                debt_filters['store_id'] = store_id
-            elif city_id:
-                debt_filters['store__city_id'] = city_id
-            if not user.is_staff:
-                from apps.orders.models import ProductRequest
-                store_ids = ProductRequest.objects.filter(user=user)\
-                    .values_list('store_id', flat=True).distinct()
-                debt_filters['store_id__in'] = store_ids
-
-            total_debt = StoreDebt.objects.filter(**debt_filters).aggregate(
-                total=Sum('amount'))['total'] or 0
-
-            # Формируем ответ
-            result = {
-                "period": {
-                    "from": from_date,
-                    "to": to_date
-                },
-                "filters": {
-                    "store_id": store_id,
-                    "city_id": city_id
-                },
-                "finance_summary": {
-                    "approved_sales": float(total_approved_cash),
-                    "damaged_loss": float(total_damaged_loss),
-                    "product_profit": float(total_product_profit),
-                    "manual_income": float(total_manual_income),
-                    "manual_expense": float(total_manual_expense),
-                    "manual_profit": float(total_manual_profit),
-                    "outstanding_debt": float(total_debt),
-                    "total_profit": float(total_product_profit + total_manual_profit),
-                }
-            }
-
-            return Response(result)
-
-        except Exception as e:
-            logger.error(f"Ошибка при получении финансовой сводки: {str(e)}")
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        # Если партнер создает запись для себя
+        if self.request.user.role == 'partner':
+            serializer.save(partner=self.request.user)
+        else:
+            serializer.save()
 
 
-class PartnerInventoryView(APIView):
-    """Получение сводки по остаткам товаров партнера"""
-    permission_classes = [IsAuthenticated]
+class StoreFinanceEntryViewSet(FinanceEntryViewSet):
+    """Представление для финансовых записей магазина"""
+    serializer_class = StoreFinanceEntrySerializer
 
-    @swagger_auto_schema(
-        operation_summary="Сводка по остаткам товаров",
-        operation_description="Возвращает сводку по остаткам товаров в каталоге партнера"
-    )
-    def get(self, request):
-        # Генерируем сводку по остаткам
-        summary = generate_inventory_summary(request.user)
-
-        if not summary:
-            return Response({"message": "В вашем каталоге нет товаров"}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = InventorySummarySerializer(summary)
-        return Response(serializer.data)
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return StoreFinanceEntry.objects.all()
+        # Партнеры видят только финансовые записи своих магазинов
+        return StoreFinanceEntry.objects.filter(store__partner=user)
 
 
-class FinanceEntryCreateView(APIView):
-    """Создание финансовой записи разных типов (расход, продажа, брак и т.д.)"""
-    permission_classes = [IsAuthenticated]
+class StatisticsViewSet(viewsets.ReadOnlyModelViewSet):
+    """Представление для просмотра статистики"""
+    serializer_class = DailyStatisticsSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['date', 'partner', 'store']
+    ordering_fields = ['date']
+    ordering = ['-date']
 
-    @swagger_auto_schema(
-        operation_summary="Создание финансовой записи",
-        request_body=FinanceEntrySerializer,
-        responses={201: FinanceEntrySerializer()}
-    )
-    def post(self, request):
-        serializer = FinanceEntrySerializer(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        entry = serializer.save()
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return DailyStatistics.objects.all().prefetch_related('product_stats')
+        # Партнеры видят только свою статистику и статистику своих магазинов
+        return DailyStatistics.objects.filter(
+            Q(partner=user) | Q(store__partner=user)
+        ).prefetch_related('product_stats')
 
-        return Response(FinanceEntrySerializer(entry).data, status=status.HTTP_201_CREATED)
-
-
-class PartnerProductFinanceView(APIView):
-    """Запись финансовых операций по товару из каталога партнера"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Финансовая операция с товаром",
-        operation_description="Создает запись о продаже, браке или возврате товара из каталога",
-        request_body=PartnerProductFinanceSerializer,
-        responses={201: FinanceEntrySerializer()}
-    )
-    def post(self, request):
-        serializer = PartnerProductFinanceSerializer(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-
-        partner_product_id = serializer.validated_data['partner_product_id']
-        entry_type = serializer.validated_data['entry_type']
-        quantity = serializer.validated_data.get('quantity')
-        note = serializer.validated_data.get('note', '')
-        amount = serializer.validated_data.get('amount', 0)
-
-        try:
-            partner_product = PartnerProduct.objects.get(id=partner_product_id)
-
-            # Создаем финансовую запись
-            entry = FinanceEntry.objects.create(
-                user=request.user,
-                date=timezone.now().date(),
-                entry_type=entry_type,
-                quantity=quantity or 0,
-                amount=amount,
-                partner_product=partner_product,
-                note=note
-            )
-
-            return Response(FinanceEntrySerializer(entry).data, status=status.HTTP_201_CREATED)
-
-        except PartnerProduct.DoesNotExist:
-            return Response(
-                {"error": "Указанный товар не найден в вашем каталоге"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class PartnerCatalogFinanceView(APIView):
-    """Сводка по финансам, связанным с каталогом партнера"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Финансовая сводка по каталогу",
-        operation_description="Возвращает финансовую сводку по товарам из каталога партнера",
-        manual_parameters=[
-            openapi.Parameter('from_date', openapi.IN_QUERY, description="Начало периода (YYYY-MM-DD)", type=openapi.TYPE_STRING, format='date'),
-            openapi.Parameter('to_date', openapi.IN_QUERY, description="Конец периода (YYYY-MM-DD)", type=openapi.TYPE_STRING, format='date'),
-            openapi.Parameter('partner_product_id', openapi.IN_QUERY, description="ID товара из каталога", type=openapi.TYPE_INTEGER),
-        ]
-    )
-    def get(self, request):
-        from_date = request.query_params.get('from_date')
-        to_date = request.query_params.get('to_date')
-        partner_product_id = request.query_params.get('partner_product_id')
-
+    @action(detail=False, methods=['get'])
+    def partner_statistics(self, request):
+        """Получение статистики партнера"""
         user = request.user
 
-        # Все записи пользователя для товарных операций
-        product_entries = FinanceEntry.objects.filter(user=user).exclude(partner_product=None)
-        if from_date:
-            product_entries = product_entries.filter(date__gte=from_date)
-        if to_date:
-            product_entries = product_entries.filter(date__lte=to_date)
-        if partner_product_id:
-            product_entries = product_entries.filter(partner_product_id=partner_product_id)
+        # Получаем параметры фильтрации
+        date_from_str = request.query_params.get('date_from')
+        date_to_str = request.query_params.get('date_to')
 
-        sale_entries = product_entries.filter(entry_type='sale')
-        damage_entries = product_entries.filter(entry_type='damage')
-        return_entries = product_entries.filter(entry_type='return')
+        # Устанавливаем значения по умолчанию
+        today = timezone.now().date()
+        date_from = today
+        date_to = today
 
-        total_sales = sale_entries.aggregate(total=Sum('amount'))['total'] or 0
-        total_sales_quantity = sale_entries.aggregate(total=Sum('quantity'))['total'] or 0
-
-        total_damages = damage_entries.aggregate(total=Sum('amount'))['total'] or 0
-        total_damages_quantity = damage_entries.aggregate(total=Sum('quantity'))['total'] or 0
-
-        total_returns = return_entries.aggregate(total=Sum('amount'))['total'] or 0
-        total_returns_quantity = return_entries.aggregate(total=Sum('quantity'))['total'] or 0
-
-        # Доходы и расходы считаем всегда по пользователю, без фильтра partner_product
-        income_entries = FinanceEntry.objects.filter(user=user, entry_type='income')
-        expense_entries = FinanceEntry.objects.filter(user=user, entry_type='expense')
-        if from_date:
-            income_entries = income_entries.filter(date__gte=from_date)
-            expense_entries = expense_entries.filter(date__gte=from_date)
-        if to_date:
-            income_entries = income_entries.filter(date__lte=to_date)
-            expense_entries = expense_entries.filter(date__lte=to_date)
-
-        total_income = income_entries.aggregate(total=Sum('amount'))['total'] or 0
-        total_expenses = expense_entries.aggregate(total=Sum('amount'))['total'] or 0
-
-        profit = total_sales + total_returns + total_income - total_damages - total_expenses
-
-        detail = None
-        if partner_product_id:
+        # Преобразуем строковые даты в объекты date
+        if date_from_str:
             try:
-                partner_product = PartnerProduct.objects.get(id=partner_product_id, partner=user)
-                detail = {
-                    "product_name": partner_product.product.name,
-                    "price": float(partner_product.price),
-                    "total_quantity": partner_product.quantity,
-                    "sold_quantity": partner_product.sold_quantity,
-                    "damaged_quantity": partner_product.damaged_quantity,
-                    "bonus_quantity": partner_product.bonus_quantity,
-                    "returned_quantity": partner_product.returned_quantity,
-                    "remaining_quantity": partner_product.remaining_quantity,
-                    "total_value": float(partner_product.quantity * partner_product.price),
-                    "sold_value": float(partner_product.sold_quantity * partner_product.price),
-                    "remaining_value": float(partner_product.remaining_quantity * partner_product.price)
-                }
-            except PartnerProduct.DoesNotExist:
-                pass
-
-        result = {
-            "period": {"from": from_date, "to": to_date},
-            "sales": {"amount": float(total_sales), "quantity": total_sales_quantity},
-            "damages": {"amount": float(total_damages), "quantity": total_damages_quantity},
-            "returns": {"amount": float(total_returns), "quantity": total_returns_quantity},
-            "expenses": float(total_expenses),
-            "income": float(total_income),
-            "profit": float(profit),
-        }
-
-        if detail:
-            result["product_detail"] = detail
-
-        return Response(result)
-
-
-class ExpenseEntryView(APIView):
-    """API для добавления расходов"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Добавление расхода",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'amount': openapi.Schema(type=openapi.TYPE_NUMBER, description="Сумма расхода"),
-                'note': openapi.Schema(type=openapi.TYPE_STRING, description="Примечание к расходу"),
-                'city': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID города (опционально)"),
-                'store': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID магазина (опционально)")
-            },
-            required=['amount']
-        ),
-        responses={201: "Расход успешно добавлен"}
-    )
-    def post(self, request):
-        amount = request.data.get('amount')
-        note = request.data.get('note', '')
-        city_id = request.data.get('city')
-        store_id = request.data.get('store')
-
-        try:
-            # Проверяем, что сумма является числом
-            try:
-                amount = float(amount)
-            except (TypeError, ValueError):
-                return Response(
-                    {"error": "Сумма расхода должна быть числом"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            if amount <= 0:
-                return Response(
-                    {"error": "Сумма расхода должна быть положительной"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Получаем город, если указан
-            city = None
-            if city_id:
-                try:
-                    city = City.objects.get(id=city_id)
-                except City.DoesNotExist:
-                    return Response(
-                        {"error": f"Город с ID {city_id} не найден"},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
-
-            # Получаем магазин, если указан
-            store = None
-            if store_id:
-                try:
-                    store = Store.objects.get(id=store_id)
-                    # Проверяем, имеет ли пользователь доступ к магазину, если не админ
-                    if not request.user.is_staff:
-                        has_access = ProductRequest.objects.filter(
-                            user=request.user,
-                            store=store
-                        ).exists()
-
-                        if not has_access:
-                            return Response(
-                                {"error": "У вас нет доступа к этому магазину"},
-                                status=status.HTTP_403_FORBIDDEN
-                            )
-                except Store.DoesNotExist:
-                    return Response(
-                        {"error": f"Магазин с ID {store_id} не найден"},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
-
-            # Создаем запись о расходе
-            entry = FinanceEntry.objects.create(
-                user=request.user,
-                date=timezone.now().date(),
-                entry_type='expense',
-                amount=amount,
-                city=city,
-                store=store,
-                note=note
-            )
-
-            # Обновляем статистику партнера
-            from .services import update_partner_statistics
-            update_partner_statistics(
-                request.user,
-                expense_amount=amount,
-                date=timezone.now().date()
-            )
-
-            # Если указан магазин, обновляем его статистику
-            if store:
-                from .services import update_store_daily_stats
-                update_store_daily_stats(store, timezone.now().date())
-
-            return Response({
-                "message": f"Расход на сумму {amount} успешно добавлен",
-                "entry": FinanceEntrySerializer(entry).data
-            }, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            logger.error(f"Ошибка при добавлении расхода: {str(e)}")
-            return Response(
-                {"error": f"Ошибка при добавлении расхода: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-
-class PartnerStatisticsView(APIView):
-    """API для получения статистики партнера"""
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_summary="Статистика партнера",
-        manual_parameters=[
-            openapi.Parameter(
-                'date',
-                openapi.IN_QUERY,
-                description="Дата (YYYY-MM-DD), по умолчанию - сегодня",
-                type=openapi.TYPE_STRING,
-                format='date'
-            )
-        ],
-        responses={200: "Статистика партнера"}
-    )
-    def get(self, request):
-        date_str = request.query_params.get('date')
-
-        if date_str:
-            try:
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+                date_from = datetime.strptime(date_from_str, '%Y-%m-%d').date()
             except ValueError:
                 return Response(
-                    {"error": "Некорректный формат даты. Используйте YYYY-MM-DD"},
+                    {"error": "Неверный формат даты. Используйте YYYY-MM-DD"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        else:
-            date_obj = timezone.now().date()
 
-        try:
-            # Обновляем статистику перед выдачей
-            from apps.finance.services import update_partner_daily_stats
-            stats = update_partner_daily_stats(request.user, date_obj)
-
-            # Проверяем, что stats был успешно создан
-            if not stats:
+        if date_to_str:
+            try:
+                date_to = datetime.strptime(date_to_str, '%Y-%m-%d').date()
+            except ValueError:
                 return Response(
-                    {"error": "Не удалось получить статистику"},
+                    {"error": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Проверяем, что пользователь - партнер или админ запрашивает данные партнера
+        partner_id = request.query_params.get('partner_id')
+
+        if partner_id and user.role == 'admin':
+            try:
+                partner = User.objects.get(id=partner_id, role='partner')
+            except User.DoesNotExist:
+                return Response(
+                    {"error": "Партнер не найден"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        elif user.role == 'partner':
+            partner = user
+        else:
+            return Response(
+                {"error": "Недостаточно прав для просмотра статистики партнера"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Получаем статистику из базы данных
+        statistics = DailyStatistics.objects.filter(
+            partner=partner,
+            date__range=(date_from, date_to)
+        ).prefetch_related('product_stats')
+
+        # Если статистики нет, то рассчитываем её на лету
+        if not statistics.exists():
+            # Запрашиваем недостающие данные
+            # 1. Запрошенные товары
+            requested_items = OrderItem.objects.filter(
+                order__partner=partner,
+                order__order_type='admin_to_partner',
+                order__created_at__date__range=(date_from, date_to)
+            ).values('product_id', 'product__name').annotate(
+                total_quantity=Sum('quantity'),
+                total_amount=Sum(F('quantity') * F('price'))
+            )
+
+            # 2. Проданные товары
+            sold_items = OrderItem.objects.filter(
+                order__created_by=partner,
+                order__order_type='partner_to_store',
+                order__created_at__date__range=(date_from, date_to)
+            ).values('product_id', 'product__name').annotate(
+                total_quantity=Sum('quantity'),
+                total_amount=Sum(F('quantity') * F('price'))
+            )
+
+            # 3. Расходы
+            expenses = StoreFinanceEntry.objects.filter(
+                store__partner=partner,
+                entry_type='expense',
+                date__range=(date_from, date_to)
+            ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+
+            # 4. Бракованные товары
+            defect_items = DefectItem.objects.filter(
+                order__created_by=partner,
+                order__created_at__date__range=(date_from, date_to)
+            ).values('product_id', 'product__name').annotate(
+                total_quantity=Sum('quantity')
+            )
+
+            # 5. Остаток товаров
+            inventory_items = PartnerInventory.objects.filter(
+                partner=partner
+            ).values('product_id', 'product__name', 'quantity')
+
+            # 6. Бонусные товары
+            bonus_items = OrderItem.objects.filter(
+                order__created_by=partner,
+                order__created_at__date__range=(date_from, date_to)
+            ).aggregate(total_bonus=Sum('bonus_quantity'))['total_bonus'] or 0
+
+            # Считаем итоговые показатели
+            total_requested = sum(item['total_amount'] for item in requested_items)
+            total_sold = sum(item['total_amount'] for item in sold_items)
+            total_profit = total_sold - expenses
+
+            # Формируем список товаров для статистики
+            product_stats = []
+
+            # Добавляем запрошенные товары
+            for item in requested_items:
+                product_stats.append({
+                    'product_id': item['product_id'],
+                    'product_name': item['product__name'],
+                    'requested_quantity': item['total_quantity'],
+                    'income_amount': item['total_amount']
+                })
+
+            # Возвращаем результат
+            return Response({
+                'date_from': date_from,
+                'date_to': date_to,
+                'partner_id': partner.id,
+                'partner_name': f"{partner.first_name} {partner.last_name}",
+                'total_requested': total_requested,
+                'total_sold': total_sold,
+                'total_expenses': expenses,
+                'total_defect_items': sum(item['total_quantity'] for item in defect_items),
+                'total_remaining_items': sum(item['quantity'] for item in inventory_items),
+                'total_bonus_items': bonus_items,
+                'total_profit': total_profit,
+                'product_summaries': product_stats
+            })
+
+        # Если статистика уже есть, то возвращаем её
+        serializer = FinanceSummarySerializer({
+            'date_from': date_from,
+            'date_to': date_to,
+            'total_income': statistics.aggregate(sum=Sum('total_income'))['sum'] or Decimal('0.00'),
+            'total_expense': statistics.aggregate(sum=Sum('total_expense'))['sum'] or Decimal('0.00'),
+            'total_debt': statistics.aggregate(sum=Sum('total_debt'))['sum'] or Decimal('0.00'),
+            'total_debt_paid': statistics.aggregate(sum=Sum('total_debt_paid'))['sum'] or Decimal('0.00'),
+            'total_bonus_items': statistics.aggregate(sum=Sum('total_bonus_items'))['sum'] or 0,
+            'total_defect_items': statistics.aggregate(sum=Sum('total_defect_items'))['sum'] or 0,
+            'total_balance': statistics.aggregate(sum=Sum('total_balance'))['sum'] or Decimal('0.00'),
+            'product_summaries': [
+                {
+                    'product_id': ps.product_id,
+                    'product_name': ps.product_name,
+                    'requested_quantity': ps.requested_quantity,
+                    'sold_quantity': ps.sold_quantity,
+                    'bonus_quantity': ps.bonus_quantity,
+                    'defect_quantity': ps.defect_quantity,
+                    'remaining_quantity': ps.remaining_quantity,
+                    'income_amount': ps.income_amount
+                }
+                for stat in statistics
+                for ps in stat.product_stats.all()
+            ]
+        })
+
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def store_statistics(self, request):
+        """Получение статистики магазина"""
+        user = request.user
+
+        # Валидация параметров запроса
+        filter_serializer = StoreFilterSerializer(data=request.query_params, context={'request': request})
+        filter_serializer.is_valid(raise_exception=True)
+
+        # Получаем параметры фильтрации
+        store_id = filter_serializer.validated_data.get('store_id')
+        city = filter_serializer.validated_data.get('city')
+        date_from = filter_serializer.validated_data.get('date_from')
+        date_to = filter_serializer.validated_data.get('date_to')
+
+        # Формируем базовый запрос в зависимости от роли пользователя
+        if user.role == 'admin':
+            queryset = DailyStatistics.objects.filter(store__isnull=False)
+        else:
+            queryset = DailyStatistics.objects.filter(store__partner=user)
+
+        # Применяем фильтры
+        queryset = queryset.filter(date__range=(date_from, date_to))
+
+        if store_id:
+            queryset = queryset.filter(store_id=store_id)
+
+        if city:
+            queryset = queryset.filter(store__city=city)
+
+        # Группируем статистику если выбрано несколько магазинов
+        if not store_id and (user.role == 'admin' or city):
+            # Агрегируем данные по всем магазинам
+            summary = queryset.aggregate(
+                total_income=Sum('total_income'),
+                total_expense=Sum('total_expense'),
+                total_debt=Sum('total_debt'),
+                total_debt_paid=Sum('total_debt_paid'),
+                total_bonus_items=Sum('total_bonus_items'),
+                total_defect_items=Sum('total_defect_items'),
+                total_balance=Sum('total_balance')
+            )
+
+            # Получаем список всех товаров
+            products_stats = []
+            for stat in queryset.prefetch_related('product_stats'):
+                for ps in stat.product_stats.all():
+                    products_stats.append({
+                        'product_id': ps.product_id,
+                        'product_name': ps.product_name,
+                        'requested_quantity': ps.requested_quantity,
+                        'sold_quantity': ps.sold_quantity,
+                        'bonus_quantity': ps.bonus_quantity,
+                        'defect_quantity': ps.defect_quantity,
+                        'income_amount': ps.income_amount
+                    })
+
+            # Агрегируем статистику по товарам
+            product_summary = {}
+            for ps in products_stats:
+                product_id = ps['product_id']
+                if product_id not in product_summary:
+                    product_summary[product_id] = {
+                        'product_id': product_id,
+                        'product_name': ps['product_name'],
+                        'requested_quantity': 0,
+                        'sold_quantity': 0,
+                        'bonus_quantity': 0,
+                        'defect_quantity': 0,
+                        'income_amount': Decimal('0.00')
+                    }
+
+                product_summary[product_id]['requested_quantity'] += ps['requested_quantity']
+                product_summary[product_id]['sold_quantity'] += ps['sold_quantity']
+                product_summary[product_id]['bonus_quantity'] += ps['bonus_quantity']
+                product_summary[product_id]['defect_quantity'] += ps['defect_quantity']
+                product_summary[product_id]['income_amount'] += ps['income_amount']
+
+            # Формируем итоговый результат
+            response_data = {
+                'date_from': date_from,
+                'date_to': date_to,
+                'total_income': summary['total_income'] or Decimal('0.00'),
+                'total_expense': summary['total_expense'] or Decimal('0.00'),
+                'total_debt': summary['total_debt'] or Decimal('0.00'),
+                'total_debt_paid': summary['total_debt_paid'] or Decimal('0.00'),
+                'total_bonus_items': summary['total_bonus_items'] or 0,
+                'total_defect_items': summary['total_defect_items'] or 0,
+                'total_balance': summary['total_balance'] or Decimal('0.00'),
+                'product_summaries': list(product_summary.values())
+            }
+
+            if city:
+                response_data['city'] = city
+                response_data['store_count'] = queryset.values('store').distinct().count()
+
+            return Response(response_data)
+
+        # Для одного магазина возвращаем детальную статистику
+        if store_id:
+            try:
+                store = Store.objects.get(id=store_id)
+
+                # Проверяем права доступа
+                if user.role == 'partner' and store.partner != user:
+                    return Response(
+                        {"error": "У вас нет доступа к этому магазину"},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+
+                # Получаем статистику
+                stats = queryset.filter(store=store).prefetch_related('product_stats')
+
+                if not stats.exists():
+                    # Если статистики нет, рассчитываем на лету
+
+                    # Получаем заказы магазина
+                    orders = Order.objects.filter(
+                        store=store,
+                        created_at__date__range=(date_from, date_to)
+                    )
+
+                    # Получаем элементы заказов
+                    order_items = OrderItem.objects.filter(
+                        order__in=orders
+                    ).values('product_id', 'product__name').annotate(
+                        total_quantity=Sum('quantity'),
+                        total_amount=Sum(F('quantity') * F('price')),
+                        total_bonus=Sum('bonus_quantity')
+                    )
+
+                    # Получаем дефектные товары
+                    defect_items = DefectItem.objects.filter(
+                        order__in=orders
+                    ).values('product_id', 'product__name').annotate(
+                        total_quantity=Sum('quantity')
+                    )
+
+                    # Получаем сумму долга
+                    total_debt = store.debts.filter(
+                        created_at__date__range=(date_from, date_to),
+                        is_paid=False
+                    ).aggregate(sum=Sum('amount'))['sum'] or Decimal('0.00')
+
+                    # Получаем сумму погашенного долга
+                    total_paid = store.debt_payments.filter(
+                        payment_date__range=(date_from, date_to)
+                    ).aggregate(sum=Sum('amount'))['sum'] or Decimal('0.00')
+
+                    # Получаем расходы
+                    total_expenses = store.expenses.filter(
+                        expense_date__range=(date_from, date_to)
+                    ).aggregate(sum=Sum('amount'))['sum'] or Decimal('0.00')
+
+                    # Рассчитываем общую стоимость заказов
+                    total_orders_amount = sum((item['total_amount'] for item in order_items), Decimal('0.00'))
+
+                    # Формируем ответ
+                    return Response({
+                        'date_from': date_from,
+                        'date_to': date_to,
+                        'store_id': store.id,
+                        'store_name': store.name,
+                        'city': store.city,
+                        'total_income': total_orders_amount,
+                        'total_expense': total_expenses,
+                        'total_debt': total_debt,
+                        'total_debt_paid': total_paid,
+                        'total_bonus_items': sum((item['total_bonus'] for item in order_items), 0),
+                        'total_defect_items': sum((item['total_quantity'] for item in defect_items), 0),
+                        'total_balance': total_orders_amount - total_expenses,
+                        'product_summaries': [
+                            {
+                                'product_id': item['product_id'],
+                                'product_name': item['product__name'],
+                                'sold_quantity': item['total_quantity'],
+                                'bonus_quantity': item['total_bonus'],
+                                'income_amount': item['total_amount']
+                            }
+                            for item in order_items
+                        ]
+                    })
+
+                # Если статистика уже есть
+                summary = stats.aggregate(
+                    total_income=Sum('total_income'),
+                    total_expense=Sum('total_expense'),
+                    total_debt=Sum('total_debt'),
+                    total_debt_paid=Sum('total_debt_paid'),
+                    total_bonus_items=Sum('total_bonus_items'),
+                    total_defect_items=Sum('total_defect_items'),
+                    total_balance=Sum('total_balance')
+                )
+
+                # Получаем статистику по товарам
+                product_stats = []
+                for stat in stats:
+                    for ps in stat.product_stats.all():
+                        product_stats.append({
+                            'product_id': ps.product_id,
+                            'product_name': ps.product_name,
+                            'requested_quantity': ps.requested_quantity,
+                            'sold_quantity': ps.sold_quantity,
+                            'bonus_quantity': ps.bonus_quantity,
+                            'defect_quantity': ps.defect_quantity,
+                            'income_amount': ps.income_amount
+                        })
+
+                return Response({
+                    'date_from': date_from,
+                    'date_to': date_to,
+                    'store_id': store.id,
+                    'store_name': store.name,
+                    'city': store.city,
+                    'total_income': summary['total_income'] or Decimal('0.00'),
+                    'total_expense': summary['total_expense'] or Decimal('0.00'),
+                    'total_debt': summary['total_debt'] or Decimal('0.00'),
+                    'total_debt_paid': summary['total_debt_paid'] or Decimal('0.00'),
+                    'total_bonus_items': summary['total_bonus_items'] or 0,
+                    'total_defect_items': summary['total_defect_items'] or 0,
+                    'total_balance': summary['total_balance'] or Decimal('0.00'),
+                    'product_summaries': product_stats
+                })
+
+            except Store.DoesNotExist:
+                return Response(
+                    {"error": "Магазин не найден"},
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-            # Формируем данные для ответа с безопасным доступом к атрибутам
-            response_data = {
-                "date": date_obj.isoformat(),
-                "requested": {
-                    "quantity": getattr(stats, 'total_requested_quantity', 0),
-                    "amount": float(getattr(stats, 'total_requested_amount', 0)),
-                    "details": stats.detailed_data.get('requested', {}) if hasattr(stats, 'detailed_data') else {}
-                },
-                "sold": {
-                    "quantity": getattr(stats, 'total_sold_quantity', 0),
-                    "amount": float(getattr(stats, 'total_sold_amount', 0)),
-                    "details": stats.detailed_data.get('sold', {}) if hasattr(stats, 'detailed_data') else {}
-                },
-                "expenses": float(getattr(stats, 'total_expenses', 0)),
-                "damaged": {
-                    "quantity": getattr(stats, 'total_damaged_quantity', 0),
-                    "details": stats.detailed_data.get('damaged', {}) if hasattr(stats, 'detailed_data') else {}
-                },
-                "bonus": {
-                    "quantity": getattr(stats, 'total_bonus_quantity', 0)
-                },
-                "remaining": {
-                    "quantity": getattr(stats, 'total_remaining_quantity', 0),
-                    "details": stats.detailed_data.get('remaining', {}) if hasattr(stats, 'detailed_data') else {}
-                },
-                "profit": float(getattr(stats, 'profit', 0))
-            }
+        return Response(
+            {"error": "Требуется указать ID магазина или город"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-            return Response(response_data)
-        except Exception as e:
-            logger.error(f"Ошибка при получении статистики партнера: {str(e)}")
-            return Response(
-                {"error": f"Ошибка при получении статистики: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+    @action(detail=False, methods=['get'])
+    def dashboard_summary(self, request):
+        """Общая сводка для панели управления"""
+        user = self.request.user
 
+        # Сегодняшняя дата
+        today = timezone.now().date()
 
-class DailyStatisticsView(APIView):
-    """API для получения ежедневной статистики"""
-    permission_classes = [IsAuthenticated]
+        # Данные для всех пользователей
+        if user.role == 'admin':
+            # Для администратора - общая статистика
+            # Доход за сегодня
+            income_today = DailyStatistics.objects.filter(
+                date=today
+            ).aggregate(sum=Sum('total_income'))['sum'] or Decimal('0.00')
 
-    @swagger_auto_schema(
-        operation_summary="Ежедневная статистика",
-        manual_parameters=[
-            openapi.Parameter(
-                'date',
-                openapi.IN_QUERY,
-                description="Дата (YYYY-MM-DD), по умолчанию - сегодня",
-                type=openapi.TYPE_STRING,
-                format='date'
-            )
-        ],
-        responses={200: "Статистика за день"}
-    )
-    def get(self, request):
-        date_str = request.query_params.get('date')
+            # Расходы за сегодня
+            expense_today = DailyStatistics.objects.filter(
+                date=today
+            ).aggregate(sum=Sum('total_expense'))['sum'] or Decimal('0.00')
 
-        if date_str:
-            try:
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                return Response(
-                    {"error": "Некорректный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        else:
-            date_obj = timezone.now().date()
+            # Общий долг
+            total_debt = DailyStatistics.objects.filter(
+                store__isnull=False
+            ).aggregate(sum=Sum('total_debt'))['sum'] or Decimal('0.00')
 
-        try:
-            # Собираем статистику из разных источников
+            # Погашенный долг сегодня
+            debt_paid_today = DailyStatistics.objects.filter(
+                date=today,
+                store__isnull=False
+            ).aggregate(sum=Sum('total_debt_paid'))['sum'] or Decimal('0.00')
 
-            # 1. Товары в каталоге партнера
-            partner_products = PartnerProduct.objects.filter(partner=request.user)
+            # Прибыль сегодня
+            profit_today = income_today - expense_today
 
-            # 2. Запросы на товары в этот день
-            requests = ProductRequest.objects.filter(
-                user=request.user,
-                created_at__date=date_obj
-            )
+            # Количество активных партнеров
+            active_partners = User.objects.filter(role='partner', is_active=True).count()
 
-            # 3. Финансовые записи
-            entries = FinanceEntry.objects.filter(
-                user=request.user,
-                date=date_obj
-            )
+            # Количество магазинов
+            stores_count = Store.objects.filter(status='approved').count()
 
-            # 4. Долги магазинов
-            from apps.stores.models import StoreDebt
-            # Находим магазины, связанные с пользователем через запросы
-            store_ids = ProductRequest.objects.filter(
-                user=request.user
-            ).values_list('store_id', flat=True).distinct()
-
-            debts = StoreDebt.objects.filter(
-                store_id__in=store_ids
-            )
-            paid_debts = debts.filter(
-                is_paid=True,
-                paid_at__date=date_obj
-            )
-
-            # Расчет суммарных показателей с обработкой пустых значений
-            total_quantity = sum(getattr(p, 'quantity', 0) for p in partner_products)
-            total_sold = sum(getattr(p, 'sold_quantity', 0) for p in partner_products)
-            total_damaged = sum(getattr(p, 'damaged_quantity', 0) for p in partner_products)
-            total_bonus = sum(getattr(p, 'bonus_quantity', 0) for p in partner_products)
-            total_returned = sum(getattr(p, 'returned_quantity', 0) for p in partner_products)
-            total_remaining = sum(getattr(p, 'remaining_quantity', 0) for p in partner_products)
-
-            # Финансовые показатели
-            total_income = entries.filter(entry_type='income').aggregate(total=Sum('amount'))['total'] or 0
-            total_sales = entries.filter(entry_type='sale').aggregate(total=Sum('amount'))['total'] or 0
-            total_expense = entries.filter(entry_type='expense').aggregate(total=Sum('amount'))['total'] or 0
-            total_debt = debts.filter(is_paid=False).aggregate(total=Sum('amount'))['total'] or 0
-            total_paid_debt = paid_debts.aggregate(total=Sum('amount'))['total'] or 0
-
-            # Расчет итоговых значений
-            total_revenue = float(total_income) + float(total_sales)
-            total_profit = total_revenue - float(total_expense)
+            # Количество заказов сегодня
+            from apps.orders.models import Order
+            orders_today = Order.objects.filter(created_at__date=today).count()
 
             # Формируем ответ
             return Response({
-                "date": date_obj.isoformat(),
-                "inventory": {
-                    "total_quantity": total_quantity,
-                    "total_sold": total_sold,
-                    "total_damaged": total_damaged,
-                    "total_bonus": total_bonus,
-                    "total_returned": total_returned,
-                    "total_remaining": total_remaining
-                },
-                "finance": {
-                    "income": float(total_income),
-                    "sales": float(total_sales),
-                    "expense": float(total_expense),
-                    "debt": float(total_debt),
-                    "paid_debt": float(total_paid_debt),
-                    "revenue": float(total_revenue),
-                    "profit": float(total_profit)
-                },
-                "requests": {
-                    "total": requests.count(),
-                    "self_requests": requests.filter(request_type='SELF').count(),
-                    "store_requests": requests.filter(request_type='STORE').count(),
-                    "pending": requests.filter(status='pending').count(),
-                    "approved": requests.filter(status='approved').count(),
-                    "received": requests.filter(status='received').count()
-                }
+                'income_today': income_today,
+                'expense_today': expense_today,
+                'profit_today': profit_today,
+                'total_debt': total_debt,
+                'debt_paid_today': debt_paid_today,
+                'active_partners': active_partners,
+                'stores_count': stores_count,
+                'orders_today': orders_today,
+                'date': today
             })
-        except Exception as e:
-            logger.error(f"Ошибка при получении статистики: {str(e)}")
-            return Response(
-                {"error": f"Ошибка при получении статистики: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        else:
+            # Для партнера - личная статистика
+            # Доход за сегодня
+            income_today = DailyStatistics.objects.filter(
+                date=today,
+                partner=user
+            ).aggregate(sum=Sum('total_income'))['sum'] or Decimal('0.00')
+
+            # Расходы за сегодня
+            expense_today = DailyStatistics.objects.filter(
+                date=today,
+                partner=user
+            ).aggregate(sum=Sum('total_expense'))['sum'] or Decimal('0.00')
+
+            # Количество магазинов
+            stores_count = Store.objects.filter(partner=user, status='approved').count()
+
+            # Количество заказов сегодня
+            from apps.orders.models import Order
+            orders_today = Order.objects.filter(
+                created_at__date=today,
+                query=Q(created_by=user) | Q(partner=user)
             )
 
+            # Остаток товаров
+            remaining_items = PartnerInventory.objects.filter(
+                partner=user
+            ).aggregate(sum=Sum('quantity'))['sum'] or 0
+
+            # Прибыль сегодня
+            profit_today = income_today - expense_today
+
+            # Формируем ответ
+            return Response({
+                'income_today': income_today,
+                'expense_today': expense_today,
+                'profit_today': profit_today,
+                'stores_count': stores_count,
+                'orders_today': orders_today,
+                'remaining_items': remaining_items,
+                'date': today
+            })
+            queryset = queryset.filter(store__city=city)
+
+        # Группируем статистику если выбрано несколько магазинов
+        if not store_id and (user.role == 'admin' or city):
+            # Агрегируем данные по всем магазинам
+            summary = queryset.aggregate(
+                total_income=Sum('total_income'),
+                total_expense=Sum('total_expense'),
+                total_debt=Sum('total_debt'),
+                total_debt_paid=Sum('total_debt_paid'),
+                total_bonus_items=Sum('total_bonus_items'),
+                total_defect_items=Sum('total_defect_items'),
+                total_balance=Sum('total_balance')
+            )
+
+            # Получаем список всех товаров
+            products_stats = []
+            for stat in queryset.prefetch_related('product_stats'):
+                for ps in stat.product_stats.all():
+                    products_stats.append({
+                        'product_id': ps.product_id,
+                        'product_name': ps.product_name,
+                        'requested_quantity': ps.requested_quantity,
+                        'sold_quantity': ps.sold_quantity,
+                        'bonus_quantity': ps.bonus_quantity,
+                        'defect_quantity': ps.defect_quantity,
+                        'income_amount': ps.income_amount
+                    })
+
+            # Агрегируем статистику по товарам
+            product_summary = {}
+            for ps in products_stats:
+                product_id = ps['product_id']
+                if product_id not in product_summary:
+                    product_summary[product_id] = {
+                        'product_id': product_id,
+                        'product_name': ps['product_name'],
+                        'requested_quantity': 0,
+                        'sold_quantity': 0,
+                        'bonus_quantity': 0,
+                        'defect_quantity': 0,
+                        'income_amount': Decimal('0.00')
+                    }
+
+                product_summary[product_id]['requested_quantity'] += ps['requested_quantity']
+                product_summary[product_id]['sold_quantity'] += ps['sold_quantity']
+                product_summary[product_id]['bonus_quantity'] += ps['bonus_quantity']
+                product_summary[product_id]['defect_quantity'] += ps['defect_quantity']
+                product_summary[product_id]['income_amount'] += ps['income_amount']
+
+            # Формируем итоговый результат
+            response_data = {
+                'date_from': date_from,
+                'date_to': date_to,
+                'total_income': summary['total_income'] or Decimal('0.00'),
+                'total_expense': summary['total_expense'] or Decimal('0.00'),
+                'total_debt': summary['total_debt'] or Decimal('0.00'),
+                'total_debt_paid': summary['total_debt_paid'] or Decimal('0.00'),
+                'total_bonus_items': summary['total_bonus_items'] or 0,
+                'total_defect_items': summary['total_defect_items'] or 0,
+                'total_balance': summary['total_balance'] or Decimal('0.00'),
+                'product_summaries': list(product_summary.values())
+            }
+
+            if city:
+                response_data['city'] = city
+                response_data['store_count'] = queryset.values('store').distinct().count()
+
+            return Response(response_data)
+
+        # Для одного магазина возвращаем детальную статистику
+        if store_id:
+            try:
+                store = Store.objects.get(id=store_id)
+
+                # Проверяем права доступа
+                if user.role == 'partner' and store.partner != user:
+                    return Response(
+                        {"error": "У вас нет доступа к этому магазину"},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+
+                # Получаем статистику
+                stats = queryset.filter(store=store).prefetch_related('product_stats')
+
+                if not stats.exists():
+                    # Если статистики нет, рассчитываем на лету
+
+                    # Получаем заказы магазина
+                    orders = Order.objects.filter(
+                        store=store,
+                        created_at__date__range=(date_from, date_to)
+                    )
+
+                    # Получаем элементы заказов
+                    order_items = OrderItem.objects.filter(
+                        order__in=orders
+                    ).values('product_id', 'product__name').annotate(
+                        total_quantity=Sum('quantity'),
+                        total_amount=Sum(F('quantity') * F('price')),
+                        total_bonus=Sum('bonus_quantity')
+                    )
+
+                    # Получаем дефектные товары
+                    defect_items = DefectItem.objects.filter(
+                        order__in=orders
+                    ).values('product_id', 'product__name').annotate(
+                        total_quantity=Sum('quantity')
+                    )
+
+                    # Получаем сумму долга
+                    total_debt = store.debts.filter(
+                        created_at__date__range=(date_from, date_to),
+                        is_paid=False
+                    ).aggregate(sum=Sum('amount'))['sum'] or Decimal('0.00')
+
+                    # Получаем сумму погашенного долга
+                    total_paid = store.debt_payments.filter(
+                        payment_date__range=(date_from, date_to)
+                    ).aggregate(sum=Sum('amount'))['sum'] or Decimal('0.00')
+
+                    # Получаем расходы
+                    total_expenses = store.expenses.filter(
+                        expense_date__range=(date_from, date_to)
+                    ).aggregate(sum=Sum('amount'))['sum'] or Decimal('0.00')
+
+                    # Рассчитываем общую стоимость заказов
+                    total_orders_amount = sum(item['total_amount'] for item in order_items)
+
+                    # Формируем ответ
+                    return Response({
+                        'date_from': date_from,
+                        'date_to': date_to,
+                        'store_id': store.id,
+                        'store_name': store.name,
+                        'city': store.city,
+                        'total_income': total_orders_amount,
+                        'total_expense': total_expenses,
+                        'total_debt': total_debt,
+                        'total_debt_paid': total_paid,
+                        'total_bonus_items': sum(item['total_bonus'] for item in order_items),
+                        'total_defect_items': sum(item['total_quantity'] for item in defect_items),
+                        'total_balance': total_orders_amount - total_expenses,
+                        'product_summaries': [
+                            {
+                                'product_id': item['product_id'],
+                                'product_name': item['product__name'],
+                                'sold_quantity': item['total_quantity'],
+                                'bonus_quantity': item['total_bonus'],
+                                'income_amount': item['total_amount']
+                            }
+                            for item in order_items
+                        ]
+                    })
+
+                # Если статистика уже есть
+                summary = stats.aggregate(
+                    total_income=Sum('total_income'),
+                    total_expense=Sum('total_expense'),
+                    total_debt=Sum('total_debt'),
+                    total_debt_paid=Sum('total_debt_paid'),
+                    total_bonus_items=Sum('total_bonus_items'),
+                    total_defect_items=Sum('total_defect_items'),
+                    total_balance=Sum('total_balance')
+                )
+
+                # Получаем статистику по товарам
+                product_stats = []
+                for stat in stats:
+                    for ps in stat.product_stats.all():
+                        product_stats.append({
+                            'product_id': ps.product_id,
+                            'product_name': ps.product_name,
+                            'requested_quantity': ps.requested_quantity,
+                            'sold_quantity': ps.sold_quantity,
+                            'bonus_quantity': ps.bonus_quantity,
+                            'defect_quantity': ps.defect_quantity,
+                            'income_amount': ps.income_amount
+                        })
+
+                return Response({
+                    'date_from': date_from,
+                    'date_to': date_to,
+                    'store_id': store.id,
+                    'store_name': store.name,
+                    'city': store.city,
+                    'total_income': summary['total_income'] or Decimal('0.00'),
+                    'total_expense': summary['total_expense'] or Decimal('0.00'),
+                    'total_debt': summary['total_debt'] or Decimal('0.00'),
+                    'total_debt_paid': summary['total_debt_paid'] or Decimal('0.00'),
+                    'total_bonus_items': summary['total_bonus_items'] or 0,
+                    'total_defect_items': summary['total_defect_items'] or 0,
+                    'total_balance': summary['total_balance'] or Decimal('0.00'),
+                    'product_summaries': product_stats
+                })
+
+            except Store.DoesNotExist:
+                return Response(
+                    {"error": "Магазин не найден"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+        return Response(
+            {"error": "Требуется указать ID магазина или город"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    @action(detail=False, methods=['get'])
+    def admin_statistics(self, request):
+        """Получение общей статистики для администратора"""
+        user = request.user
+
+        # Проверяем права доступа
+        if user.role != 'admin':
+            return Response(
+                {"error": "Только администратор может просматривать эту статистику"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Получаем параметры фильтрации
+        date_from_str = request.query_params.get('date_from')
+        date_to_str = request.query_params.get('date_to')
+        city = request.query_params.get('city')
+        partner_id = request.query_params.get('partner_id')
+
+        # Устанавливаем значения по умолчанию
+        today = timezone.now().date()
+        date_from = today
+        date_to = today
+
+        # Преобразуем строковые даты в объекты date
+        if date_from_str:
+            try:
+                date_from = datetime.strptime(date_from_str, '%Y-%m-%d').date()
+            except ValueError:
+                return Response(
+                    {"error": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        if date_to_str:
+            try:
+                date_to = datetime.strptime(date_to_str, '%Y-%m-%d').date()
+            except ValueError:
+                return Response(
+                    {"error": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Формируем базовый набор данных в зависимости от фильтров
+        # Статистика партнеров
+        partner_stats = DailyStatistics.objects.filter(
+            partner__isnull=False,
+            date__range=(date_from, date_to)
+        )
+
+        # Статистика магазинов
+        store_stats = DailyStatistics.objects.filter(
+            store__isnull=False,
+            date__range=(date_from, date_to)
+        )
+
+        # Применяем дополнительные фильтры
+        if partner_id:
+            partner_stats = partner_stats.filter(partner_id=partner_id)
+            store_stats = store_stats.filter(store__partner_id=partner_id)
+
+        if city:
+            store_stats = store_stats.filter(store__city=city)
+
+        # Получаем сводную статистику по всем партнерам
+        partner_summary = partner_stats.aggregate(
+            total_income=Sum('total_income'),
+            total_expense=Sum('total_expense'),
+            total_bonus_items=Sum('total_bonus_items'),
+            total_defect_items=Sum('total_defect_items'),
+            total_balance=Sum('total_balance')
+        )
+
+        # Получаем сводную статистику по всем магазинам
+        store_summary = store_stats.aggregate(
+            total_debt=Sum('total_debt'),
+            total_debt_paid=Sum('total_debt_paid')
+        )
+
+        # Получаем статистику по товарам
+        # Для партнеров (доход)
+        partner_products = []
+        for stat in partner_stats.prefetch_related('product_stats'):
+            for ps in stat.product_stats.all():
+                partner_products.append({
+                    'product_id': ps.product_id,
+                    'product_name': ps.product_name,
+                    'requested_quantity': ps.requested_quantity,
+                    'income_amount': ps.income_amount
+                })
+
+        # Для магазинов (долги и бонусы)
+        store_products = []
+        for stat in store_stats.prefetch_related('product_stats'):
+            for ps in stat.product_stats.all():
+                store_products.append({
+                    'product_id': ps.product_id,
+                    'product_name': ps.product_name,
+                    'sold_quantity': ps.sold_quantity,
+                    'bonus_quantity': ps.bonus_quantity,
+                    'defect_quantity': ps.defect_quantity
+                })
+
+        # Агрегируем статистику по товарам
+        product_summary = {}
+
+        # Добавляем данные от партнеров
+        for pp in partner_products:
+            product_id = pp['product_id']
+            if product_id not in product_summary:
+                product_summary[product_id] = {
+                    'product_id': product_id,
+                    'product_name': pp['product_name'],
+                    'requested_quantity': 0,
+                    'sold_quantity': 0,
+                    'bonus_quantity': 0,
+                    'defect_quantity': 0,
+                    'income_amount': Decimal('0.00')
+                }
+
+            product_summary[product_id]['requested_quantity'] += pp['requested_quantity']
+            product_summary[product_id]['income_amount'] += pp['income_amount']
+
+        # Добавляем данные от магазинов
+        for sp in store_products:
+            product_id = sp['product_id']
+            if product_id not in product_summary:
+                product_summary[product_id] = {
+                    'product_id': product_id,
+                    'product_name': sp['product_name'],
+                    'requested_quantity': 0,
+                    'sold_quantity': 0,
+                    'bonus_quantity': 0,
+                    'defect_quantity': 0,
+                    'income_amount': Decimal('0.00')
+                }
+
+            product_summary[product_id]['sold_quantity'] += sp['sold_quantity']
+            product_summary[product_id]['bonus_quantity'] += sp['bonus_quantity']
+            product_summary[product_id]['defect_quantity'] += sp['defect_quantity']
+
+        # Получаем остаток товаров (инвентарь партнеров)
+        remaining_items = PartnerInventory.objects.all()
+        if partner_id:
+            remaining_items = remaining_items.filter(partner_id=partner_id)
+
+        remaining_count = remaining_items.aggregate(sum=Sum('quantity'))['sum'] or 0
+
+        # Рассчитываем общий баланс
+        total_income = partner_summary['total_income'] or Decimal('0.00')
+        total_expense = partner_summary['total_expense'] or Decimal('0.00')
+        total_bonus_value = Decimal('0.00')  # Это нужно рассчитать на основе стоимости бонусных товаров
+
+        # Для расчета стоимости бонусных товаров нужно знать цену каждого
+        # Поэтому просто используем сумму из статистики
+        total_balance = total_income - total_expense - total_bonus_value
+
+        # Формируем итоговый ответ
+        response_data = {
+            'date_from': date_from,
+            'date_to': date_to,
+            'total_income': total_income,
+            'total_expense': total_expense,
+            'total_debt': store_summary['total_debt'] or Decimal('0.00'),
+            'total_debt_paid': store_summary['total_debt_paid'] or Decimal('0.00'),
+            'total_bonus_items': partner_summary['total_bonus_items'] or 0,
+            'total_defect_items': partner_summary['total_defect_items'] or 0,
+            'total_remaining_items': remaining_count,
+            'total_balance': total_balance,
+            'product_summaries': list(product_summary.values())
+        }
+
+        # Добавляем дополнительную информацию в зависимости от фильтров
+        if partner_id:
+            try:
+                partner = User.objects.get(id=partner_id, role='partner')
+                response_data['partner_id'] = partner.id
+                response_data['partner_name'] = f"{partner.first_name} {partner.last_name}"
+            except User.DoesNotExist:
+                pass
+
+        if city:
+            response_data['city'] = city
+            response_data['store_count'] = Store.objects.filter(city=city).count()
+
+        return Response(response_data)

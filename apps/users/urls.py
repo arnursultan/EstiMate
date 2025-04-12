@@ -16,8 +16,8 @@ from .views import (
     RejectUserAPIView,
     ApproveUserAPIView,
     DeactivateOwnAccountAPIView,
-    PartnerDailySummaryView,
-    AdminDashboardView,
+    # PartnerDailySummaryView,
+    # AdminDashboardView,
 )
 
 urlpatterns = [
@@ -36,7 +36,7 @@ urlpatterns = [
     path("password-reset/", PasswordResetView.as_view(), name="password_reset"),
     path("password-reset/verify/", PasswordResetVerifyView.as_view(), name="password_reset_verify"),
     path("password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('daily-summary/', PartnerDailySummaryView.as_view(), name='daily-summary'),
-    path('admin/dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
+    # path('daily-summary/', PartnerDailySummaryView.as_view(), name='daily-summary'),
+    # path('admin/dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
 ]

@@ -1,175 +1,444 @@
 from rest_framework import serializers
-from .models import ProductRequest
-from apps.products.models import Product, PartnerProduct
-from apps.stores.models import Store
+from .models import Order, OrderItem, DefectItem
+from apps.products.models import Product, PartnerInventory
+from apps.stores.models import Store, StoreDebt, StoreDebtPayment, StoreExpense
+from django.db import transaction
+from django.utils import timezone
 
 
-class ProductRequestSerializer(serializers.ModelSerializer):
+class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
-    price_per_unit = serializers.SerializerMethodField(read_only=True)
-    total_price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
-    bonus_quantity = serializers.IntegerField(read_only=True)
-    user_email = serializers.EmailField(source='user.email', read_only=True)
-    store_name = serializers.SerializerMethodField(read_only=True)
-    request_type_display = serializers.CharField(source='get_request_type_display', read_only=True)
-    partner_product_info = serializers.SerializerMethodField(read_only=True)
-    batch_id = serializers.UUIDField(read_only=True)
+    product_price = serializers.DecimalField(source='product.price', max_digits=10, decimal_places=2, read_only=True)
+    total_price = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        read_only=True,
+    )
 
     class Meta:
-        model = ProductRequest
+        model = OrderItem
         fields = [
-            'id', 'product', 'product_name', 'user', 'user_email', 'store', 'store_name',
-            'request_type', 'request_type_display', 'partner_product', 'partner_product_info',
-            'quantity', 'bonus_quantity', 'damaged_quantity', 'is_bonus_marked',
-            'payment_method', 'status', 'total_price', 'price_per_unit', 'created_at', 'batch_id'
+            'id', 'order', 'product', 'product_name', 'product_price',
+            'quantity', 'price', 'total_price', 'bonus_quantity', 'created_at'
         ]
-        read_only_fields = ['status', 'total_price', 'bonus_quantity', 'created_at', 'is_bonus_marked', 'user',
-                            'batch_id']
-
-    def get_store_name(self, obj):
-        return obj.store.name if obj.store else None
-
-    def get_price_per_unit(self, obj):
-        if obj.request_type == 'SELF' and obj.product:
-            return float(obj.product.price)
-        elif obj.request_type == 'STORE' and obj.partner_product:
-            return float(obj.partner_product.price)
-        return 0
-
-    def get_partner_product_info(self, obj):
-        if obj.partner_product:
-            return {
-                'id': obj.partner_product.id,
-                'product_name': obj.partner_product.product.name,
-                'remaining_quantity': obj.partner_product.remaining_quantity
-            }
-        return None
-
-
-class SelfRequestSerializer(serializers.Serializer):
-    """Сериализатор для создания запроса 'для себя' (SELF)"""
-    product_id = serializers.IntegerField()
-    quantity = serializers.IntegerField(min_value=1)
-
-    def validate_product_id(self, value):
-        try:
-            product = Product.objects.get(id=value, is_active=True)
-            return value
-        except Product.DoesNotExist:
-            raise serializers.ValidationError("Указанный товар не найден или неактивен")
-
-    def validate_quantity(self, value):
-        if value <= 0:
-            raise serializers.ValidationError("Количество должно быть положительным числом")
-        return value
+        read_only_fields = ['order', 'price', 'bonus_quantity', 'created_at']
 
     def validate(self, data):
-        product_id = data.get('product_id')
-        quantity = data.get('quantity')
+        request = self.context.get('request')
+        product = data.get('product')
+        quantity = data.get('quantity', 0)
 
-        # Проверяем наличие достаточного количества товара у админа
-        try:
-            product = Product.objects.get(id=product_id)
-            if product.quantity < quantity:
-                raise serializers.ValidationError(
-                    {"quantity": f"Недостаточно товара в каталоге. Доступно: {product.quantity}"}
-                )
-        except Product.DoesNotExist:
-            pass  # Уже проверено в validate_product_id
+        if not product:
+            raise serializers.ValidationError("Необходимо указать товар")
+
+        if quantity <= 0:
+            raise serializers.ValidationError("Количество должно быть больше нуля")
+
+        # Проверка доступности товара
+        if not product.is_active:
+            raise serializers.ValidationError(f"Товар '{product.name}' не активен")
+
+        # Проверки в зависимости от типа заказа
+        order = self.context.get('order')
+        if order:
+            # Для заказов от партнера к админу
+            if order.order_type == 'admin_to_partner':
+                # Проверка наличия товара на складе администратора
+                if quantity > product.quantity:
+                    raise serializers.ValidationError(
+                        f"Недостаточно товара '{product.name}' на складе. Доступно: {product.quantity} шт.")
+
+            # Для заказов от партнера к магазину
+            elif order.order_type == 'partner_to_store':
+                # Проверка наличия товара в инвентаре партнера
+                try:
+                    inventory = PartnerInventory.objects.get(partner=request.user, product=product)
+                    if quantity > inventory.quantity:
+                        raise serializers.ValidationError(
+                            f"Недостаточно товара '{product.name}' в вашем инвентаре. Доступно: {inventory.quantity} шт.")
+                except PartnerInventory.DoesNotExist:
+                    raise serializers.ValidationError(f"Товар '{product.name}' отсутствует в вашем инвентаре")
+
+        return data
+
+    def create(self, validated_data):
+        order = self.context.get('order')
+        product = validated_data.get('product')
+
+        # Установка цены из прайс-листа
+        validated_data['price'] = product.price
+        validated_data['order'] = order
+
+        return super().create(validated_data)
+
+
+class DefectItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = DefectItem
+        fields = [
+            'id', 'order', 'product', 'product_name',
+            'quantity', 'description', 'total_price', 'created_at'
+        ]
+        read_only_fields = ['created_at']
+
+    def validate(self, data):
+        order = data.get('order') or self.context.get('order')
+        product = data.get('product')
+        quantity = data.get('quantity', 0)
+
+        if not order:
+            raise serializers.ValidationError("Необходимо указать заказ")
+
+        if not product:
+            raise serializers.ValidationError("Необходимо указать товар")
+
+        if quantity <= 0:
+            raise serializers.ValidationError("Количество должно быть больше нуля")
+
+        # Проверяем, что заказ имеет тип partner_to_store
+        if order.order_type != 'partner_to_store':
+            raise serializers.ValidationError("Можно регистрировать брак только для заказов магазину")
+
+        # Проверяем, что заказ подтвержден
+        if order.status != 'confirmed':
+            raise serializers.ValidationError("Можно регистрировать брак только для подтвержденных заказов")
+
+        # Проверяем, что товар был в заказе
+        order_item = OrderItem.objects.filter(order=order, product=product).first()
+        if not order_item:
+            raise serializers.ValidationError(f"Товар '{product.name}' отсутствует в данном заказе")
+
+        # Проверяем, что количество бракованных товаров не превышает заказанное количество
+        if quantity > order_item.quantity:
+            raise serializers.ValidationError(
+                f"Количество бракованных товаров не может превышать количество заказанных ({order_item.quantity} шт.)")
 
         return data
 
 
-class StoreRequestSerializer(serializers.Serializer):
-    """Сериализатор для создания запроса 'для магазина' (STORE)"""
-    partner_product_id = serializers.IntegerField()
-    store_id = serializers.IntegerField()
-    quantity = serializers.IntegerField(min_value=1)
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True, read_only=True)
+    defect_items = DefectItemSerializer(many=True, read_only=True)
+    store_name = serializers.CharField(source='store.name', read_only=True)
+    partner_name = serializers.SerializerMethodField()
+    total_price = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        read_only=True,
+    )
+    total_items = serializers.SerializerMethodField()
+    total_bonus_items = serializers.IntegerField(read_only=True)
 
-    def validate_partner_product_id(self, value):
-        try:
-            user = self.context['request'].user
-            partner_product = PartnerProduct.objects.get(id=value, partner=user)
-            return value
-        except PartnerProduct.DoesNotExist:
-            raise serializers.ValidationError("Указанный товар не найден в вашем каталоге")
+    class Meta:
+        model = Order
+        fields = [
+            'id', 'created_by', 'store', 'store_name',
+            'partner', 'partner_name', 'status', 'order_type',
+            'is_group_order', 'created_at', 'updated_at',
+            'total_price', 'total_items', 'total_bonus_items',
+            'order_items', 'defect_items'
+        ]
+        read_only_fields = ['created_by', 'created_at', 'updated_at']
 
-    def validate_store_id(self, value):
-        try:
-            store = Store.objects.get(id=value, status='approved', is_active=True)
-            return value
-        except Store.DoesNotExist:
-            raise serializers.ValidationError("Указанный магазин не найден или не активен")
+    def get_partner_name(self, obj):
+        return f"{obj.partner.first_name} {obj.partner.last_name}"
 
-    def validate_quantity(self, value):
-        if value <= 0:
-            raise serializers.ValidationError("Количество должно быть положительным числом")
-        return value
+    def get_total_items(self, obj):
+        return sum(item.quantity for item in obj.order_items.all())
 
     def validate(self, data):
-        # Проверяем, достаточно ли товара в каталоге партнера
-        try:
-            user = self.context['request'].user
-            partner_product = PartnerProduct.objects.get(id=data['partner_product_id'], partner=user)
+        user = self.context['request'].user
 
-            if data['quantity'] > partner_product.remaining_quantity:
-                raise serializers.ValidationError(
-                    {
-                        "quantity": f"Недостаточно товара в вашем каталоге. Доступно: {partner_product.remaining_quantity}"}
+        # Проверки для партнеров
+        if user.role == 'partner':
+            # Проверка для заказов от партнера к магазину
+            if data.get('order_type') == 'partner_to_store':
+                if not data.get('store'):
+                    raise serializers.ValidationError("Для заказа магазину необходимо указать магазин")
+
+                # Проверка, что магазин принадлежит партнеру
+                store = data.get('store')
+                if store.partner != user:
+                    raise serializers.ValidationError("Вы можете создавать заказы только для своих магазинов")
+
+                # Проверка статуса магазина
+                if store.status != 'approved':
+                    raise serializers.ValidationError("Магазин должен быть одобрен для создания заказа")
+
+            # Проверка для заказов от партнера к админу
+            if data.get('order_type') == 'admin_to_partner':
+                # Партнер может указать только себя как получателя
+                if data.get('partner') != user:
+                    raise serializers.ValidationError("Вы можете создавать заказы только для себя")
+
+        # Проверки для админов
+        if user.role == 'admin':
+            if data.get('order_type') == 'admin_to_partner':
+                # Проверка, что получатель - партнер
+                partner = data.get('partner')
+                if not partner or partner.role != 'partner':
+                    raise serializers.ValidationError("Получателем может быть только партнер")
+
+            elif data.get('order_type') == 'partner_to_store':
+                # Админ не может создавать заказы от партнера к магазину
+                raise serializers.ValidationError("Администраторы не могут создавать заказы от партнера к магазину")
+
+        # Проверка для одиночного заказа
+        if not data.get('is_group_order') and self.context.get('items', []) and len(self.context.get('items', [])) > 1:
+            raise serializers.ValidationError("Одиночный заказ может содержать только один товар")
+
+        return data
+
+    def create(self, validated_data):
+        validated_data['created_by'] = self.context['request'].user
+        return super().create(validated_data)
+
+
+class OrderWithItemsSerializer(OrderSerializer):
+    items = serializers.ListField(
+        child=serializers.DictField(),
+        write_only=True
+    )
+
+    class Meta(OrderSerializer.Meta):
+        fields = OrderSerializer.Meta.fields + ['items']
+
+    @transaction.atomic
+    def create(self, validated_data):
+        items_data = validated_data.pop('items', [])
+
+        # Для одиночного заказа проверяем, что есть только один товар
+        if not validated_data.get('is_group_order') and len(items_data) > 1:
+            raise serializers.ValidationError("Одиночный заказ может содержать только один товар")
+
+        # Создаем заказ
+        order = super().create(validated_data)
+
+        # Общая стоимость заказа для создания долга магазина
+        total_order_price = 0
+
+        # Добавляем товары к заказу
+        for item_data in items_data:
+            try:
+                product_id = item_data.get('product_id') or item_data.get('product')
+                product = Product.objects.get(id=product_id)
+                quantity = int(item_data.get('quantity', 0))
+
+                if product.is_active and quantity > 0:
+                    # Создаем элемент заказа
+                    order_item = OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=quantity,
+                        price=product.price
+                    )
+
+                    total_order_price += order_item.total_price
+
+                    # Если заказ от партнера к магазину, уменьшаем количество товара в инвентаре партнера
+                    if order.order_type == 'partner_to_store':
+                        try:
+                            inventory = PartnerInventory.objects.get(
+                                partner=order.created_by,
+                                product=product
+                            )
+
+                            if inventory.quantity >= quantity:
+                                inventory.quantity -= quantity
+                                inventory.save()
+                        except PartnerInventory.DoesNotExist:
+                            pass
+            except (Product.DoesNotExist, ValueError, TypeError):
+                continue
+
+        # Создаем долг магазина, если это заказ от партнера к магазину
+        if order.order_type == 'partner_to_store' and order.store and total_order_price > 0:
+            StoreDebt.objects.create(
+                store=order.store,
+                amount=total_order_price,
+                description=f"Долг за заказ #{order.id} от {timezone.now().strftime('%d.%m.%Y')}",
+                is_paid=False
+            )
+
+        return order
+
+
+class OrderStatusUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['status']
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        old_status = instance.status
+        new_status = validated_data.get('status')
+
+        # Проверяем допустимость изменения статуса
+        if old_status == 'rejected' and new_status != 'rejected':
+            raise serializers.ValidationError("Нельзя изменить статус отклоненного заказа")
+        if old_status == 'confirmed' and new_status != 'confirmed':
+            raise serializers.ValidationError("Нельзя изменить статус подтвержденного заказа")
+
+        # Обработка различных переходов статусов
+        if instance.order_type == 'admin_to_partner':
+            # Проверка прав доступа - только администратор может изменять статус заказа партнера к админу
+            user = self.context['request'].user
+            if user.role != 'admin':
+                raise serializers.ValidationError("Только администратор может изменять статус заказа к администратору")
+
+            # Подтверждение заказа
+            if new_status == 'confirmed' and old_status == 'in_process':
+                self._process_confirmed_admin_to_partner(instance)
+
+            # Отклонение заказа
+            elif new_status == 'rejected' and old_status == 'in_process':
+                # Для отклонения заказа ничего делать не нужно
+                pass
+
+        # Для заказов от партнера к магазину нельзя изменить статус, они автоматически подтверждаются
+        elif instance.order_type == 'partner_to_store':
+            raise serializers.ValidationError("Статус заказа от партнера к магазину не может быть изменен")
+
+        # Обновляем статус заказа
+        instance.status = new_status
+        instance.save()
+
+        return instance
+
+    def _process_confirmed_admin_to_partner(self, order):
+        """Обработка подтверждения заказа от администратора к партнеру"""
+        # Обновляем количество товаров на складе и в инвентаре партнера
+        for item in order.order_items.all():
+            product = item.product
+
+            # Уменьшаем количество товара на складе администратора
+            if product.quantity >= item.quantity:
+                product.quantity -= item.quantity
+                product.save()
+
+                # Увеличиваем количество товара в инвентаре партнера
+                partner_inventory, created = PartnerInventory.objects.get_or_create(
+                    partner=order.partner,
+                    product=product,
+                    defaults={'quantity': 0}
                 )
-        except PartnerProduct.DoesNotExist:
-            pass  # Эта ошибка уже обрабатывается в validate_partner_product_id
+                partner_inventory.quantity += item.quantity
+                partner_inventory.save()
+
+
+class DefectGroupSerializer(serializers.Serializer):
+    """Сериализатор для добавления группы бракованных товаров"""
+    order_id = serializers.IntegerField()
+    defects = serializers.ListField(
+        child=serializers.DictField()
+    )
+
+    @transaction.atomic
+    def create(self, validated_data):
+        order_id = validated_data.get('order_id')
+        defects_data = validated_data.get('defects', [])
+
+        try:
+            order = Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            raise serializers.ValidationError("Заказ не найден")
+
+        # Проверяем, что заказ от партнера к магазину
+        if order.order_type != 'partner_to_store':
+            raise serializers.ValidationError("Можно регистрировать брак только для заказов магазину")
+
+        # Проверяем, что заказ подтвержден
+        if order.status != 'confirmed':
+            raise serializers.ValidationError("Можно регистрировать брак только для подтвержденных заказов")
+
+        # Проверяем, что пользователь имеет право добавлять брак
+        user = self.context['request'].user
+        if user.role != 'admin' and order.created_by != user:
+            raise serializers.ValidationError("Вы не можете регистрировать брак для этого заказа")
+
+        created_defects = []
+
+        for defect_data in defects_data:
+            try:
+                product_id = defect_data.get('product_id')
+                quantity = int(defect_data.get('quantity', 0))
+                description = defect_data.get('description', '')
+
+                product = Product.objects.get(id=product_id)
+
+                # Проверяем, что товар был в заказе
+                order_item = OrderItem.objects.filter(order=order, product=product).first()
+                if not order_item:
+                    continue
+
+                # Проверяем, что количество бракованных товаров не превышает заказанное количество
+                if quantity <= 0 or quantity > order_item.quantity:
+                    continue
+
+                # Создаем запись о бракованном товаре
+                defect = DefectItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=quantity,
+                    description=description
+                )
+
+                created_defects.append(defect)
+
+            except (Product.DoesNotExist, ValueError, TypeError, KeyError):
+                continue
+
+        return created_defects
+
+
+class StoreDebtPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoreDebtPayment
+        fields = ['id', 'store', 'amount', 'description', 'payment_date']
+        read_only_fields = ['payment_date']
+
+    def validate(self, data):
+        store = data.get('store')
+        amount = data.get('amount')
+
+        if not store:
+            raise serializers.ValidationError("Необходимо указать магазин")
+
+        if not amount or amount <= 0:
+            raise serializers.ValidationError("Сумма оплаты должна быть больше нуля")
+
+        # Проверяем, что у магазина есть неоплаченный долг
+        remaining_debt = store.remaining_debt
+        if remaining_debt <= 0:
+            raise serializers.ValidationError("У магазина нет неоплаченного долга")
+
+        # Проверяем, что сумма оплаты не превышает оставшийся долг
+        if amount > remaining_debt:
+            raise serializers.ValidationError(f"Сумма оплаты превышает оставшийся долг ({remaining_debt} сом)")
 
         return data
 
 
-class AdminProductRequestStatusSerializer(serializers.ModelSerializer):
+class StoreExpenseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductRequest
-        fields = ['status']
+        model = StoreExpense
+        fields = ['id', 'store', 'amount', 'description', 'expense_date', 'created_at']
+        read_only_fields = ['created_at']
 
-    def validate_status(self, value):
-        if value not in ['approved', 'rejected']:
-            raise serializers.ValidationError("Статус может быть только 'approved' или 'rejected'")
+    def validate(self, data):
+        store = data.get('store')
+        amount = data.get('amount')
 
-        # Если текущий статус уже не pending
-        if self.instance and self.instance.status != 'pending':
-            raise serializers.ValidationError(
-                f"Нельзя изменить статус, так как текущий статус: '{self.instance.get_status_display()}'")
+        if not store:
+            raise serializers.ValidationError("Необходимо указать магазин")
 
-        # Проверяем, что это запрос типа SELF
-        if self.instance and self.instance.request_type != 'SELF':
-            raise serializers.ValidationError("Можно изменять статус только для запросов типа SELF")
+        if not amount or amount <= 0:
+            raise serializers.ValidationError("Сумма расхода должна быть больше нуля")
 
-        return value
+        # Проверяем, что пользователь имеет доступ к магазину
+        user = self.context['request'].user
+        if user.role != 'admin' and store.partner != user:
+            raise serializers.ValidationError("У вас нет доступа к этому магазину")
 
-
-class PartnerMarkReceivedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductRequest
-        fields = ['status']
-
-    def validate_status(self, value):
-        if value != 'received':
-            raise serializers.ValidationError("Можно только подтвердить получение")
-
-        if self.instance and self.instance.status != 'approved':
-            raise serializers.ValidationError("Можно подтвердить получение только для одобренных запросов")
-
-        return value
-
-
-class ReportDamagedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductRequest
-        fields = ['damaged_quantity']
-
-    def validate_damaged_quantity(self, value):
-        if value < 0:
-            raise serializers.ValidationError("Брак не может быть отрицательным")
-
-        if self.instance and value > self.instance.quantity:
-            raise serializers.ValidationError(
-                f"Количество бракованных товаров ({value}) не может превышать общее количество ({self.instance.quantity})")
-
-        return value
+        return data

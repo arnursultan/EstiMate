@@ -1,141 +1,166 @@
 from django.db import models
-from rest_framework.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from apps.users.models import User
 from apps.products.models import Product
 from apps.stores.models import Store
-from apps.products.models import PartnerProduct
+from django.db.models import Sum
 
 
-class ProductRequest(models.Model):
-    STATUS_CHOICES = (
-        ('pending', 'В ожидании'),
-        ('approved', 'Подтвержден'),
+class Order(models.Model):
+    """Модель заказа"""
+    ORDER_STATUS = [
+        ('in_process', 'В обработке'),
+        ('confirmed', 'Подтвержден'),
         ('rejected', 'Отклонен'),
-        ('received', 'Получен'),
-    )
+    ]
+    ORDER_TYPE = [
+        ('admin_to_partner', 'От администратора к партнеру'),
+        ('partner_to_store', 'От партнера к магазину'),
+    ]
 
-    REQUEST_TYPE_CHOICES = (
-        ('SELF', 'Для себя'),
-        ('STORE', 'Для магазина'),
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="orders_created",
+        verbose_name="Создатель заказа"
     )
-
-    PAYMENT_METHOD_CHOICES = (
-        ('debt', 'В долг'),  # Только долг в новом ТЗ, наличные удалены
-    )
-
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='requests')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_requests')
-    quantity = models.PositiveIntegerField()
-    bonus_quantity = models.PositiveIntegerField(default=0)
-    damaged_quantity = models.PositiveIntegerField(default=0)
-    is_bonus_marked = models.BooleanField(default=False)
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES, default='debt')
-    request_type = models.CharField(max_length=5, choices=REQUEST_TYPE_CHOICES, default='SELF')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True, related_name='product_requests')
-    # Добавляем связь с товаром партнера для STORE-запросов
-    partner_product = models.ForeignKey(
-        PartnerProduct,
-        on_delete=models.SET_NULL,
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name="orders",
         null=True,
         blank=True,
-        related_name='store_requests'
+        verbose_name="Магазин"
     )
-    total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    # Добавляем поле для групповых заявок
-    batch_id = models.UUIDField(
-        null=True,
-        blank=True,
-        verbose_name="ID групповой заявки",
-        db_index=True,  # Добавляем индекс для ускорения поиска
-        help_text="Уникальный идентификатор для связывания запросов в группу"
+    partner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="orders_received",
+        verbose_name="Партнер"
     )
-
-    previous_status = None  # для отслеживания изменений статуса
+    status = models.CharField(
+        max_length=20,
+        choices=ORDER_STATUS,
+        default='in_process',
+        verbose_name="Статус заказа"
+    )
+    order_type = models.CharField(
+        max_length=20,
+        choices=ORDER_TYPE,
+        verbose_name="Тип заказа"
+    )
+    is_group_order = models.BooleanField(
+        default=True,
+        verbose_name="Групповой заказ"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
     class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
         ordering = ['-created_at']
-        verbose_name = "Запрос на товар"
-        verbose_name_plural = "Запросы на товары"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.previous_status = self.status if self.pk else None
-
-    def clean(self):
-        """Валидация модели"""
-        # Для SELF-запросов не нужен магазин и partner_product
-        if self.request_type == 'SELF':
-            if self.store:
-                raise ValidationError("Для запроса 'для себя' не нужно указывать магазин")
-            if self.partner_product:
-                raise ValidationError("Для запроса 'для себя' не нужно указывать товар из личного каталога")
-
-        # Для STORE-запросов нужен магазин и partner_product
-        if self.request_type == 'STORE':
-            if not self.store:
-                raise ValidationError("Для запроса в магазин необходимо указать магазин")
-            if not self.partner_product:
-                raise ValidationError("Для запроса в магазин необходимо указать товар из личного каталога")
-
-            # Проверяем, что магазин подтвержден и активен
-            if self.store and self.store.status != 'approved':
-                raise ValidationError("Можно выбрать только подтвержденные магазины")
-            if self.store and not self.store.is_active:
-                raise ValidationError("Можно выбрать только активные магазины")
-
-    # Модификация models.py в apps/orders
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None  # Проверяем, создаем ли новый объект
-
-        # Расчет бонусов для запросов
-        if self.request_type == 'SELF' and self.product and self.product.is_bonus_eligible:
-            self.bonus_quantity = self.product.calculate_bonus(self.quantity)
-        elif self.request_type == 'STORE' and self.partner_product and self.partner_product.product.is_bonus_eligible:
-            self.bonus_quantity = self.partner_product.product.calculate_bonus(self.quantity)
+    def __str__(self):
+        order_type = "Групповой" if self.is_group_order else "Одиночный"
+        if self.order_type == 'admin_to_partner':
+            return f"{order_type} заказ партнера {self.partner.first_name} ({self.get_status_display()})"
         else:
-            self.bonus_quantity = 0
+            return f"{order_type} заказ магазина {self.store.name} ({self.get_status_display()})"
 
-        self.is_bonus_marked = self.bonus_quantity > 0
+    @property
+    def total_price(self):
+        """Расчет общей стоимости заказа"""
+        return sum(item.total_price for item in self.order_items.all())
 
-        # Расчет общей стоимости (без учета бонусов и брака)
-        actual_qty = max(self.quantity - self.bonus_quantity - self.damaged_quantity, 0)
+    @property
+    def total_bonus_items(self):
+        """Подсчет общего количества бонусных товаров"""
+        return self.order_items.aggregate(Sum('bonus_quantity'))['bonus_quantity__sum'] or 0
 
-        if self.request_type == 'SELF' and self.product:
-            self.total_price = actual_qty * self.product.price
-        elif self.request_type == 'STORE' and self.partner_product:
-            self.total_price = actual_qty * self.partner_product.price
-
-        # НОВАЯ ЛОГИКА: Для новых запросов STORE сразу устанавливаем статус approved
-        if is_new and self.request_type == 'STORE' and not self.status:
-            self.status = 'approved'
+    def save(self, *args, **kwargs):
+        """Переопределение метода сохранения"""
+        # Автоматическое подтверждение заказов для магазина
+        if self.order_type == 'partner_to_store' and self.status == 'in_process':
+            self.status = 'confirmed'
 
         super().save(*args, **kwargs)
 
+
+class OrderItem(models.Model):
+    """Модель элемента заказа"""
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="order_items",
+        verbose_name="Заказ"
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="order_items",
+        verbose_name="Товар"
+    )
+    quantity = models.PositiveIntegerField(verbose_name="Количество")
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name="Цена за единицу"
+    )
+    bonus_quantity = models.PositiveIntegerField(default=0, verbose_name="Бонусное количество")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Элемент заказа"
+        verbose_name_plural = "Элементы заказа"
+        ordering = ['-created_at']
+
     def __str__(self):
-        type_info = "для себя" if self.request_type == 'SELF' else f"для магазина {self.store}"
-        return f"{self.product.name} — {self.quantity} шт. ({type_info}) от {self.user}"
+        return f"{self.product.name} ({self.quantity} шт.)"
 
-    def mark_as_received(self):
-        """Отметить запрос как полученный"""
-        if self.status != 'approved':
-            raise ValidationError("Можно отметить как полученный только подтвержденный запрос")
+    @property
+    def total_price(self):
+        """Расчет общей стоимости элемента заказа"""
+        return self.price * self.quantity
 
-        self.status = 'received'
-        self.save()
-        return True
+    def save(self, *args, **kwargs):
+        # Проверка, нужно ли рассчитывать бонусы
+        if self.product.is_bonus and self.quantity >= 20:
+            self.bonus_quantity = self.quantity // 20
+        else:
+            self.bonus_quantity = 0
 
-    def report_damaged(self, damaged_quantity):
-        """Отметить бракованные товары"""
-        if damaged_quantity < 0:
-            raise ValidationError("Количество бракованных товаров не может быть отрицательным")
+        super().save(*args, **kwargs)
 
-        if damaged_quantity > self.quantity:
-            raise ValidationError(
-                f"Количество бракованных товаров ({damaged_quantity}) не может превышать общее количество ({self.quantity})")
 
-        self.damaged_quantity = damaged_quantity
-        self.save()
-        return self.damaged_quantity
+class DefectItem(models.Model):
+    """Модель бракованных товаров"""
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="defect_items",
+        verbose_name="Заказ"
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="defect_items",
+        verbose_name="Товар"
+    )
+    quantity = models.PositiveIntegerField(verbose_name="Количество бракованных товаров")
+    description = models.TextField(blank=True, verbose_name="Описание дефекта")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Бракованный товар"
+        verbose_name_plural = "Бракованные товары"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.product.name} ({self.quantity} шт. брак)"
+
+    @property
+    def total_price(self):
+        """Расчет общей стоимости бракованных товаров"""
+        return self.product.price * self.quantity
