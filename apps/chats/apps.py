@@ -1,9 +1,12 @@
-# apps/chats/apps.py
 from django.apps import AppConfig
+
 
 class ChatsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.chats'
 
     def ready(self):
-        import apps.chats.signals
+        try:
+            import apps.chats.signals
+        except ImportError:
+            pass

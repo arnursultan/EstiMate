@@ -1,6 +1,7 @@
 from django.http import FileResponse
 import mimetypes
 import os
+from django.conf import settings
 
 
 class BetterFileResponse(FileResponse):
@@ -13,8 +14,17 @@ class BetterFileResponse(FileResponse):
         super().__init__(*args, **kwargs)
 
         if filename:
-            # Определяем MIME-тип файла
-            content_type, encoding = mimetypes.guess_type(filename)
+            # Получаем расширение файла
+            ext = filename.split('.')[-1].lower() if '.' in filename else ''
+
+            # Используем словарь MIME-типов из настроек
+            content_type = None
+            if hasattr(settings, 'MIMETYPES') and ext in settings.MIMETYPES:
+                content_type = settings.MIMETYPES[ext]
+            else:
+                # Резервный вариант - используем стандартный механизм
+                content_type, encoding = mimetypes.guess_type(filename)
+
             if content_type:
                 self['Content-Type'] = content_type
 

@@ -54,9 +54,7 @@ class Message(models.Model):
     chat = models.ForeignKey(
         Chat,
         related_name='messages',
-        null=True,  # Добавляем это, чтобы поле могло быть null
-        blank=True,
-    on_delete=models.CASCADE,
+        on_delete=models.CASCADE,
     )
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,

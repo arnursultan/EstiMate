@@ -2,6 +2,9 @@
 from .models import Notification, NotificationSettings
 from apps.users.models import User
 from django.utils import timezone
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class NotificationService:
@@ -21,6 +24,11 @@ class NotificationService:
         """
         try:
             user = User.objects.get(id=user_id)
+
+            # Проверяем, активен ли пользователь
+            if not user.is_active:
+                logger.warning(f"Попытка отправить уведомление неактивному пользователю ID={user_id}")
+                return None
 
             # Проверяем настройки уведомлений пользователя
             settings, created = NotificationSettings.objects.get_or_create(user=user)
@@ -48,13 +56,17 @@ class NotificationService:
                 extra_data=extra_data
             )
 
+            # Здесь можно добавить код для отправки push-уведомлений
+            # например, через Firebase или другой сервис
+
+            logger.info(f"Успешно создано уведомление ID={notification.id} для пользователя ID={user_id}")
             return notification
 
         except User.DoesNotExist:
-            print(f"User with ID {user_id} not found")
+            logger.error(f"Пользователь с ID {user_id} не найден")
             return None
         except Exception as e:
-            print(f"Error creating notification: {str(e)}")
+            logger.error(f"Ошибка при создании уведомления: {str(e)}")
             return None
 
     @staticmethod
@@ -89,7 +101,7 @@ class NotificationService:
             return query
 
         except Exception as e:
-            print(f"Error getting notifications: {str(e)}")
+            logger.error(f"Ошибка при получении уведомлений: {str(e)}")
             return []
 
     @staticmethod
@@ -98,22 +110,25 @@ class NotificationService:
         try:
             notification = Notification.objects.get(id=notification_id)
             notification.is_read = True
-            notification.save()
+            notification.save(update_fields=['is_read'])
+            logger.info(f"Уведомление ID={notification_id} отмечено как прочитанное")
             return True
         except Notification.DoesNotExist:
+            logger.warning(f"Уведомление ID={notification_id} не найдено")
             return False
         except Exception as e:
-            print(f"Error marking notification as read: {str(e)}")
+            logger.error(f"Ошибка при отметке уведомления как прочитанного: {str(e)}")
             return False
 
     @staticmethod
     def mark_all_as_read(user_id):
         """Отмечает все уведомления пользователя как прочитанные"""
         try:
-            Notification.objects.filter(user_id=user_id, is_read=False).update(is_read=True)
+            count = Notification.objects.filter(user_id=user_id, is_read=False).update(is_read=True)
+            logger.info(f"Отмечено {count} уведомлений как прочитанные для пользователя ID={user_id}")
             return True
         except Exception as e:
-            print(f"Error marking all notifications as read: {str(e)}")
+            logger.error(f"Ошибка при отметке всех уведомлений как прочитанных: {str(e)}")
             return False
 
     @staticmethod
@@ -122,9 +137,11 @@ class NotificationService:
         try:
             notification = Notification.objects.get(id=notification_id)
             notification.delete()
+            logger.info(f"Уведомление ID={notification_id} удалено")
             return True
         except Notification.DoesNotExist:
+            logger.warning(f"Уведомление ID={notification_id} не найдено")
             return False
         except Exception as e:
-            print(f"Error deleting notification: {str(e)}")
+            logger.error(f"Ошибка при удалении уведомления: {str(e)}")
             return False
