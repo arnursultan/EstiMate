@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   db:
     image: postgres:13-alpine
@@ -8,7 +10,7 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
     ports:
-      - "5433:5432"  # Важно: внешний порт 5433, внутренний 5432
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
@@ -21,7 +23,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "6380:6379"  # Внешний порт 6380, внутренний 6379
+      - "6380:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -34,7 +36,7 @@ services:
     volumes:
       - .:/app
       - static_volume:/app/static
-      - media_volume:/app/media
+      - ./media:/app/media        # ← фикс: монтируем локальную папку
       - logs_volume:/app/logs
     ports:
       - "8000:8000"
@@ -55,7 +57,7 @@ services:
     entrypoint: /app/entrypoint.sh
     volumes:
       - .:/app
-      - media_volume:/app/media
+      - ./media:/app/media        # ← тоже фикс: монтируем локальную папку
       - logs_volume:/app/logs
     env_file:
       - ./.env
@@ -66,11 +68,8 @@ services:
       - DB_HOST=db
       - REDIS_HOST=redis
 
-
-
 volumes:
   postgres_data:
   redis_data:
   static_volume:
-  media_volume:
   logs_volume:

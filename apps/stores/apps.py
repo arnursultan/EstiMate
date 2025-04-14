@@ -5,5 +5,4 @@ class StoresConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.stores'
 
-    def ready(self):
-        import apps.stores.signals
+   
