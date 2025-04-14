@@ -10,6 +10,8 @@ class CitySerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+# В файле apps/stores/serializers.py обновляем сериализатор StoreSerializer
+
 class StoreSerializer(serializers.ModelSerializer):
     city_name = serializers.CharField(source='city.name', read_only=True)
     partner_name = serializers.SerializerMethodField()
@@ -31,7 +33,7 @@ class StoreSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'inn', 'phone', 'city', 'city_name',
             'address', 'expenses', 'partner', 'partner_name',
-            'status', 'created_at', 'updated_at', 'total_debt',
+            'status', 'is_active', 'created_at', 'updated_at', 'total_debt',
             'total_paid_debt', 'remaining_debt'
         ]
         read_only_fields = ['created_at', 'updated_at', 'partner', 'total_debt', 'total_paid_debt', 'remaining_debt']
@@ -58,6 +60,25 @@ class StoreSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+# Также обновим StoreListSerializer для включения поля is_active
+class StoreListSerializer(serializers.ModelSerializer):
+    city_name = serializers.CharField(source='city.name', read_only=True)
+    partner_name = serializers.SerializerMethodField()
+    remaining_debt = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        read_only=True,
+    )
+
+    class Meta:
+        model = Store
+        fields = [
+            'id', 'name', 'city_name', 'partner', 'partner_name',
+            'status', 'remaining_debt', 'is_active'
+        ]
+
+    def get_partner_name(self, obj):
+        return f"{obj.partner.first_name} {obj.partner.last_name}"
+
 class StoreDebtSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.name', read_only=True)
 
@@ -74,26 +95,6 @@ class StoreDebtSerializer(serializers.ModelSerializer):
         if amount and amount <= 0:
             raise serializers.ValidationError("Сумма долга должна быть больше нуля")
         return data
-
-
-class StoreListSerializer(serializers.ModelSerializer):
-    city_name = serializers.CharField(source='city.name', read_only=True)
-    partner_name = serializers.SerializerMethodField()
-    remaining_debt = serializers.DecimalField(
-        max_digits=10, decimal_places=2,
-        read_only=True,
-    )
-
-    class Meta:
-        model = Store
-        fields = [
-            'id', 'name', 'city_name', 'partner', 'partner_name',
-            'status', 'remaining_debt'
-        ]
-
-    def get_partner_name(self, obj):
-        return f"{obj.partner.first_name} {obj.partner.last_name}"
-
 
 
 class DateRangeSerializer(serializers.Serializer):
