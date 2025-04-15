@@ -52,6 +52,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         if self.action == 'create' and 'items' in self.request.data:
             context['items'] = self.request.data.get('items', [])
 
+        # Всегда добавляем запрос
+        context['request'] = self.request
+
         return context
 
     def get_permissions(self):
@@ -162,6 +165,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         })
 
 
+
 class OrderItemViewSet(viewsets.ModelViewSet):
     """
     Представление для работы с элементами заказа
@@ -224,8 +228,13 @@ class DefectItemViewSet(viewsets.ModelViewSet):
         # Добавляем заказ в контекст
         order_id = self.kwargs.get('order_pk')
         if order_id:
-            context['order'] = Order.objects.get(id=order_id)
+            try:
+                context['order'] = Order.objects.get(id=order_id)
+            except Order.DoesNotExist:
+                pass
 
+        # Всегда добавляем запрос в контекст
+        context['request'] = self.request
         return context
 
     @action(detail=False, methods=['post'])
@@ -242,6 +251,7 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             DefectItemSerializer(defects, many=True).data,
             status=status.HTTP_201_CREATED
         )
+
 
     @action(detail=False, methods=['get'])
     def order_defects(self, request):
@@ -265,10 +275,12 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             "total_price": total_defect_price
         })
 
+
     @action(detail=False, methods=['get'])
     def store_defects(self, request):
-        """Получение бракованных товаров по магазину"""
         store_id = request.query_params.get('store_id')
+        date_str = request.query_params.get('date')
+
         if not store_id:
             return Response(
                 {"detail": "Необходимо указать ID магазина"},
@@ -276,6 +288,20 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             )
 
         queryset = self.get_queryset().filter(order__store_id=store_id)
+
+        # Фильтрация по дате, если указана
+        if date_str:
+            try:
+                from datetime import datetime
+                date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                queryset = queryset.filter(order__created_at__date=date)
+            except ValueError:
+                return Response(
+                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+
         serializer = DefectItemSerializer(queryset, many=True)
 
         # Рассчитываем общую стоимость бракованных товаров
@@ -302,6 +328,28 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             "total_price": total_defect_price,
             "products_summary": list(product_summary.values())
         })
+
+
+        orders_info = {}
+        for defect in queryset:
+            order = defect.order
+            if order.id not in orders_info:
+                orders_info[order.id] = {
+                    "order_id": order.id,
+                    "created_at": order.created_at.isoformat(),
+                    "store_name": order.store.name if order.store else None
+                }
+
+    # Рассчитываем общую стоимость бракованных товаров
+        total_defect_price = sum(defect.total_price for defect in queryset)
+
+        return Response({
+            "defects": serializer.data,
+            "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
+            "total_price": float(total_defect_price),
+            "orders": list(orders_info.values()),  # Добавляем информацию о заказах
+        })
+
 
     @action(detail=False, methods=['get'])
     def store_total_defects(self, request):

@@ -129,23 +129,38 @@ class OrderSerializer(serializers.ModelSerializer):
     )
     total_items = serializers.SerializerMethodField()
     total_bonus_items = serializers.IntegerField(read_only=True)
+    total_defect_items = serializers.SerializerMethodField()
+    total_defect_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = [
             'id', 'created_by', 'store', 'store_name',
-            'partner', 'partner_name', 'status', 'order_type',
-            'is_group_order', 'created_at', 'updated_at',
+            'partner', 'partner_name', 'partner_email', 'partner_phone',  # Включаем новые поля
+            'status', 'order_type', 'is_group_order', 'created_at', 'updated_at',
             'total_price', 'total_items', 'total_bonus_items',
+            'total_defect_items', 'total_defect_price',  # Новые поля для бракованных товаров
             'order_items', 'defect_items'
         ]
         read_only_fields = ['created_by', 'created_at', 'updated_at']
 
+
     def get_partner_name(self, obj):
         return f"{obj.partner.first_name} {obj.partner.last_name}"
 
+
     def get_total_items(self, obj):
         return sum(item.quantity for item in obj.order_items.all())
+
+
+    def get_total_defect_items(self, obj):
+        """Получение общего количества бракованных товаров"""
+        return sum(defect.quantity for defect in obj.defect_items.all())
+
+
+    def get_total_defect_price(self, obj):
+        """Получение общей стоимости бракованных товаров"""
+        return sum(defect.total_price for defect in obj.defect_items.all())
 
     def validate(self, data):
         user = self.context['request'].user
@@ -222,6 +237,9 @@ class OrderWithItemsSerializer(OrderSerializer):
         for item_data in items_data:
             try:
                 product_id = item_data.get('product_id') or item_data.get('product')
+                if not product_id:
+                    continue
+
                 product = Product.objects.get(id=product_id)
                 quantity = int(item_data.get('quantity', 0))
 
@@ -234,7 +252,7 @@ class OrderWithItemsSerializer(OrderSerializer):
                         price=product.price
                     )
 
-                    total_order_price += order_item.total_price
+                    total_order_price += float(order_item.total_price)
 
                     # Если заказ от партнера к магазину, уменьшаем количество товара в инвентаре партнера
                     if order.order_type == 'partner_to_store':
@@ -247,9 +265,16 @@ class OrderWithItemsSerializer(OrderSerializer):
                             if inventory.quantity >= quantity:
                                 inventory.quantity -= quantity
                                 inventory.save()
+                            else:
+                                # Логируем ошибку, если недостаточно товара
+                                print(
+                                    f"Недостаточно товара {product.name} в инвентаре партнера {order.created_by.email}")
                         except PartnerInventory.DoesNotExist:
-                            pass
-            except (Product.DoesNotExist, ValueError, TypeError):
+                            # Логируем ошибку, если товара нет в инвентаре
+                            print(f"Товар {product.name} отсутствует в инвентаре партнера {order.created_by.email}")
+            except (Product.DoesNotExist, ValueError, TypeError) as e:
+                # Логируем ошибку при обработке товара
+                print(f"Ошибка при добавлении товара в заказ: {str(e)}")
                 continue
 
         # Создаем долг магазина, если это заказ от партнера к магазину
@@ -329,15 +354,48 @@ class OrderStatusUpdateSerializer(serializers.ModelSerializer):
 
 class DefectGroupSerializer(serializers.Serializer):
     """Сериализатор для добавления группы бракованных товаров"""
-    order_id = serializers.IntegerField()
+    order_id = serializers.IntegerField(required=False)
+    store_id = serializers.IntegerField(required=False)
+    date = serializers.DateField(required=False)
     defects = serializers.ListField(
         child=serializers.DictField()
     )
 
+    def validate(self, data):
+        # Проверяем, что есть либо order_id, либо (store_id и date)
+        if 'order_id' not in data and ('store_id' not in data or 'date' not in data):
+            raise serializers.ValidationError(
+                "Необходимо указать либо order_id, либо store_id и date"
+            )
+
+        return data
+
     @transaction.atomic
     def create(self, validated_data):
         order_id = validated_data.get('order_id')
+        store_id = validated_data.get('store_id')
+        date = validated_data.get('date')
         defects_data = validated_data.get('defects', [])
+
+        # Если указаны store_id и date, находим последний заказ
+        if not order_id and store_id and date:
+            try:
+                # Найти последний заказ для магазина на указанную дату
+                orders = Order.objects.filter(
+                    store_id=store_id,
+                    created_at__date=date,
+                    order_type='partner_to_store',
+                    status='confirmed'
+                ).order_by('-created_at')
+
+                if orders.exists():
+                    order_id = orders.first().id
+                else:
+                    raise serializers.ValidationError(
+                        f"Заказы для магазина ID:{store_id} на дату {date} не найдены"
+                    )
+            except Exception as e:
+                raise serializers.ValidationError(f"Ошибка поиска заказа: {str(e)}")
 
         try:
             order = Order.objects.get(id=order_id)
@@ -386,7 +444,8 @@ class DefectGroupSerializer(serializers.Serializer):
 
                 created_defects.append(defect)
 
-            except (Product.DoesNotExist, ValueError, TypeError, KeyError):
+            except (Product.DoesNotExist, ValueError, TypeError, KeyError) as e:
+                print(f"Ошибка при добавлении бракованного товара: {str(e)}")
                 continue
 
         return created_defects

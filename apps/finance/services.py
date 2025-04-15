@@ -15,12 +15,6 @@ class PartnerStatisticsService:
     def get_partner_statistics(self, partner_id, date=None, date_range=None, period=None):
         """
         Получение статистики партнера
-
-        Параметры:
-        - partner_id: ID партнера
-        - date: конкретная дата (опционально)
-        - date_range: (start_date, end_date) - диапазон дат (опционально)
-        - period: период ('today', 'yesterday', 'this_week', 'last_week', 'this_month', 'last_month', etc.)
         """
         try:
             partner = User.objects.get(id=partner_id, role='partner')
@@ -77,13 +71,13 @@ class PartnerStatisticsService:
         # Рассчитываем финансовые показатели
         total_requested_amount = float(sum(
             item.quantity * item.price for item in requested_items
-        ))
+        ) or 0)
 
         total_sold_amount = float(sum(
             item.quantity * item.price for item in sold_items
-        ))
+        ) or 0)
 
-        total_expenses = float(sum(expense.amount for expense in expenses))
+        total_expenses = float(sum(expense.amount for expense in expenses) or 0)
 
         # Рассчитываем остатки инвентаря
         inventory_items = PartnerInventory.objects.filter(partner=partner)
@@ -95,7 +89,46 @@ class PartnerStatisticsService:
         # Собираем данные о товарах
         products_data = self._get_products_summary(requested_items, sold_items)
 
-        # Вычисляем прибыль (теперь все значения float)
+        # Детальная информация о проданных товарах
+        sold_products_detail = []
+        for item in sold_items:
+            try:
+                product = item.product
+                sold_products_detail.append({
+                    "product_id": product.id,
+                    "product_name": product.name,
+                    "quantity": item.quantity,
+                    "price": float(item.price),
+                    "total_price": float(item.price * item.quantity),
+                    "order_id": item.order.id,
+                    "store_id": item.order.store.id if item.order.store else None,
+                    "store_name": item.order.store.name if item.order.store else None,
+                    "created_at": item.created_at.isoformat()
+                })
+            except Exception as e:
+                print(f"Ошибка при обработке проданного товара: {str(e)}")
+
+        # Информация о магазинах
+        stores_data = {}
+        for order in sold_orders:
+            if not order.store:
+                continue
+
+            store_id = order.store.id
+            if store_id not in stores_data:
+                stores_data[store_id] = {
+                    "store_id": store_id,
+                    "store_name": order.store.name,
+                    "total_sold": 0.0,
+                    "total_items": 0,
+                    "orders_count": 0
+                }
+
+            stores_data[store_id]["orders_count"] += 1
+            stores_data[store_id]["total_sold"] += float(order.total_price or 0)
+            stores_data[store_id]["total_items"] += sum(item.quantity for item in order.order_items.all())
+
+        # Вычисляем прибыль
         profit = total_sold_amount - total_expenses
 
         # Формируем итоговый ответ
@@ -118,7 +151,9 @@ class PartnerStatisticsService:
                 "total_amount": total_sold_amount,
                 "items_count": sold_items.count(),
                 "orders_count": sold_orders.count(),
-                "products": self._format_products_list(sold_items)
+                "products": self._format_products_list(sold_items),
+                "products_detail": sold_products_detail,  # Добавлено: детальная информация о проданных товарах
+                "stores": list(stores_data.values())  # Добавлено: информация по магазинам
             },
             "debt": total_sold_amount,  # Долг магазинов перед партнером
             "expenses": total_expenses,
@@ -130,7 +165,6 @@ class PartnerStatisticsService:
         }
 
         return result
-
 
     def _get_dates_from_period(self, period):
         """Получение начальной и конечной даты на основе периода"""

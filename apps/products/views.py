@@ -119,6 +119,11 @@ class ProductViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
 
 class PartnerInventoryViewSet(viewsets.ModelViewSet):
     """
@@ -140,3 +145,8 @@ class PartnerInventoryViewSet(viewsets.ModelViewSet):
         if self.action in ['update', 'partial_update', 'destroy']:
             return [permissions.IsAuthenticated()]
         return [permissions.IsAuthenticated()]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context

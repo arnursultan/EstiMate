@@ -3,7 +3,7 @@ from celery import shared_task
 from django.utils import timezone
 from django.core.cache import cache
 from django.db.models import Sum
-from datetime import timedelta
+from datetime import timedelta, datetime
 import json
 
 from .services import PartnerStatisticsService, AdminStatisticsService
