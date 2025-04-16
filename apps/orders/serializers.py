@@ -123,6 +123,8 @@ class OrderSerializer(serializers.ModelSerializer):
     defect_items = DefectItemSerializer(many=True, read_only=True)
     store_name = serializers.CharField(source='store.name', read_only=True)
     partner_name = serializers.SerializerMethodField()
+    partner_email = serializers.SerializerMethodField()
+    partner_phone = serializers.SerializerMethodField()
     total_price = serializers.DecimalField(
         max_digits=10, decimal_places=2,
         read_only=True,
@@ -136,27 +138,29 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = [
             'id', 'created_by', 'store', 'store_name',
-            'partner', 'partner_name', 'partner_email', 'partner_phone',  # Включаем новые поля
+            'partner', 'partner_name', 'partner_email', 'partner_phone',
             'status', 'order_type', 'is_group_order', 'created_at', 'updated_at',
             'total_price', 'total_items', 'total_bonus_items',
-            'total_defect_items', 'total_defect_price',  # Новые поля для бракованных товаров
+            'total_defect_items', 'total_defect_price',
             'order_items', 'defect_items'
         ]
         read_only_fields = ['created_by', 'created_at', 'updated_at']
 
-
     def get_partner_name(self, obj):
         return f"{obj.partner.first_name} {obj.partner.last_name}"
 
+    def get_partner_email(self, obj):
+        return obj.partner.email if obj.partner else None
+
+    def get_partner_phone(self, obj):
+        return obj.partner.phone if obj.partner and hasattr(obj.partner, 'phone') else None
 
     def get_total_items(self, obj):
         return sum(item.quantity for item in obj.order_items.all())
 
-
     def get_total_defect_items(self, obj):
         """Получение общего количества бракованных товаров"""
         return sum(defect.quantity for defect in obj.defect_items.all())
-
 
     def get_total_defect_price(self, obj):
         """Получение общей стоимости бракованных товаров"""
@@ -252,19 +256,25 @@ class OrderWithItemsSerializer(OrderSerializer):
                         price=product.price
                     )
 
+                    # Дебаг-информация
+                    print(f"Created order item: {order_item.id}, product: {product.id}, quantity: {quantity}")
+
                     total_order_price += float(order_item.total_price)
 
                     # Если заказ от партнера к магазину, уменьшаем количество товара в инвентаре партнера
                     if order.order_type == 'partner_to_store':
                         try:
-                            inventory = PartnerInventory.objects.get(
+                            inventory = PartnerInventory.objects.select_for_update().get(
                                 partner=order.created_by,
                                 product=product
                             )
 
                             if inventory.quantity >= quantity:
+                                old_quantity = inventory.quantity
                                 inventory.quantity -= quantity
                                 inventory.save()
+                                print(
+                                    f"Updated inventory for partner {order.created_by.id}: product {product.id} from {old_quantity} to {inventory.quantity}")
                             else:
                                 # Логируем ошибку, если недостаточно товара
                                 print(

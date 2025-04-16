@@ -100,8 +100,6 @@ class PartnerStatisticsView(APIView):
         return Response(statistics)
 
 
-# apps/finance/views.py - дополним существующий файл
-
 class AdminFinanceStatisticsView(APIView):
     """Представление для получения финансовой статистики администратора"""
     permission_classes = [IsAdminUser]

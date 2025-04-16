@@ -89,13 +89,14 @@ class PartnerInventorySerializer(serializers.ModelSerializer):
     )
     is_bonus = serializers.BooleanField(source='product.is_bonus', read_only=True)
     primary_image = serializers.SerializerMethodField()
+    product_images = serializers.SerializerMethodField()
 
     class Meta:
         model = PartnerInventory
         fields = [
             'id', 'partner', 'product', 'product_name',
             'product_price', 'is_bonus', 'quantity',
-            'primary_image', 'created_at', 'updated_at'
+            'primary_image', 'product_images', 'created_at', 'updated_at'
         ]
         read_only_fields = ['created_at', 'updated_at', 'partner']
 
@@ -105,6 +106,13 @@ class PartnerInventorySerializer(serializers.ModelSerializer):
         if primary_image and request:
             return request.build_absolute_uri(primary_image.image.url)
         return None
+
+    def get_product_images(self, obj):
+        images = obj.product.images.all()
+        request = self.context.get('request')
+        if images and request:
+            return [request.build_absolute_uri(img.image.url) for img in images]
+        return []
 
     def validate(self, data):
         # Проверка, что продукт существует и актуален

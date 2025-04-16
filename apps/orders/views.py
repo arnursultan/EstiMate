@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Sum, Count
+from datetime import datetime
 from .models import Order, OrderItem, DefectItem
 from .serializers import (
     OrderSerializer,
@@ -16,6 +17,7 @@ from .serializers import (
 )
 from apps.stores.models import Store, StoreDebt, StoreDebtPayment, StoreExpense
 from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
+from django.db import transaction
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -164,6 +166,53 @@ class OrderViewSet(viewsets.ModelViewSet):
             'confirmed_orders_price': confirmed_orders_price,
         })
 
+    @action(detail=False, methods=['get'])
+    def get_store_orders(self, request):
+        """Получение заказов магазина по дате"""
+        store_id = request.query_params.get('store_id')
+        date_str = request.query_params.get('date')
+
+        if not store_id:
+            return Response(
+                {"detail": "Необходимо указать ID магазина"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not date_str:
+            return Response(
+                {"detail": "Необходимо указать дату в формате YYYY-MM-DD"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return Response(
+                {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Находим заказы для магазина на указанную дату
+        orders = Order.objects.filter(
+            store_id=store_id,
+            created_at__date=date,
+            order_type='partner_to_store'
+        ).order_by('-created_at')
+
+        # Возвращаем список заказов с минимальной информацией
+        order_data = [{
+            'order_id': order.id,
+            'created_at': order.created_at.isoformat(),
+            'total_price': float(order.total_price),
+            'items_count': order.order_items.count()
+        } for order in orders]
+
+        return Response({
+            'store_id': store_id,
+            'date': date.isoformat(),
+            'orders_count': len(order_data),
+            'orders': order_data
+        })
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
@@ -252,7 +301,6 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
-
     @action(detail=False, methods=['get'])
     def order_defects(self, request):
         """Получение бракованных товаров по конкретному заказу"""
@@ -274,7 +322,6 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
             "total_price": total_defect_price
         })
-
 
     @action(detail=False, methods=['get'])
     def store_defects(self, request):
@@ -300,7 +347,6 @@ class DefectItemViewSet(viewsets.ModelViewSet):
                     {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
 
         serializer = DefectItemSerializer(queryset, many=True)
 
@@ -329,7 +375,6 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             "products_summary": list(product_summary.values())
         })
 
-
         orders_info = {}
         for defect in queryset:
             order = defect.order
@@ -340,7 +385,7 @@ class DefectItemViewSet(viewsets.ModelViewSet):
                     "store_name": order.store.name if order.store else None
                 }
 
-    # Рассчитываем общую стоимость бракованных товаров
+        # Рассчитываем общую стоимость бракованных товаров
         total_defect_price = sum(defect.total_price for defect in queryset)
 
         return Response({
@@ -349,7 +394,6 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             "total_price": float(total_defect_price),
             "orders": list(orders_info.values()),  # Добавляем информацию о заказах
         })
-
 
     @action(detail=False, methods=['get'])
     def store_total_defects(self, request):

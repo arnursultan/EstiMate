@@ -52,6 +52,10 @@ class PartnerStatisticsService:
             created_at__date__lte=end_date
         )
 
+        # Детальная проверка параметров заказа
+        for order in sold_orders:
+            print(f"Order {order.id}: created_by={order.created_by.id}, store={order.store.id if order.store else None}")
+
         # Получаем элементы заказов
         requested_items = OrderItem.objects.filter(order__in=requested_orders)
         sold_items = OrderItem.objects.filter(order__in=sold_orders)
@@ -287,8 +291,6 @@ class PartnerStatisticsService:
         return result
 
 
-# apps/finance/services.py - дополним существующий файл
-
 class AdminStatisticsService:
     """Сервис для работы со статистикой администратора"""
 
@@ -452,7 +454,8 @@ class AdminStatisticsService:
     def _get_dates_from_period(self, period):
         """Получение начальной и конечной даты на основе периода"""
         # Реализация аналогична методу в PartnerStatisticsService
-        # ...
+        partner_service = PartnerStatisticsService()
+        return partner_service._get_dates_from_period(period)
 
     def _get_admin_products_summary(self, order_items):
         """Получение сводки по товарам администратора"""

@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -686,38 +687,51 @@ class StoreViewSet(viewsets.ModelViewSet):
 
         return response
 
-
     @action(detail=True, methods=['post'])
     def add_expense(self, request, pk=None):
         """Добавление расхода для магазина"""
-        store = self.get_object()
+        # Используем select_related для снижения количества запросов
+        try:
+            store = Store.objects.select_related('partner', 'city').get(pk=pk)
 
-        # Проверяем, что пользователь имеет доступ к магазину
-        user = request.user
-        if user.role != 'admin' and store.partner != user:
+            # Проверяем, что пользователь имеет доступ к магазину
+            user = request.user
+            if user.role != 'admin' and store.partner != user:
+                return Response(
+                    {"detail": "У вас нет доступа к этому магазину"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # Оптимизированное создание
+            with transaction.atomic():
+                serializer = StoreExpenseSerializer(
+                    data={
+                        "store": store.id,
+                        "amount": request.data.get("amount"),
+                        "description": request.data.get("description", ""),
+                        "expense_date": request.data.get("expense_date", timezone.now().date().isoformat())
+                    },
+                    context={"request": request}
+                )
+
+                serializer.is_valid(raise_exception=True)
+                expense = serializer.save()
+
             return Response(
-                {"detail": "У вас нет доступа к этому магазину"},
-                status=status.HTTP_403_FORBIDDEN
+                StoreExpenseSerializer(expense).data,
+                status=status.HTTP_201_CREATED
+            )
+        except Store.DoesNotExist:
+            return Response(
+                {"detail": "Магазин не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"detail": f"Ошибка при создании расхода: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        # Создаем расход
-        serializer = StoreExpenseSerializer(
-            data={
-                "store": store.id,
-                "amount": request.data.get("amount"),
-                "description": request.data.get("description", ""),
-                "expense_date": request.data.get("expense_date", timezone.now().date().isoformat())
-            },
-            context={"request": request}
-        )
-
-        serializer.is_valid(raise_exception=True)
-        expense = serializer.save()
-
-        return Response(
-            StoreExpenseSerializer(expense).data,
-            status=status.HTTP_201_CREATED
-        )
 
     @action(detail=True, methods=['post'])
     def pay_debt(self, request, pk=None):
