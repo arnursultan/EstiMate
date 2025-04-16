@@ -4,6 +4,10 @@ from apps.products.models import Product, PartnerInventory
 from apps.stores.models import Store, StoreDebt, StoreDebtPayment, StoreExpense
 from django.db import transaction
 from django.utils import timezone
+from decimal import Decimal
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -204,8 +208,13 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Администраторы не могут создавать заказы от партнера к магазину")
 
         # Проверка для одиночного заказа
-        if not data.get('is_group_order') and self.context.get('items', []) and len(self.context.get('items', [])) > 1:
-            raise serializers.ValidationError("Одиночный заказ может содержать только один товар")
+        if not data.get('is_group_order'):
+            items = self.context.get('items', [])
+            order_items = self.context['request'].data.get('order_items', [])
+            all_items = items or order_items
+
+            if len(all_items) > 1:
+                raise serializers.ValidationError("Одиночный заказ может содержать только один товар")
 
         return data
 
@@ -217,7 +226,8 @@ class OrderSerializer(serializers.ModelSerializer):
 class OrderWithItemsSerializer(OrderSerializer):
     items = serializers.ListField(
         child=serializers.DictField(),
-        write_only=True
+        write_only=True,
+        required=False
     )
 
     class Meta(OrderSerializer.Meta):
@@ -225,7 +235,23 @@ class OrderWithItemsSerializer(OrderSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        # Извлекаем данные о товарах
         items_data = validated_data.pop('items', [])
+
+        # Пробуем получить данные из order_items в запросе
+        order_items = self.context['request'].data.get('order_items', [])
+
+        # Если items_data пуст, но есть order_items, используем order_items
+        if not items_data and order_items:
+            items_data = order_items
+
+        # Для отладки
+        logger.info(f"Создание заказа с товарами: {items_data}")
+        logger.info(f"Данные запроса: {self.context['request'].data}")
+
+        # Проверяем, есть ли товары
+        if not items_data:
+            logger.warning("Нет данных о товарах в запросе!")
 
         # Для одиночного заказа проверяем, что есть только один товар
         if not validated_data.get('is_group_order') and len(items_data) > 1:
@@ -233,6 +259,7 @@ class OrderWithItemsSerializer(OrderSerializer):
 
         # Создаем заказ
         order = super().create(validated_data)
+        logger.info(f"Создан заказ ID: {order.id}, тип: {order.order_type}")
 
         # Общая стоимость заказа для создания долга магазина
         total_order_price = 0
@@ -240,12 +267,26 @@ class OrderWithItemsSerializer(OrderSerializer):
         # Добавляем товары к заказу
         for item_data in items_data:
             try:
-                product_id = item_data.get('product_id') or item_data.get('product')
+                # Пытаемся получить ID товара из разных возможных полей
+                product_id = None
+                for field in ['product_id', 'product', 'id']:
+                    if field in item_data and item_data[field]:
+                        product_id = item_data[field]
+                        break
+
                 if not product_id:
+                    logger.warning(f"Не найден ID товара в данных: {item_data}")
                     continue
 
+                # Получаем товар
                 product = Product.objects.get(id=product_id)
                 quantity = int(item_data.get('quantity', 0))
+
+                if not quantity > 0:
+                    logger.warning(f"Некорректное количество товара: {quantity}")
+                    continue
+
+                logger.info(f"Добавление товара ID: {product_id}, количество: {quantity}")
 
                 if product.is_active and quantity > 0:
                     # Создаем элемент заказа
@@ -256,8 +297,8 @@ class OrderWithItemsSerializer(OrderSerializer):
                         price=product.price
                     )
 
-                    # Дебаг-информация
-                    print(f"Created order item: {order_item.id}, product: {product.id}, quantity: {quantity}")
+                    logger.info(
+                        f"Создан элемент заказа ID: {order_item.id}, товар: {product.name}, количество: {quantity}")
 
                     total_order_price += float(order_item.total_price)
 
@@ -273,28 +314,41 @@ class OrderWithItemsSerializer(OrderSerializer):
                                 old_quantity = inventory.quantity
                                 inventory.quantity -= quantity
                                 inventory.save()
-                                print(
-                                    f"Updated inventory for partner {order.created_by.id}: product {product.id} from {old_quantity} to {inventory.quantity}")
+                                logger.info(
+                                    f"Обновлен инвентарь партнера ID: {order.created_by.id}, товар: {product.name}, c {old_quantity} на {inventory.quantity}")
                             else:
-                                # Логируем ошибку, если недостаточно товара
-                                print(
+                                logger.warning(
                                     f"Недостаточно товара {product.name} в инвентаре партнера {order.created_by.email}")
                         except PartnerInventory.DoesNotExist:
-                            # Логируем ошибку, если товара нет в инвентаре
-                            print(f"Товар {product.name} отсутствует в инвентаре партнера {order.created_by.email}")
-            except (Product.DoesNotExist, ValueError, TypeError) as e:
-                # Логируем ошибку при обработке товара
-                print(f"Ошибка при добавлении товара в заказ: {str(e)}")
+                            logger.warning(
+                                f"Товар {product.name} отсутствует в инвентаре партнера {order.created_by.email}")
+                else:
+                    logger.warning(f"Товар {product.name} неактивен или количество <= 0")
+
+            except Product.DoesNotExist:
+                logger.error(f"Товар с ID {product_id} не найден")
+            except (ValueError, TypeError) as e:
+                logger.error(f"Ошибка при обработке данных товара: {str(e)}, данные: {item_data}")
+                continue
+            except Exception as e:
+                logger.error(f"Непредвиденная ошибка: {str(e)}")
                 continue
 
         # Создаем долг магазина, если это заказ от партнера к магазину
         if order.order_type == 'partner_to_store' and order.store and total_order_price > 0:
-            StoreDebt.objects.create(
-                store=order.store,
-                amount=total_order_price,
-                description=f"Долг за заказ #{order.id} от {timezone.now().strftime('%d.%m.%Y')}",
-                is_paid=False
-            )
+            try:
+                StoreDebt.objects.create(
+                    store=order.store,
+                    amount=total_order_price,
+                    description=f"Долг за заказ #{order.id} от {timezone.now().strftime('%d.%m.%Y')}",
+                    is_paid=False
+                )
+                logger.info(f"Создан долг магазина ID: {order.store.id}, сумма: {total_order_price}")
+            except Exception as e:
+                logger.error(f"Ошибка при создании долга: {str(e)}")
+
+        # Обновляем заказ для обновления total_price и других свойств
+        order.refresh_from_db()
 
         return order
 
@@ -455,7 +509,7 @@ class DefectGroupSerializer(serializers.Serializer):
                 created_defects.append(defect)
 
             except (Product.DoesNotExist, ValueError, TypeError, KeyError) as e:
-                print(f"Ошибка при добавлении бракованного товара: {str(e)}")
+                logger.error(f"Ошибка при добавлении бракованного товара: {str(e)}")
                 continue
 
         return created_defects

@@ -6,6 +6,16 @@ from apps.stores.models import Store
 from django.db.models import Sum
 
 
+# apps/orders/models.py
+from django.db import models
+from django.core.validators import MinValueValidator
+from apps.users.models import User
+from apps.products.models import Product
+from apps.stores.models import Store
+from django.db.models import Sum
+from decimal import Decimal
+from model_utils import FieldTracker
+
 class Order(models.Model):
     """Модель заказа"""
     ORDER_STATUS = [
@@ -56,6 +66,9 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
+    # Добавляем трекер изменений
+    tracker = FieldTracker()
+
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
@@ -66,7 +79,7 @@ class Order(models.Model):
         if self.order_type == 'admin_to_partner':
             return f"{order_type} заказ партнера {self.partner.first_name} ({self.get_status_display()})"
         else:
-            return f"{order_type} заказ магазина {self.store.name} ({self.get_status_display()})"
+            return f"{order_type} заказ магазина {self.store.name if self.store else 'Без магазина'} ({self.get_status_display()})"
 
     @property
     def total_price(self):
@@ -105,7 +118,7 @@ class OrderItem(models.Model):
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal('0'))],
         verbose_name="Цена за единицу"
     )
     bonus_quantity = models.PositiveIntegerField(default=0, verbose_name="Бонусное количество")

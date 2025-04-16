@@ -29,10 +29,13 @@ Django==5.1.7
 django-celery-beat==2.7.0
 django-cors-headers==4.7.0
 django-filter==25.1
+django-model-utils==5.0.0
 django-redis==5.4.0
 django-timezone-field==7.1
 djangorestframework==3.15.2
 djangorestframework_simplejwt==5.5.0
+drf-nested==1.3.1
+drf-nested-routers==0.94.1
 drf-yasg==1.21.10
 frozenlist==1.5.0
 gunicorn==23.0.0
@@ -66,6 +69,7 @@ pytz==2025.1
 PyYAML==6.0.2
 redis==5.2.1
 requests==2.32.3
+routers==0.10.1
 service-identity==24.2.0
 six==1.17.0
 sqlparse==0.5.3

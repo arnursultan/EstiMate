@@ -18,6 +18,9 @@ from .serializers import (
 from apps.stores.models import Store, StoreDebt, StoreDebtPayment, StoreExpense
 from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
 from django.db import transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -41,18 +44,32 @@ class OrderViewSet(viewsets.ModelViewSet):
         )
 
     def get_serializer_class(self):
-        if self.action == 'create' and 'items' in self.request.data:
-            return OrderWithItemsSerializer
+        # Для отладки
+        logger.debug(f"Action: {self.action}, данные запроса: {self.request.data}")
+
+        if self.action == 'create':
+            # Проверяем наличие items или order_items в данных запроса
+            if 'items' in self.request.data or 'order_items' in self.request.data:
+                logger.debug("Используется OrderWithItemsSerializer")
+                return OrderWithItemsSerializer
+            logger.debug("Используется OrderSerializer")
+            return OrderSerializer
         elif self.action in ['update', 'partial_update'] and 'status' in self.request.data:
+            logger.debug("Используется OrderStatusUpdateSerializer")
             return OrderStatusUpdateSerializer
+
+        logger.debug("Используется OrderSerializer (default)")
         return OrderSerializer
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
 
         # Добавляем данные о товарах для создания заказа
-        if self.action == 'create' and 'items' in self.request.data:
-            context['items'] = self.request.data.get('items', [])
+        if self.action == 'create':
+            if 'items' in self.request.data:
+                context['items'] = self.request.data.get('items', [])
+            if 'order_items' in self.request.data:
+                context['order_items'] = self.request.data.get('order_items', [])
 
         # Всегда добавляем запрос
         context['request'] = self.request
@@ -65,6 +82,20 @@ class OrderViewSet(viewsets.ModelViewSet):
         elif self.action in ['update', 'partial_update']:
             return [IsOwnerOrAdmin()]
         return [permissions.IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        logger.info(f"Создание заказа. Данные: {request.data}")
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        logger.info(f"Заказ создан. ID: {instance.id}")
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            OrderSerializer(instance, context=self.get_serializer_context()).data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
     @action(detail=True, methods=['post'])
     def update_status(self, request, pk=None):
@@ -366,53 +397,13 @@ class DefectItemViewSet(viewsets.ModelViewSet):
                 }
 
             product_summary[product_id]["total_quantity"] += defect.quantity
-            product_summary[product_id]["total_price"] += defect.total_price
-
-        return Response({
-            "defects": serializer.data,
-            "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
-            "total_price": total_defect_price,
-            "products_summary": list(product_summary.values())
-        })
-
-        orders_info = {}
-        for defect in queryset:
-            order = defect.order
-            if order.id not in orders_info:
-                orders_info[order.id] = {
-                    "order_id": order.id,
-                    "created_at": order.created_at.isoformat(),
-                    "store_name": order.store.name if order.store else None
-                }
-
-        # Рассчитываем общую стоимость бракованных товаров
-        total_defect_price = sum(defect.total_price for defect in queryset)
+            product_summary[product_id]["total_price"] += float(defect.total_price)
 
         return Response({
             "defects": serializer.data,
             "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
             "total_price": float(total_defect_price),
-            "orders": list(orders_info.values()),  # Добавляем информацию о заказах
-        })
-
-    @action(detail=False, methods=['get'])
-    def store_total_defects(self, request):
-        """Получение только количества бракованных товаров по магазину"""
-        store_id = request.query_params.get('store_id')
-        if not store_id:
-            return Response(
-                {"detail": "Необходимо указать ID магазина"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        total_defects = DefectItem.objects.filter(order__store_id=store_id).aggregate(
-            total_quantity=Sum('quantity'),
-            total_price=Sum('quantity')  # Здесь нужно умножить на цену, но агрегацией это сложно сделать
-        )
-
-        return Response({
-            "store_id": store_id,
-            "total_defect_quantity": total_defects['total_quantity'] or 0
+            "products_summary": list(product_summary.values())
         })
 
 
@@ -467,8 +458,8 @@ class StoreDebtPaymentViewSet(viewsets.ModelViewSet):
         debts = StoreDebt.objects.filter(store_id=store_id)
 
         # Рассчитываем общие суммы
-        total_debt = sum(debt.amount for debt in debts)
-        total_paid = sum(payment.amount for payment in payments)
+        total_debt = sum(float(debt.amount) for debt in debts)
+        total_paid = sum(float(payment.amount) for payment in payments)
         remaining_debt = total_debt - total_paid
 
         return Response({
@@ -530,7 +521,7 @@ class StoreExpenseViewSet(viewsets.ModelViewSet):
 
         # Получаем расходы
         expenses = StoreExpense.objects.filter(store_id=store_id).order_by('-expense_date')
-        total_expenses = sum(expense.amount for expense in expenses)
+        total_expenses = sum(float(expense.amount) for expense in expenses)
 
         return Response({
             "store_id": store_id,
