@@ -180,12 +180,9 @@ class OrderSerializer(serializers.ModelSerializer):
                 if not data.get('store'):
                     raise serializers.ValidationError("Для заказа магазину необходимо указать магазин")
 
-                # Проверка, что магазин принадлежит партнеру
+                # ИЗМЕНЕНО: Убрана проверка принадлежности магазина партнеру
+                # Оставлена только проверка статуса магазина
                 store = data.get('store')
-                if store.partner != user:
-                    raise serializers.ValidationError("Вы можете создавать заказы только для своих магазинов")
-
-                # Проверка статуса магазина
                 if store.status != 'approved':
                     raise serializers.ValidationError("Магазин должен быть одобрен для создания заказа")
 
@@ -245,17 +242,47 @@ class OrderWithItemsSerializer(OrderSerializer):
         if not items_data and order_items:
             items_data = order_items
 
-        # Для отладки
-        logger.info(f"Создание заказа с товарами: {items_data}")
-        logger.info(f"Данные запроса: {self.context['request'].data}")
-
-        # Проверяем, есть ли товары
+        # ИСПРАВЛЕНО: Принудительная проверка наличия товаров перед созданием заказа
         if not items_data:
-            logger.warning("Нет данных о товарах в запросе!")
+            raise serializers.ValidationError({"error": "Заказ должен содержать хотя бы один товар"})
 
-        # Для одиночного заказа проверяем, что есть только один товар
-        if not validated_data.get('is_group_order') and len(items_data) > 1:
-            raise serializers.ValidationError("Одиночный заказ может содержать только один товар")
+        # ИСПРАВЛЕНО: Проверка валидности данных товаров перед созданием заказа
+        valid_items = []
+        for item_data in items_data:
+            try:
+                product_id = None
+                for field in ['product_id', 'product', 'id']:
+                    if field in item_data and item_data[field]:
+                        product_id = item_data[field]
+                        break
+
+                if not product_id:
+                    logger.warning(f"Не найден ID товара в данных: {item_data}")
+                    raise serializers.ValidationError({"error": f"В заказе отсутствует ID товара: {item_data}"})
+
+                try:
+                    quantity = int(item_data.get('quantity', 0))
+                    if quantity <= 0:
+                        raise serializers.ValidationError(
+                            {"error": f"Некорректное количество товара для ID {product_id}"})
+                except (ValueError, TypeError):
+                    raise serializers.ValidationError({"error": f"Некорректный формат количества товара"})
+
+                # Проверяем, что товар существует
+                try:
+                    product = Product.objects.get(id=product_id)
+                    valid_items.append(item_data)
+                except Product.DoesNotExist:
+                    raise serializers.ValidationError({"error": f"Товар с ID {product_id} не найден"})
+            except serializers.ValidationError as e:
+                raise e
+            except Exception as e:
+                logger.error(f"Ошибка при валидации товара: {str(e)}")
+                raise serializers.ValidationError({"error": f"Ошибка при обработке товара: {str(e)}"})
+
+        # Если нет валидных товаров, прерываем создание заказа
+        if not valid_items:
+            raise serializers.ValidationError({"error": "В заказе нет корректных товаров"})
 
         # Создаем заказ
         order = super().create(validated_data)
@@ -263,9 +290,11 @@ class OrderWithItemsSerializer(OrderSerializer):
 
         # Общая стоимость заказа для создания долга магазина
         total_order_price = 0
+        # Флаг для отслеживания успешного создания хотя бы одного элемента заказа
+        any_item_created = False
 
         # Добавляем товары к заказу
-        for item_data in items_data:
+        for item_data in valid_items:
             try:
                 # Пытаемся получить ID товара из разных возможных полей
                 product_id = None
@@ -301,6 +330,7 @@ class OrderWithItemsSerializer(OrderSerializer):
                         f"Создан элемент заказа ID: {order_item.id}, товар: {product.name}, количество: {quantity}")
 
                     total_order_price += float(order_item.total_price)
+                    any_item_created = True  # Отмечаем, что создан хотя бы один элемент
 
                     # Если заказ от партнера к магазину, уменьшаем количество товара в инвентаре партнера
                     if order.order_type == 'partner_to_store':
@@ -333,6 +363,13 @@ class OrderWithItemsSerializer(OrderSerializer):
             except Exception as e:
                 logger.error(f"Непредвиденная ошибка: {str(e)}")
                 continue
+
+        # ИСПРАВЛЕНО: Если ни один элемент заказа не был создан, откатываем транзакцию
+        if not any_item_created:
+            logger.error(f"Не удалось создать ни один элемент заказа для заказа {order.id}")
+            transaction.set_rollback(True)
+            raise serializers.ValidationError(
+                {"error": "Не удалось создать ни один элемент заказа. Транзакция отменена."})
 
         # Создаем долг магазина, если это заказ от партнера к магазину
         if order.order_type == 'partner_to_store' and order.store and total_order_price > 0:

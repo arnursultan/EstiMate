@@ -29,7 +29,7 @@ class StoreExpenseInline(admin.TabularInline):
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
     list_display = (
-    'name', 'city', 'partner', 'status', 'total_debt', 'total_paid_debt', 'remaining_debt', 'expenses', 'created_at')
+    'id','name', 'city', 'partner', 'status', 'total_debt', 'total_paid_debt', 'remaining_debt', 'expenses', 'created_at')
     list_filter = ('city', 'status', 'partner', 'created_at')
     search_fields = ('name', 'address', 'inn', 'phone')
     readonly_fields = ('created_at', 'updated_at', 'total_debt', 'total_paid_debt', 'remaining_debt')

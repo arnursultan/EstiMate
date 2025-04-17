@@ -24,15 +24,23 @@ class PartnerStatisticsService:
         # Определяем даты для фильтрации
         today = timezone.now().date()
 
-        if period:
-            start_date, end_date = self._get_dates_from_period(period)
-        elif date:
-            start_date = end_date = date
-        elif date_range:
-            start_date, end_date = date_range
+        # Если период или дата не указаны, получаем статистику за все время
+        if not (period or date or date_range):
+            # Получаем самую раннюю дату заказов партнера
+            first_order = Order.objects.filter(
+                Q(partner=partner, order_type='admin_to_partner') |
+                Q(created_by=partner, order_type='partner_to_store')
+            ).order_by('created_at').first()
+
+            start_date = first_order.created_at.date() if first_order else today
+            end_date = today
         else:
-            # По умолчанию - текущая дата
-            start_date = end_date = today
+            if period:
+                start_date, end_date = self._get_dates_from_period(period)
+            elif date:
+                start_date = end_date = date
+            elif date_range:
+                start_date, end_date = date_range
 
         # Получаем заказы от администратора к партнеру (запрошенные товары)
         requested_orders = Order.objects.filter(
@@ -51,10 +59,6 @@ class PartnerStatisticsService:
             created_at__date__gte=start_date,
             created_at__date__lte=end_date
         )
-
-        # Детальная проверка параметров заказа
-        for order in sold_orders:
-            print(f"Order {order.id}: created_by={order.created_by.id}, store={order.store.id if order.store else None}")
 
         # Получаем элементы заказов
         requested_items = OrderItem.objects.filter(order__in=requested_orders)
@@ -156,15 +160,15 @@ class PartnerStatisticsService:
                 "items_count": sold_items.count(),
                 "orders_count": sold_orders.count(),
                 "products": self._format_products_list(sold_items),
-                "products_detail": sold_products_detail,  # Добавлено: детальная информация о проданных товарах
-                "stores": list(stores_data.values())  # Добавлено: информация по магазинам
+                "products_detail": sold_products_detail,
+                "stores": list(stores_data.values())
             },
-            "debt": total_sold_amount,  # Долг магазинов перед партнером
+            "debt": total_sold_amount,
             "expenses": total_expenses,
             "defects": total_defects,
             "remaining_items": remaining_items_count,
-            "total_amount": total_sold_amount,  # Общая сумма
-            "profit": profit,  # Прибыль
+            "total_amount": total_sold_amount,
+            "profit": profit,
             "products_summary": products_data
         }
 
@@ -245,13 +249,13 @@ class PartnerStatisticsService:
                     "product_name": item.product.name,
                     "requested_quantity": 0,
                     "sold_quantity": 0,
-                    "price": float(item.price),  # Преобразуем в float
+                    "price": float(item.price),
                     "total_requested": 0.0,
                     "total_sold": 0.0
                 }
 
             products_summary[product_id]["requested_quantity"] += item.quantity
-            products_summary[product_id]["total_requested"] += float(item.quantity * item.price)  # Преобразуем в float
+            products_summary[product_id]["total_requested"] += float(item.quantity * item.price)
 
         # Собираем данные о проданных товарах
         for item in sold_items:
@@ -262,13 +266,13 @@ class PartnerStatisticsService:
                     "product_name": item.product.name,
                     "requested_quantity": 0,
                     "sold_quantity": 0,
-                    "price": float(item.price),  # Преобразуем в float
+                    "price": float(item.price),
                     "total_requested": 0.0,
                     "total_sold": 0.0
                 }
 
             products_summary[product_id]["sold_quantity"] += item.quantity
-            products_summary[product_id]["total_sold"] += float(item.quantity * item.price)  # Преобразуем в float
+            products_summary[product_id]["total_sold"] += float(item.quantity * item.price)
 
         return list(products_summary.values())
 
@@ -295,14 +299,9 @@ class AdminStatisticsService:
     """Сервис для работы со статистикой администратора"""
 
     def get_admin_statistics(self, admin_id, date=None, date_range=None, period=None):
+        from apps.orders.models import Order
         """
         Получение общей статистики администратора
-
-        Параметры:
-        - admin_id: ID администратора
-        - date: конкретная дата (опционально)
-        - date_range: (start_date, end_date) - диапазон дат (опционально)
-        - period: период ('today', 'yesterday', 'this_week', 'last_week', 'this_month', 'last_month', etc.)
         """
         try:
             admin = User.objects.get(id=admin_id, role='admin')
@@ -312,15 +311,23 @@ class AdminStatisticsService:
         # Определяем даты для фильтрации
         today = timezone.now().date()
 
-        if period:
-            start_date, end_date = self._get_dates_from_period(period)
-        elif date:
-            start_date = end_date = date
-        elif date_range:
-            start_date, end_date = date_range
+        # Если период или дата не указаны, получаем статистику за все время
+        if not (period or date or date_range):
+            # Получаем самую раннюю дату заказов администратора
+            first_order = Order.objects.filter(
+                Q(order_type='admin_to_partner') |
+                Q(order_type='partner_to_store')
+            ).order_by('created_at').first()
+
+            start_date = first_order.created_at.date() if first_order else today
+            end_date = today
         else:
-            # По умолчанию - текущая дата
-            start_date = end_date = today
+            if period:
+                start_date, end_date = self._get_dates_from_period(period)
+            elif date:
+                start_date = end_date = date
+            elif date_range:
+                start_date, end_date = date_range
 
         # Получаем все заказы за период
         from apps.orders.models import Order, OrderItem, DefectItem
@@ -494,15 +501,23 @@ class AdminStatisticsService:
         # Определяем даты для фильтрации
         today = timezone.now().date()
 
-        if period:
-            start_date, end_date = self._get_dates_from_period(period)
-        elif date:
-            start_date = end_date = date
-        elif date_range:
-            start_date, end_date = date_range
+        # Если период или дата не указаны, получаем статистику за все время
+        if not (period or date or date_range):
+            # Получаем самую раннюю дату любого заказа
+            first_order = Order.objects.filter(
+                Q(order_type='admin_to_partner') |
+                Q(order_type='partner_to_store')
+            ).order_by('created_at').first()
+
+            start_date = first_order.created_at.date() if first_order else today
+            end_date = today
         else:
-            # По умолчанию - текущая дата
-            start_date = end_date = today
+            if period:
+                start_date, end_date = self._get_dates_from_period(period)
+            elif date:
+                start_date = end_date = date
+            elif date_range:
+                start_date, end_date = date_range
 
         # Получаем всех активных партнеров
         partners = User.objects.filter(role='partner', is_active=True, status='approved')

@@ -18,7 +18,9 @@ from apps.orders.serializers import StoreDebtPaymentSerializer, StoreExpenseSeri
 from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.response import Response
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CityViewSet(viewsets.ModelViewSet):
     """
@@ -48,7 +50,8 @@ class StoreViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.role == 'admin':
             return Store.objects.all()
-        return Store.objects.filter(partner=user)
+        # Изменено: партнеры теперь видят все магазины, а не только свои
+        return Store.objects.all()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -510,8 +513,8 @@ class StoreViewSet(viewsets.ModelViewSet):
         if user.role == 'admin':
             stores_queryset = Store.objects.all()
         else:
-            # Партнеры видят только свои магазины
-            stores_queryset = Store.objects.filter(partner=user)
+            # Изменено: партнеры видят все магазины
+            stores_queryset = Store.objects.all()
 
         # Фильтруем по городу, если указан
         if city_id:
@@ -524,8 +527,7 @@ class StoreViewSet(viewsets.ModelViewSet):
         all_cities = City.objects.all()
         cities_data = [{"id": city.id, "name": city.name} for city in all_cities]
 
-        # Получаем все нужные данные для выбранных магазинов
-        # Получаем все нужные данные для выбранных магазинов
+
         stores_data = []
         total_stats = {
             "orders_count": 0,
@@ -646,6 +648,7 @@ class StoreViewSet(viewsets.ModelViewSet):
         }
 
         return Response(result)
+
 
     @action(detail=False, methods=['get'])
     def city_summary(self, request):

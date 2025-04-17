@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status, filters
+from rest_framework import viewsets, permissions, status, filters, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -84,18 +84,30 @@ class OrderViewSet(viewsets.ModelViewSet):
         return [permissions.IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
+        # Логируем входные данные запроса
         logger.info(f"Создание заказа. Данные: {request.data}")
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        instance = serializer.save()
-        logger.info(f"Заказ создан. ID: {instance.id}")
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            OrderSerializer(instance, context=self.get_serializer_context()).data,
-            status=status.HTTP_201_CREATED,
-            headers=headers
-        )
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            instance = serializer.save()
+            logger.info(f"Заказ успешно создан. ID: {instance.id}")
+
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                OrderSerializer(instance, context=self.get_serializer_context()).data,
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        except serializers.ValidationError as e:
+            logger.error(f"Ошибка валидации при создании заказа: {e.detail}")
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.exception(f"Необработанная ошибка при создании заказа: {str(e)}")
+            return Response(
+                {"error": f"Возникла ошибка при создании заказа: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @action(detail=True, methods=['post'])
     def update_status(self, request, pk=None):
@@ -162,8 +174,11 @@ class OrderViewSet(viewsets.ModelViewSet):
                 Q(created_by=user) | Q(partner=user)
             )
 
+        # Фильтруем заказы без элементов
+        valid_orders = [order for order in orders if order.order_items.count() > 0]
+
         # Общее количество заказов
-        total_orders = orders.count()
+        total_orders = len(valid_orders)
 
         # Разбивка по статусам
         status_counts = {
@@ -184,9 +199,9 @@ class OrderViewSet(viewsets.ModelViewSet):
             'single': orders.filter(is_group_order=False).count(),
         }
 
-        # Общая стоимость подтвержденных заказов
+        # Общая стоимость подтвержденных заказов (только с элементами)
         confirmed_orders_price = sum(
-            order.total_price for order in orders.filter(status='confirmed')
+            order.total_price for order in valid_orders if order.status == 'confirmed'
         )
 
         return Response({
@@ -230,13 +245,16 @@ class OrderViewSet(viewsets.ModelViewSet):
             order_type='partner_to_store'
         ).order_by('-created_at')
 
+        # Фильтруем заказы, у которых есть элементы
+        valid_orders = [order for order in orders if order.order_items.count() > 0]
+
         # Возвращаем список заказов с минимальной информацией
         order_data = [{
             'order_id': order.id,
             'created_at': order.created_at.isoformat(),
             'total_price': float(order.total_price),
             'items_count': order.order_items.count()
-        } for order in orders]
+        } for order in valid_orders]
 
         return Response({
             'store_id': store_id,
@@ -272,7 +290,11 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         # Добавляем заказ в контекст
         order_id = self.kwargs.get('order_pk')
         if order_id:
-            context['order'] = Order.objects.get(id=order_id)
+            try:
+                context['order'] = Order.objects.get(id=order_id)
+            except Order.DoesNotExist:
+                logger.warning(f"Заказ с ID {order_id} не найден")
+                pass
 
         return context
 
@@ -320,17 +342,27 @@ class DefectItemViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def add_group(self, request):
         """Добавление группы бракованных товаров для заказа"""
-        serializer = DefectGroupSerializer(
-            data=request.data,
-            context={'request': request}
-        )
-        serializer.is_valid(raise_exception=True)
-        defects = serializer.save()
+        try:
+            serializer = DefectGroupSerializer(
+                data=request.data,
+                context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+            defects = serializer.save()
 
-        return Response(
-            DefectItemSerializer(defects, many=True).data,
-            status=status.HTTP_201_CREATED
-        )
+            return Response(
+                DefectItemSerializer(defects, many=True).data,
+                status=status.HTTP_201_CREATED
+            )
+        except serializers.ValidationError as e:
+            logger.error(f"Ошибка валидации при добавлении бракованных товаров: {e.detail}")
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.exception(f"Необработанная ошибка при добавлении бракованных товаров: {str(e)}")
+            return Response(
+                {"error": f"Возникла ошибка при добавлении бракованных товаров: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @action(detail=False, methods=['get'])
     def order_defects(self, request):
@@ -343,6 +375,24 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             )
 
         queryset = self.get_queryset().filter(order_id=order_id)
+
+        # Проверяем, что заказ существует и имеет элементы
+        from .models import Order
+        try:
+            order = Order.objects.get(id=order_id)
+            if order.order_items.count() == 0:
+                return Response({
+                    "warning": "Заказ не содержит товаров",
+                    "defects": [],
+                    "total_quantity": 0,
+                    "total_price": 0
+                })
+        except Order.DoesNotExist:
+            return Response(
+                {"detail": "Заказ не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         serializer = DefectItemSerializer(queryset, many=True)
 
         # Рассчитываем общую стоимость бракованных товаров
@@ -366,6 +416,16 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             )
 
         queryset = self.get_queryset().filter(order__store_id=store_id)
+
+        # Проверка статистики по магазину
+        from apps.stores.models import Store
+        try:
+            store = Store.objects.get(id=store_id)
+        except Store.DoesNotExist:
+            return Response(
+                {"detail": "Магазин не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         # Фильтрация по дате, если указана
         if date_str:
@@ -421,8 +481,8 @@ class StoreDebtPaymentViewSet(viewsets.ModelViewSet):
         if user.role == 'admin':
             return StoreDebtPayment.objects.all()
 
-        # Партнеры видят только платежи своих магазинов
-        return StoreDebtPayment.objects.filter(store__partner=user)
+        # Партнеры видят платежи всех магазинов
+        return StoreDebtPayment.objects.all()
 
     def get_permissions(self):
         if self.action in ['destroy', 'update', 'partial_update']:
@@ -439,14 +499,9 @@ class StoreDebtPaymentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Проверка доступа к магазину
+        # Проверка существования магазина
         try:
             store = Store.objects.get(id=store_id)
-            if request.user.role != 'admin' and store.partner != request.user:
-                return Response(
-                    {"detail": "У вас нет доступа к этому магазину"},
-                    status=status.HTTP_403_FORBIDDEN
-                )
         except Store.DoesNotExist:
             return Response(
                 {"detail": "Магазин не найден"},
@@ -487,8 +542,8 @@ class StoreExpenseViewSet(viewsets.ModelViewSet):
         if user.role == 'admin':
             return StoreExpense.objects.all()
 
-        # Партнеры видят только расходы своих магазинов
-        return StoreExpense.objects.filter(store__partner=user)
+        # Партнеры видят расходы всех магазинов
+        return StoreExpense.objects.all()
 
     def get_permissions(self):
         if self.action in ['destroy', 'update', 'partial_update']:
@@ -505,14 +560,9 @@ class StoreExpenseViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Проверка доступа к магазину
+        # Проверка существования магазина
         try:
             store = Store.objects.get(id=store_id)
-            if request.user.role != 'admin' and store.partner != request.user:
-                return Response(
-                    {"detail": "У вас нет доступа к этому магазину"},
-                    status=status.HTTP_403_FORBIDDEN
-                )
         except Store.DoesNotExist:
             return Response(
                 {"detail": "Магазин не найден"},
