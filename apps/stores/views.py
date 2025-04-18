@@ -778,6 +778,56 @@ class StoreViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
+    @action(detail=True, methods=['post'])
+    def activate(self, request, pk=None):
+        """Активация магазина"""
+        store = self.get_object()
+
+        if not request.user.role == 'admin':
+            return Response(
+                {"detail": "Только администратор может активировать магазин"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if store.is_active:
+            return Response(
+                {"detail": "Магазин уже активен"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        store.is_active = True
+        store.save()
+
+        return Response(
+            {"detail": "Магазин успешно активирован"},
+            status=status.HTTP_200_OK
+        )
+
+    @action(detail=True, methods=['post'])
+    def deactivate(self, request, pk=None):
+        """Деактивация магазина"""
+        store = self.get_object()
+
+        if not request.user.role == 'admin':
+            return Response(
+                {"detail": "Только администратор может деактивировать магазин"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if not store.is_active:
+            return Response(
+                {"detail": "Магазин уже деактивирован"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        store.is_active = False
+        store.save()
+
+        return Response(
+            {"detail": "Магазин успешно деактивирован"},
+            status=status.HTTP_200_OK
+        )
+
 
 class StoreDebtViewSet(viewsets.ModelViewSet):
     """
@@ -866,55 +916,6 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
 
     # В файле apps/stores/views.py добавим действия для активации/деактивации
 
-    @action(detail=True, methods=['post'])
-    def activate(self, request, pk=None):
-        """Активация магазина"""
-        store = self.get_object()
-
-        if not request.user.role == 'admin' and store.partner != request.user:
-            return Response(
-                {"detail": "У вас нет прав для активации этого магазина"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        if store.is_active:
-            return Response(
-                {"detail": "Магазин уже активен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        store.is_active = True
-        store.save()
-
-        return Response(
-            {"detail": "Магазин успешно активирован"},
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['post'])
-    def deactivate(self, request, pk=None):
-        """Деактивация магазина"""
-        store = self.get_object()
-
-        if not request.user.role == 'admin' and store.partner != request.user:
-            return Response(
-                {"detail": "У вас нет прав для деактивации этого магазина"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        if not store.is_active:
-            return Response(
-                {"detail": "Магазин уже деактивирован"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        store.is_active = False
-        store.save()
-
-        return Response(
-            {"detail": "Магазин успешно деактивирован"},
-            status=status.HTTP_200_OK
-        )
 
 
 
