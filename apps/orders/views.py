@@ -346,6 +346,9 @@ class DefectItemViewSet(viewsets.ModelViewSet):
     def add_group(self, request):
         """Добавление группы бракованных товаров для заказа"""
         try:
+            # Изменено: нет проверки на принадлежность заказа конкретному партнеру
+            # Любой партнер может добавлять бракованные товары
+
             serializer = DefectGroupSerializer(
                 data=request.data,
                 context={'request': request}

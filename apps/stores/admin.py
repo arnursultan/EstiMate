@@ -4,7 +4,7 @@ from .models import City, Store, StoreDebt, StoreDebtPayment, StoreExpense
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ('id''name',)
+    list_display = ('id','name',)
     search_fields = ('name',)
 
 

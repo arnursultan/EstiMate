@@ -580,10 +580,11 @@ class DefectGroupSerializer(serializers.Serializer):
         if order.status != 'confirmed':
             raise serializers.ValidationError("Можно регистрировать брак только для подтвержденных заказов")
 
-        # Проверяем, что пользователь имеет право добавлять брак
+        # Изменено: убрана проверка принадлежности заказа текущему пользователю
+        # Теперь любой партнер может регистрировать брак для любого заказа
         user = self.context['request'].user
-        if user.role != 'admin' and order.created_by != user:
-            raise serializers.ValidationError("Вы не можете регистрировать брак для этого заказа")
+        if user.role != 'admin' and user.role != 'partner':
+            raise serializers.ValidationError("Только администраторы и партнеры могут регистрировать брак")
 
         created_defects = []
 
@@ -646,6 +647,9 @@ class StoreDebtPaymentSerializer(serializers.ModelSerializer):
         if amount > remaining_debt:
             raise serializers.ValidationError(f"Сумма оплаты превышает оставшийся долг ({remaining_debt} сом)")
 
+        # Удалена проверка принадлежности магазина текущему пользователю
+        # Теперь любой партнер может оплачивать долги любого магазина
+
         return data
 
 
@@ -665,10 +669,8 @@ class StoreExpenseSerializer(serializers.ModelSerializer):
         if not amount or amount <= 0:
             raise serializers.ValidationError("Сумма расхода должна быть больше нуля")
 
-        # Проверяем, что пользователь имеет доступ к магазину
-        user = self.context['request'].user
-        if user.role != 'admin' and store.partner != user:
-            raise serializers.ValidationError("У вас нет доступа к этому магазину")
+        # Удалена проверка принадлежности магазина пользователю
+        # Теперь любой партнер может добавлять расходы для любого магазина
 
         return data
 

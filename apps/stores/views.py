@@ -693,15 +693,15 @@ class StoreViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def add_expense(self, request, pk=None):
         """Добавление расхода для магазина"""
-        # Используем select_related для снижения количества запросов
+        # Изменено: Разрешаем всем партнерам добавлять расходы к любому магазину
         try:
             store = Store.objects.select_related('partner', 'city').get(pk=pk)
 
-            # Проверяем, что пользователь имеет доступ к магазину
+            # Проверяем только роль пользователя, а не принадлежность магазина
             user = request.user
-            if user.role != 'admin' and store.partner != user:
+            if user.role != 'admin' and user.role != 'partner':
                 return Response(
-                    {"detail": "У вас нет доступа к этому магазину"},
+                    {"detail": "Только администраторы и партнеры могут добавлять расходы"},
                     status=status.HTTP_403_FORBIDDEN
                 )
 
@@ -735,17 +735,16 @@ class StoreViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-
     @action(detail=True, methods=['post'])
     def pay_debt(self, request, pk=None):
         """Частичная оплата долга магазина"""
         store = self.get_object()
 
-        # Проверяем, что пользователь имеет доступ к магазину
+        # Изменено: проверяем только роль пользователя, а не принадлежность магазина
         user = request.user
-        if user.role != 'admin' and store.partner != user:
+        if user.role != 'admin' and user.role != 'partner':
             return Response(
-                {"detail": "У вас нет доступа к этому магазину"},
+                {"detail": "Только администраторы и партнеры могут оплачивать долги"},
                 status=status.HTTP_403_FORBIDDEN
             )
 
