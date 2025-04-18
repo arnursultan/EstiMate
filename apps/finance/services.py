@@ -332,15 +332,8 @@ class AdminStatisticsService:
         # Получаем все заказы за период
         from apps.orders.models import Order, OrderItem, DefectItem
 
-        # Заказы от администратора к партнерам (доход)
-        admin_orders = Order.objects.filter(
-            order_type='admin_to_partner',
-            status='confirmed',
-            created_at__date__gte=start_date,
-            created_at__date__lte=end_date
-        )
-
-        # Заказы от партнеров к магазинам (долги магазинов)
+        # ИЗМЕНЕНО: Теперь доход - это заказы от партнеров к магазинам
+        # Заказы от партнеров к магазинам (доход)
         store_orders = Order.objects.filter(
             order_type='partner_to_store',
             status='confirmed',
@@ -348,8 +341,7 @@ class AdminStatisticsService:
             created_at__date__lte=end_date
         )
 
-        # Получаем элементы заказов
-        admin_order_items = OrderItem.objects.filter(order__in=admin_orders)
+        # Получаем элементы заказов к магазинам
         store_order_items = OrderItem.objects.filter(order__in=store_orders)
 
         # Получаем бракованные товары
@@ -379,18 +371,25 @@ class AdminStatisticsService:
         )
 
         # Рассчитываем финансовые показатели
+        # ИЗМЕНЕНО: Доход теперь считается из заказов магазинов
         admin_income = float(sum(
-            item.quantity * item.price for item in admin_order_items
+            item.quantity * item.price for item in store_order_items
         ))
 
-        store_debt = float(sum(
+        # Получаем общую сумму долгов
+        total_debt = float(sum(
             debt.amount for debt in store_debts
         ))
 
+        # Получаем сумму оплаченных долгов
         paid_debt = float(sum(
             payment.amount for payment in store_payments
         ))
 
+        # Неоплаченные долги (остаток)
+        remaining_debt = total_debt - paid_debt
+
+        # Расходы
         expenses_amount = float(sum(
             expense.amount for expense in expenses
         ))
@@ -400,27 +399,27 @@ class AdminStatisticsService:
             item.bonus_quantity or 0 for item in store_order_items
         )
 
-        # Примерно оцениваем стоимость бонусов (средняя цена товара * количество бонусов)
+        # Примерно оцениваем стоимость бонусов
         avg_price = 0
         if store_order_items.count() > 0:
             avg_price = float(sum(item.price for item in store_order_items)) / store_order_items.count()
 
         bonuses_amount = total_bonus_count * avg_price
 
-        # Общее количество товаров
-        total_products = sum(item.quantity for item in admin_order_items)
+        # Стоимость бракованных товаров
+        defects_amount = float(sum(
+            defect.quantity * defect.product.price for defect in defect_items
+        ))
 
         # Общее количество бракованных товаров
         total_defects = sum(defect.quantity for defect in defect_items)
 
-        # Остаток товаров (на складе администратора)
-        remaining_products = Product.objects.aggregate(total=Sum('quantity'))['total'] or 0
-
-        # Общий баланс
-        total_balance = admin_income - expenses_amount + paid_debt - bonuses_amount
+        # ИЗМЕНЕНО: Формула общего баланса
+        # Общий баланс = доход + оставшийся долг - расходы - бонусы - брак
+        total_balance = admin_income + remaining_debt - expenses_amount - bonuses_amount - defects_amount
 
         # Собираем данные о товарах по категориям
-        products_data = self._get_admin_products_summary(admin_order_items)
+        products_data = self._get_admin_products_summary(store_order_items)
 
         # Формируем итоговый ответ
         result = {
@@ -434,29 +433,35 @@ class AdminStatisticsService:
             },
             "income": {
                 "total_amount": admin_income,
-                "orders_count": admin_orders.count(),
-                "products_count": total_products
+                "orders_count": store_orders.count(),
+                "products_count": sum(item.quantity for item in store_order_items)
             },
             "expenses": expenses_amount,
-            "store_debt": store_debt,
+            "store_debt": total_debt,
             "paid_debt": paid_debt,
+            "remaining_debt": remaining_debt,  # Добавлен оставшийся долг
             "bonuses": {
                 "count": total_bonus_count,
                 "amount": bonuses_amount
             },
-            "defects": total_defects,
-            "remaining_products": remaining_products,
+            "defects": {
+                "count": total_defects,
+                "amount": defects_amount  # Добавлена стоимость бракованных товаров
+            },
             "total_balance": total_balance,
             "products": products_data,
             "chart_data": {
                 "income": admin_income,
                 "expenses": expenses_amount,
-                "debt": store_debt,
-                "bonuses": bonuses_amount
+                "debt": total_debt,
+                "remaining_debt": remaining_debt,
+                "bonuses": bonuses_amount,
+                "defects": defects_amount
             }
         }
 
         return result
+
 
     def _get_dates_from_period(self, period):
         """Получение начальной и конечной даты на основе периода"""
@@ -468,6 +473,7 @@ class AdminStatisticsService:
         """Получение сводки по товарам администратора"""
         products_summary = {}
 
+        # ИЗМЕНЕНО: Используем элементы заказов к магазинам вместо заказов от администратора к партнерам
         for item in order_items:
             product_id = item.product_id
             if product_id not in products_summary:

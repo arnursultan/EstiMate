@@ -67,7 +67,9 @@ def calculate_daily_finance_statistics():
         # Продолжаем только с валидными заказами
         if valid_orders:
             orders = Order.objects.filter(id__in=valid_orders)
-            order_items = OrderItem.objects.filter(order__in=orders)
+            # ИЗМЕНЕНО: Фильтруем только заказы от партнеров к магазинам
+            store_orders = orders.filter(order_type='partner_to_store')
+            order_items = OrderItem.objects.filter(order__in=store_orders)
 
             # Общее количество заказов
             total_orders = len(valid_orders)
@@ -84,7 +86,7 @@ def calculate_daily_finance_statistics():
 
             # Количество бракованных товаров
             total_defects = DefectItem.objects.filter(
-                order__in=orders
+                order__in=store_orders
             ).aggregate(total=Sum('quantity')).get('total', 0) or 0
 
             # Количество бонусных товаров
@@ -97,17 +99,24 @@ def calculate_daily_finance_statistics():
                 payment_date__date=yesterday
             ).aggregate(total=Sum('amount')).get('total', 0) or 0
 
+            # Долги за день
+            daily_debt = StoreDebt.objects.filter(
+                created_at__date=yesterday
+            ).aggregate(total=Sum('amount')).get('total', 0) or 0
+
+            # Оставшийся долг (долги - платежи)
+            remaining_debt = daily_debt - total_debt_payments
+
             # Сформируем дополнительные данные в формате JSON
             additional_data = {
                 'orders_by_type': {
                     'admin_to_partner': orders.filter(order_type='admin_to_partner').count(),
-                    'partner_to_store': orders.filter(order_type='partner_to_store').count()
+                    'partner_to_store': store_orders.count()
                 },
                 'financial': {
-                    'total_debt': float(
-                        StoreDebt.objects.filter(created_at__date=yesterday).aggregate(total=Sum('amount')).get('total',
-                                                                                                                0) or 0),
+                    'total_debt': float(daily_debt),
                     'total_payments': float(total_debt_payments),
+                    'remaining_debt': float(remaining_debt),
                     'total_expenses': float(total_expenses)
                 },
                 'products_summary': []
@@ -131,7 +140,20 @@ def calculate_daily_finance_statistics():
 
             additional_data['products_summary'] = list(product_stats.values())
 
-            # Сохраняем статистику в базу данных
+            # ИЗМЕНЕНО: Расчет общего баланса по новой формуле
+            # Общий баланс = доходы + оставшийся долг - расходы - бонусы - брак
+            avg_price = 0
+            if order_items.count() > 0:
+                avg_price = float(sum(item.price for item in order_items)) / order_items.count()
+
+            bonuses_value = avg_price * total_bonuses
+            defects_value = float(sum(
+                defect.quantity * defect.product.price for defect in DefectItem.objects.filter(order__in=store_orders)))
+
+            total_balance = float(total_sales) + float(remaining_debt) - float(
+                total_expenses) - bonuses_value - defects_value
+
+            # Сохраняем обновленную статистику в базу данных
             FinanceStatistics.objects.create(
                 date=yesterday,
                 total_orders=total_orders,
@@ -139,7 +161,13 @@ def calculate_daily_finance_statistics():
                 total_expenses=total_expenses,
                 total_defects=total_defects,
                 total_bonuses=total_bonuses,
-                data_json=additional_data
+                data_json={
+                    **additional_data,
+                    'total_balance': total_balance,
+                    'remaining_debt': float(remaining_debt),
+                    'bonuses_value': float(bonuses_value),
+                    'defects_value': float(defects_value)
+                }
             )
             logger.info(f"Статистика за {yesterday} успешно сохранена")
         else:
@@ -153,8 +181,11 @@ def calculate_daily_finance_statistics():
                 total_bonuses=0,
                 data_json={
                     'orders_by_type': {'admin_to_partner': 0, 'partner_to_store': 0},
-                    'financial': {'total_debt': 0, 'total_payments': 0, 'total_expenses': 0},
-                    'products_summary': []
+                    'financial': {'total_debt': 0, 'total_payments': 0, 'remaining_debt': 0, 'total_expenses': 0},
+                    'products_summary': [],
+                    'total_balance': 0,
+                    'bonuses_value': 0,
+                    'defects_value': 0
                 }
             )
             logger.info(f"Создана пустая статистика за {yesterday} (нет валидных заказов)")
