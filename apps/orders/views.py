@@ -13,10 +13,13 @@ from .serializers import (
     DefectItemSerializer,
     DefectGroupSerializer,
     StoreDebtPaymentSerializer,
-    StoreExpenseSerializer
+    StoreExpenseSerializer,
+PartnerInventoryDetailSerializer,
+PartnerInventory
 )
 from apps.stores.models import Store, StoreDebt, StoreDebtPayment, StoreExpense
 from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
+from apps.products.serializers import PartnerInventorySerializer
 from django.db import transaction
 import logging
 
@@ -579,3 +582,45 @@ class StoreExpenseViewSet(viewsets.ModelViewSet):
             "total_expenses": total_expenses,
             "expenses": StoreExpenseSerializer(expenses, many=True).data
         })
+
+
+class PartnerInventoryViewSet(viewsets.ModelViewSet):
+    """
+    Представление для работы с инвентарем партнера
+    """
+    serializer_class = PartnerInventorySerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['product__is_bonus']
+    search_fields = ['product__name']
+    ordering_fields = ['quantity', 'created_at']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return PartnerInventory.objects.all()
+        return PartnerInventory.objects.filter(partner=user)
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return PartnerInventoryDetailSerializer
+        return PartnerInventorySerializer
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAuthenticated()]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+    @action(detail=False, methods=['get'])
+    def available_products(self, request):
+        """
+        Получить только доступные товары (количество > 0) из инвентаря партнера.
+        Этот эндпоинт удобен для создания заказов для магазинов.
+        """
+        queryset = self.get_queryset().filter(quantity__gt=0)
+        serializer = PartnerInventoryDetailSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)

@@ -10,6 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# Исправляем валидацию в OrderItemSerializer
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
     product_price = serializers.DecimalField(source='product.price', max_digits=10, decimal_places=2, read_only=True)
@@ -30,6 +31,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         product = data.get('product')
         quantity = data.get('quantity', 0)
+        user = request.user if request else None
 
         if not product:
             raise serializers.ValidationError("Необходимо указать товар")
@@ -52,10 +54,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
                         f"Недостаточно товара '{product.name}' на складе. Доступно: {product.quantity} шт.")
 
             # Для заказов от партнера к магазину
-            elif order.order_type == 'partner_to_store':
-                # Проверка наличия товара в инвентаре партнера
+            elif order.order_type == 'partner_to_store' and user:
+                # Строгая проверка наличия товара в инвентаре партнера
                 try:
-                    inventory = PartnerInventory.objects.get(partner=request.user, product=product)
+                    inventory = PartnerInventory.objects.get(partner=user, product=product)
                     if quantity > inventory.quantity:
                         raise serializers.ValidationError(
                             f"Недостаточно товара '{product.name}' в вашем инвентаре. Доступно: {inventory.quantity} шт.")
@@ -234,90 +236,142 @@ class OrderWithItemsSerializer(OrderSerializer):
     def create(self, validated_data):
         # Извлекаем данные о товарах
         items_data = validated_data.pop('items', [])
-
-        # Пробуем получить данные из order_items в запросе
         order_items = self.context['request'].data.get('order_items', [])
-
-        # Если items_data пуст, но есть order_items, используем order_items
         if not items_data and order_items:
             items_data = order_items
 
-        # ИСПРАВЛЕНО: Принудительная проверка наличия товаров перед созданием заказа
         if not items_data:
             raise serializers.ValidationError({"error": "Заказ должен содержать хотя бы один товар"})
 
-        # ИСПРАВЛЕНО: Проверка валидности данных товаров перед созданием заказа
-        valid_items = []
-        for item_data in items_data:
-            try:
-                product_id = None
-                for field in ['product_id', 'product', 'id']:
-                    if field in item_data and item_data[field]:
-                        product_id = item_data[field]
-                        break
+        user = self.context['request'].user
+        order_type = validated_data.get('order_type')
 
-                if not product_id:
-                    logger.warning(f"Не найден ID товара в данных: {item_data}")
-                    raise serializers.ValidationError({"error": f"В заказе отсутствует ID товара: {item_data}"})
-
-                try:
-                    quantity = int(item_data.get('quantity', 0))
-                    if quantity <= 0:
-                        raise serializers.ValidationError(
-                            {"error": f"Некорректное количество товара для ID {product_id}"})
-                except (ValueError, TypeError):
-                    raise serializers.ValidationError({"error": f"Некорректный формат количества товара"})
-
-                # Проверяем, что товар существует
-                try:
-                    product = Product.objects.get(id=product_id)
-                    valid_items.append(item_data)
-                except Product.DoesNotExist:
-                    raise serializers.ValidationError({"error": f"Товар с ID {product_id} не найден"})
-            except serializers.ValidationError as e:
-                raise e
-            except Exception as e:
-                logger.error(f"Ошибка при валидации товара: {str(e)}")
-                raise serializers.ValidationError({"error": f"Ошибка при обработке товара: {str(e)}"})
-
-        # Если нет валидных товаров, прерываем создание заказа
-        if not valid_items:
-            raise serializers.ValidationError({"error": "В заказе нет корректных товаров"})
+        # Проверяем и обрабатываем товары в зависимости от типа заказа
+        if order_type == 'admin_to_partner':
+            # Для заказов у администратора используем обычные product_id
+            self._validate_admin_to_partner_items(items_data)
+        elif order_type == 'partner_to_store':
+            # Для заказов магазинам используем inventory_id
+            self._validate_partner_to_store_items(items_data, user)
 
         # Создаем заказ
         order = super().create(validated_data)
         logger.info(f"Создан заказ ID: {order.id}, тип: {order.order_type}")
 
-        # Общая стоимость заказа для создания долга магазина
-        total_order_price = 0
-        # Флаг для отслеживания успешного создания хотя бы одного элемента заказа
-        any_item_created = False
+        # Обрабатываем товары в зависимости от типа заказа
+        if order_type == 'admin_to_partner':
+            total_order_price = self._process_admin_to_partner_items(order, items_data)
+        elif order_type == 'partner_to_store':
+            total_order_price = self._process_partner_to_store_items(order, items_data, user)
+        else:
+            total_order_price = 0
 
-        # Добавляем товары к заказу
-        for item_data in valid_items:
+        # Создаем долг магазина
+        if order_type == 'partner_to_store' and order.store and total_order_price > 0:
+            StoreDebt.objects.create(
+                store=order.store,
+                amount=total_order_price,
+                description=f"Долг за заказ #{order.id} от {timezone.now().strftime('%d.%m.%Y')}",
+                is_paid=False
+            )
+
+        # Обновляем заказ
+        order.refresh_from_db()
+        return order
+
+    def _validate_admin_to_partner_items(self, items_data):
+        """Проверка товаров для заказа у администратора"""
+        valid_items = []
+        for item_data in items_data:
             try:
-                # Пытаемся получить ID товара из разных возможных полей
-                product_id = None
-                for field in ['product_id', 'product', 'id']:
+                product_id = self._get_product_id(item_data)
+                if not product_id:
+                    raise serializers.ValidationError({"error": "ID товара не указан"})
+
+                quantity = int(item_data.get('quantity', 0))
+                if quantity <= 0:
+                    raise serializers.ValidationError({"error": f"Количество товара должно быть больше нуля"})
+
+                # Проверяем наличие товара в общем каталоге
+                product = Product.objects.get(id=product_id)
+                if not product.is_active:
+                    raise serializers.ValidationError({"error": f"Товар '{product.name}' не активен"})
+
+                if quantity > product.quantity:
+                    raise serializers.ValidationError(
+                        {"error": f"Недостаточно товара '{product.name}' на складе. Доступно: {product.quantity} шт."}
+                    )
+
+                valid_items.append({
+                    'product_id': product_id,
+                    'quantity': quantity
+                })
+            except Product.DoesNotExist:
+                raise serializers.ValidationError({"error": f"Товар с ID {product_id} не найден"})
+
+        if not valid_items:
+            raise serializers.ValidationError({"error": "Нет корректных товаров для заказа"})
+
+        return valid_items
+
+    def _validate_partner_to_store_items(self, items_data, user):
+        """Проверка элементов инвентаря для заказа магазину"""
+        valid_items = []
+        for item_data in items_data:
+            try:
+                # Ищем ID инвентаря (а не ID товара)
+                inventory_id = None
+                for field in ['inventory_id', 'id']:
                     if field in item_data and item_data[field]:
-                        product_id = item_data[field]
+                        inventory_id = item_data[field]
                         break
 
-                if not product_id:
-                    logger.warning(f"Не найден ID товара в данных: {item_data}")
-                    continue
+                if not inventory_id:
+                    raise serializers.ValidationError({"error": "ID элемента инвентаря не указан"})
 
-                # Получаем товар
-                product = Product.objects.get(id=product_id)
+                quantity = int(item_data.get('quantity', 0))
+                if quantity <= 0:
+                    raise serializers.ValidationError({"error": f"Количество товара должно быть больше нуля"})
+
+                # Проверяем наличие элемента в инвентаре партнера
+                inventory_item = PartnerInventory.objects.get(id=inventory_id, partner=user)
+
+                if quantity > inventory_item.quantity:
+                    raise serializers.ValidationError(
+                        {
+                            "error": f"Недостаточно товара '{inventory_item.product.name}' в вашем инвентаре. Доступно: {inventory_item.quantity} шт."}
+                    )
+
+                valid_items.append({
+                    'inventory_id': inventory_id,
+                    'quantity': quantity
+                })
+            except PartnerInventory.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"error": f"Элемент инвентаря с ID {inventory_id} не найден в вашем инвентаре"})
+
+        if not valid_items:
+            raise serializers.ValidationError({"error": "Нет корректных товаров для заказа"})
+
+        return valid_items
+
+    def _process_admin_to_partner_items(self, order, items_data):
+        """Обработка товаров для заказа у администратора"""
+        total_price = 0
+        any_item_created = False
+
+        for item_data in items_data:
+            try:
+                product_id = self._get_product_id(item_data)
                 quantity = int(item_data.get('quantity', 0))
 
-                if not quantity > 0:
-                    logger.warning(f"Некорректное количество товара: {quantity}")
-                    continue
+                product = Product.objects.get(id=product_id)
 
-                logger.info(f"Добавление товара ID: {product_id}, количество: {quantity}")
+                # Уменьшаем количество товара у администратора
+                if product.quantity >= quantity:
+                    product.quantity -= quantity
+                    product.save()
 
-                if product.is_active and quantity > 0:
                     # Создаем элемент заказа
                     order_item = OrderItem.objects.create(
                         order=order,
@@ -326,68 +380,83 @@ class OrderWithItemsSerializer(OrderSerializer):
                         price=product.price
                     )
 
+                    total_price += float(order_item.total_price)
+                    any_item_created = True
+                else:
+                    raise serializers.ValidationError(
+                        {"error": f"Недостаточно товара '{product.name}' на складе. Доступно: {product.quantity} шт."}
+                    )
+            except Product.DoesNotExist:
+                raise serializers.ValidationError({"error": f"Товар с ID {product_id} не найден"})
+
+        if not any_item_created:
+            transaction.set_rollback(True)
+            raise serializers.ValidationError({"error": "Не удалось создать ни один элемент заказа"})
+
+        return total_price
+
+    def _process_partner_to_store_items(self, order, items_data, user):
+        """Обработка товаров для заказа магазину из инвентаря партнера"""
+        total_price = 0
+        any_item_created = False
+
+        for item_data in items_data:
+            try:
+                # Получаем ID инвентаря (а не ID товара)
+                inventory_id = None
+                for field in ['inventory_id', 'id']:
+                    if field in item_data and item_data[field]:
+                        inventory_id = item_data[field]
+                        break
+
+                quantity = int(item_data.get('quantity', 0))
+
+                # Получаем элемент инвентаря и связанный продукт
+                inventory_item = PartnerInventory.objects.select_for_update().get(id=inventory_id, partner=user)
+                product = inventory_item.product
+
+                # Проверяем наличие нужного количества
+                if inventory_item.quantity >= quantity:
+                    # Создаем элемент заказа
+                    order_item = OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=quantity,
+                        price=product.price
+                    )
+
+                    # Уменьшаем количество в инвентаре
+                    inventory_item.quantity -= quantity
+                    inventory_item.save()
+
+                    total_price += float(order_item.total_price)
+                    any_item_created = True
+
                     logger.info(
                         f"Создан элемент заказа ID: {order_item.id}, товар: {product.name}, количество: {quantity}")
-
-                    total_order_price += float(order_item.total_price)
-                    any_item_created = True  # Отмечаем, что создан хотя бы один элемент
-
-                    # Если заказ от партнера к магазину, уменьшаем количество товара в инвентаре партнера
-                    if order.order_type == 'partner_to_store':
-                        try:
-                            inventory = PartnerInventory.objects.select_for_update().get(
-                                partner=order.created_by,
-                                product=product
-                            )
-
-                            if inventory.quantity >= quantity:
-                                old_quantity = inventory.quantity
-                                inventory.quantity -= quantity
-                                inventory.save()
-                                logger.info(
-                                    f"Обновлен инвентарь партнера ID: {order.created_by.id}, товар: {product.name}, c {old_quantity} на {inventory.quantity}")
-                            else:
-                                logger.warning(
-                                    f"Недостаточно товара {product.name} в инвентаре партнера {order.created_by.email}")
-                        except PartnerInventory.DoesNotExist:
-                            logger.warning(
-                                f"Товар {product.name} отсутствует в инвентаре партнера {order.created_by.email}")
+                    logger.info(
+                        f"Обновлен инвентарь партнера ID: {inventory_id}, товар: {product.name}, новое количество: {inventory_item.quantity}")
                 else:
-                    logger.warning(f"Товар {product.name} неактивен или количество <= 0")
+                    raise serializers.ValidationError(
+                        {
+                            "error": f"Недостаточно товара '{product.name}' в вашем инвентаре. Доступно: {inventory_item.quantity} шт."}
+                    )
+            except PartnerInventory.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"error": f"Элемент инвентаря с ID {inventory_id} не найден в вашем инвентаре"})
 
-            except Product.DoesNotExist:
-                logger.error(f"Товар с ID {product_id} не найден")
-            except (ValueError, TypeError) as e:
-                logger.error(f"Ошибка при обработке данных товара: {str(e)}, данные: {item_data}")
-                continue
-            except Exception as e:
-                logger.error(f"Непредвиденная ошибка: {str(e)}")
-                continue
-
-        # ИСПРАВЛЕНО: Если ни один элемент заказа не был создан, откатываем транзакцию
         if not any_item_created:
-            logger.error(f"Не удалось создать ни один элемент заказа для заказа {order.id}")
             transaction.set_rollback(True)
-            raise serializers.ValidationError(
-                {"error": "Не удалось создать ни один элемент заказа. Транзакция отменена."})
+            raise serializers.ValidationError({"error": "Не удалось создать ни один элемент заказа"})
 
-        # Создаем долг магазина, если это заказ от партнера к магазину
-        if order.order_type == 'partner_to_store' and order.store and total_order_price > 0:
-            try:
-                StoreDebt.objects.create(
-                    store=order.store,
-                    amount=total_order_price,
-                    description=f"Долг за заказ #{order.id} от {timezone.now().strftime('%d.%m.%Y')}",
-                    is_paid=False
-                )
-                logger.info(f"Создан долг магазина ID: {order.store.id}, сумма: {total_order_price}")
-            except Exception as e:
-                logger.error(f"Ошибка при создании долга: {str(e)}")
+        return total_price
 
-        # Обновляем заказ для обновления total_price и других свойств
-        order.refresh_from_db()
-
-        return order
+    def _get_product_id(self, item_data):
+        """Получает ID товара из данных элемента заказа"""
+        for field in ['product_id', 'product', 'id']:
+            if field in item_data and item_data[field]:
+                return item_data[field]
+        return None
 
 
 class OrderStatusUpdateSerializer(serializers.ModelSerializer):
@@ -602,3 +671,35 @@ class StoreExpenseSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("У вас нет доступа к этому магазину")
 
         return data
+
+
+# В файле apps/products/serializers.py добавить новый сериализатор
+
+class PartnerInventoryDetailSerializer(serializers.ModelSerializer):
+    """Расширенный сериализатор для отображения инвентаря партнера с подробной информацией о товарах"""
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    product_description = serializers.CharField(source='product.description', read_only=True)
+    product_price = serializers.DecimalField(
+        source='product.price',
+        max_digits=10,
+        decimal_places=2,
+        read_only=True
+    )
+    is_bonus = serializers.BooleanField(source='product.is_bonus', read_only=True)
+    product_image = serializers.SerializerMethodField()
+    available_quantity = serializers.IntegerField(source='quantity', read_only=True)
+
+    class Meta:
+        model = PartnerInventory
+        fields = [
+            'id', 'product', 'product_name', 'product_description',
+            'product_price', 'is_bonus', 'available_quantity',
+            'product_image', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'partner']
+
+    def get_product_image(self, obj):
+        request = self.context.get('request')
+        if obj.product.image and request:
+            return request.build_absolute_uri(obj.product.image.url)
+        return None
