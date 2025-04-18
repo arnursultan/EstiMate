@@ -73,7 +73,8 @@ class StoreListSerializer(serializers.ModelSerializer):
         model = Store
         fields = [
             'id', 'name', 'city_name', 'partner', 'partner_name',
-            'status', 'remaining_debt', 'is_active'
+            'status', 'remaining_debt', 'is_active',
+            'inn', 'phone'  # Добавлены поля inn и phone
         ]
 
     def get_partner_name(self, obj):
