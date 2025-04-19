@@ -300,6 +300,7 @@ class AdminStatisticsService:
 
     def get_admin_statistics(self, admin_id, date=None, date_range=None, period=None):
         from apps.orders.models import Order
+        from apps.products.models import Product
         """
         Получение общей статистики администратора
         """
@@ -332,7 +333,6 @@ class AdminStatisticsService:
         # Получаем все заказы за период
         from apps.orders.models import Order, OrderItem, DefectItem
 
-        # ИЗМЕНЕНО: Теперь доход - это заказы от партнеров к магазинам
         # Заказы от партнеров к магазинам (доход)
         store_orders = Order.objects.filter(
             order_type='partner_to_store',
@@ -341,8 +341,17 @@ class AdminStatisticsService:
             created_at__date__lte=end_date
         )
 
-        # Получаем элементы заказов к магазинам
+        # Заказы от админа к партнерам (запрошенные товары)
+        partner_orders = Order.objects.filter(
+            order_type='admin_to_partner',
+            status='confirmed',
+            created_at__date__gte=start_date,
+            created_at__date__lte=end_date
+        )
+
+        # Получаем элементы заказов
         store_order_items = OrderItem.objects.filter(order__in=store_orders)
+        partner_order_items = OrderItem.objects.filter(order__in=partner_orders)
 
         # Получаем бракованные товары
         defect_items = DefectItem.objects.filter(
@@ -370,21 +379,31 @@ class AdminStatisticsService:
             expense_date__lte=end_date
         )
 
+        # Получаем остаток товаров на складе администратора
+        from apps.products.models import Product
+        admin_inventory = Product.objects.all()
+        remaining_inventory_count = sum(product.quantity for product in admin_inventory)
+        remaining_inventory_value = float(sum(product.quantity * product.price for product in admin_inventory))
+
         # Рассчитываем финансовые показатели
-        # ИЗМЕНЕНО: Доход теперь считается из заказов магазинов
         admin_income = float(sum(
             item.quantity * item.price for item in store_order_items
-        ))
+        ) or 0)
+
+        # Получаем общую сумму товаров, запрошенных партнерами
+        requested_amount = float(sum(
+            item.quantity * item.price for item in partner_order_items
+        ) or 0)
 
         # Получаем общую сумму долгов
         total_debt = float(sum(
             debt.amount for debt in store_debts
-        ))
+        ) or 0)
 
         # Получаем сумму оплаченных долгов
         paid_debt = float(sum(
             payment.amount for payment in store_payments
-        ))
+        ) or 0)
 
         # Неоплаченные долги (остаток)
         remaining_debt = total_debt - paid_debt
@@ -392,7 +411,7 @@ class AdminStatisticsService:
         # Расходы
         expenses_amount = float(sum(
             expense.amount for expense in expenses
-        ))
+        ) or 0)
 
         # Рассчитываем бонусы
         total_bonus_count = sum(
@@ -409,17 +428,32 @@ class AdminStatisticsService:
         # Стоимость бракованных товаров
         defects_amount = float(sum(
             defect.quantity * defect.product.price for defect in defect_items
-        ))
+        ) or 0)
 
         # Общее количество бракованных товаров
         total_defects = sum(defect.quantity for defect in defect_items)
 
-        # ИЗМЕНЕНО: Формула общего баланса
         # Общий баланс = доход + оставшийся долг - расходы - бонусы - брак
         total_balance = admin_income + remaining_debt - expenses_amount - bonuses_amount - defects_amount
 
-        # Собираем данные о товарах по категориям
-        products_data = self._get_admin_products_summary(store_order_items)
+        # Собираем данные о товарах по категориям (запрошенных и оставшихся)
+        products_data = []
+
+        # Добавляем информацию о запрошенных товарах
+        requested_products = self._get_admin_products_summary(partner_order_items)
+        products_data.extend(requested_products)
+
+        # Добавляем информацию об остатках товаров
+        for product in admin_inventory:
+            if product.quantity > 0:
+                products_data.append({
+                    "product_id": product.id,
+                    "product_name": product.name,
+                    "quantity": product.quantity,
+                    "price": float(product.price),
+                    "total_amount": float(product.quantity * product.price),
+                    "type": "remaining"  # Отмечаем, что это остаток
+                })
 
         # Формируем итоговый ответ
         result = {
@@ -436,17 +470,26 @@ class AdminStatisticsService:
                 "orders_count": store_orders.count(),
                 "products_count": sum(item.quantity for item in store_order_items)
             },
+            "requested": {
+                "total_amount": requested_amount,
+                "orders_count": partner_orders.count(),
+                "products_count": sum(item.quantity for item in partner_order_items)
+            },
             "expenses": expenses_amount,
             "store_debt": total_debt,
             "paid_debt": paid_debt,
-            "remaining_debt": remaining_debt,  # Добавлен оставшийся долг
+            "remaining_debt": remaining_debt,
             "bonuses": {
                 "count": total_bonus_count,
                 "amount": bonuses_amount
             },
             "defects": {
                 "count": total_defects,
-                "amount": defects_amount  # Добавлена стоимость бракованных товаров
+                "amount": defects_amount
+            },
+            "inventory": {
+                "count": remaining_inventory_count,
+                "value": remaining_inventory_value
             },
             "total_balance": total_balance,
             "products": products_data,
@@ -456,7 +499,8 @@ class AdminStatisticsService:
                 "debt": total_debt,
                 "remaining_debt": remaining_debt,
                 "bonuses": bonuses_amount,
-                "defects": defects_amount
+                "defects": defects_amount,
+                "inventory_value": remaining_inventory_value
             }
         }
 
