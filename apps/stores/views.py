@@ -12,12 +12,11 @@ from .serializers import (
     StoreDebtSerializer,
     StoreListSerializer
 )
-from datetime import  datetime, timedelta
+from datetime import datetime, timedelta
 from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
 from apps.orders.serializers import StoreDebtPaymentSerializer, StoreExpenseSerializer
 from rest_framework.views import APIView
 from django.core.cache import cache
-from rest_framework.response import Response
 import logging
 
 logger = logging.getLogger(__name__)
@@ -49,9 +48,17 @@ class StoreViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.role == 'admin':
-            return Store.objects.all()
-        # Изменено: партнеры теперь видят все магазины, а не только свои
-        return Store.objects.all()
+            return Store.objects.filter(is_deleted=False)
+        # Изменено: партнеры теперь видят все неудаленные магазины
+        return Store.objects.filter(is_deleted=False)
+
+    def create(self, request, *args, **kwargs):
+        # Добавляем текущего пользователя как партнера
+        request.data['partner'] = request.user.id
+        # Устанавливаем статус approved и is_deleted=False по умолчанию
+        request.data['status'] = 'approved'
+        request.data['is_deleted'] = False
+        return super().create(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -65,26 +72,13 @@ class StoreViewSet(viewsets.ModelViewSet):
             return [IsOwnerOrAdmin()]
         return [permissions.IsAuthenticated()]
 
+
     @action(detail=True, methods=['post'])
     def approve(self, request, pk=None):
-        """Одобрение заявки на создание магазина"""
+        """Одобрение заявки на создание магазина (устаревший метод)"""
         store = self.get_object()
-
-        if not request.user.role == 'admin':
-            return Response(
-                {"detail": "Только администратор может одобрять заявки на создание магазина"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        if store.status == 'approved':
-            return Response(
-                {"detail": "Магазин уже одобрен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         store.status = 'approved'
         store.save()
-
         return Response(
             {"detail": "Магазин успешно одобрен"},
             status=status.HTTP_200_OK
@@ -92,24 +86,10 @@ class StoreViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def reject(self, request, pk=None):
-        """Отклонение заявки на создание магазина"""
+        """Отклонение заявки на создание магазина (устаревший метод)"""
         store = self.get_object()
-
-        if not request.user.role == 'admin':
-            return Response(
-                {"detail": "Только администратор может отклонять заявки на создание магазина"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        if store.status == 'rejected':
-            return Response(
-                {"detail": "Магазин уже отклонен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         store.status = 'rejected'
         store.save()
-
         return Response(
             {"detail": "Магазин успешно отклонен"},
             status=status.HTTP_200_OK
@@ -490,7 +470,6 @@ class StoreViewSet(viewsets.ModelViewSet):
                     {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        # Обработка диапазона дат
         elif start_date_str and end_date_str:
             try:
                 start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
@@ -502,31 +481,29 @@ class StoreViewSet(viewsets.ModelViewSet):
                     )
             except ValueError:
                 return Response(
-                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
+                {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
+                status=status.HTTP_400_BAD_REQUEST
                 )
-        # По умолчанию - текущая дата
+                # По умолчанию - текущая дата
         else:
             start_date = end_date = today
 
-        # Получаем магазины с фильтрацией по правам доступа и городу
         if user.role == 'admin':
             stores_queryset = Store.objects.all()
         else:
             # Изменено: партнеры видят все магазины
             stores_queryset = Store.objects.all()
 
-        # Фильтруем по городу, если указан
+            # Фильтруем по городу, если указан
         if city_id:
             stores_queryset = stores_queryset.filter(city_id=city_id)
 
-        # Фильтруем только одобренные магазины
+            # Фильтруем только одобренные магазины
         stores_queryset = stores_queryset.filter(status='approved')
 
         # Сначала получим все города для возможности выбора пользователем
         all_cities = City.objects.all()
         cities_data = [{"id": city.id, "name": city.name} for city in all_cities]
-
 
         stores_data = []
         total_stats = {
@@ -648,7 +625,6 @@ class StoreViewSet(viewsets.ModelViewSet):
         }
 
         return Response(result)
-
 
     @action(detail=False, methods=['get'])
     def city_summary(self, request):
@@ -827,6 +803,63 @@ class StoreViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
+    @action(detail=True, methods=['post'])
+    def soft_delete(self, request, pk=None):
+        """Мягкое удаление магазина (установка is_deleted=True)"""
+        store = self.get_object()
+
+        if not (request.user.role == 'admin' or request.user == store.partner):
+            return Response(
+                {"detail": "У вас нет прав для удаления этого магазина"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if store.is_deleted:
+            return Response(
+                {"detail": "Магазин уже удален"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        store.is_deleted = True
+        store.save()
+
+        return Response(
+            {"detail": "Магазин успешно удален"},
+            status=status.HTTP_200_OK
+        )
+
+    @action(detail=True, methods=['post'])
+    def restore(self, request, pk=None):
+        """Восстановление удаленного магазина (установка is_deleted=False)"""
+        # Здесь особый случай - нам нужно получить даже удаленные магазины
+        try:
+            store = Store.objects.get(pk=pk)
+        except Store.DoesNotExist:
+            return Response(
+                {"detail": "Магазин не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if not request.user.role == 'admin':
+            return Response(
+                {"detail": "Только администратор может восстанавливать удаленные магазины"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if not store.is_deleted:
+            return Response(
+                {"detail": "Магазин не был удален"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        store.is_deleted = False
+        store.save()
+
+        return Response(
+            {"detail": "Магазин успешно восстановлен"},
+            status=status.HTTP_200_OK
+        )
+
 
 class StoreDebtViewSet(viewsets.ModelViewSet):
     """
@@ -883,7 +916,6 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
-
     @action(detail=False, methods=['get'])
     def store_debts(self, request):
         """Получение всех долгов конкретного магазина"""
@@ -912,11 +944,3 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
             "total_amount": total_amount,
             "count": queryset.count()
         })
-
-    # В файле apps/stores/views.py добавим действия для активации/деактивации
-
-
-
-
-
-

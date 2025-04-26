@@ -5,19 +5,33 @@ from .models import Store, StoreDebt, StoreDebtPayment
 from apps.users.models import User
 from apps.notifications.services import NotificationService
 
+
 @receiver(post_save, sender=Store)
 def store_status_notification(sender, instance, created, **kwargs):
-    """Создает уведомления при изменении статуса магазина"""
+    """Создает уведомления при создании магазина"""
     # Новый магазин создан
     if created:
-        # Уведомляем администраторов о новой заявке на создание магазина
+        # Уведомляем партнера о создании магазина
+        NotificationService.create_notification(
+            user_id=instance.partner.id,
+            notification_type='store_approval',
+            title='Магазин создан',
+            message=f'Ваш магазин "{instance.name}" был успешно создан.',
+            extra_data={
+                'store_id': instance.id,
+                'store_name': instance.name,
+                'status': instance.status
+            }
+        )
+
+        # Уведомляем администраторов о создании нового магазина
         admins = User.objects.filter(role='admin', is_active=True)
         for admin in admins:
             NotificationService.create_notification(
                 user_id=admin.id,
                 notification_type='store_approval',
-                title='Новая заявка на создание магазина',
-                message=f'Партнер {instance.partner.first_name} {instance.partner.last_name} создал заявку на новый магазин "{instance.name}".',
+                title='Создан новый магазин',
+                message=f'Партнер {instance.partner.first_name} {instance.partner.last_name} создал новый магазин "{instance.name}".',
                 extra_data={
                     'store_id': instance.id,
                     'store_name': instance.name,
@@ -25,33 +39,7 @@ def store_status_notification(sender, instance, created, **kwargs):
                     'partner_name': f'{instance.partner.first_name} {instance.partner.last_name}'
                 }
             )
-    # Статус магазина изменен
-    elif instance.tracker.has_changed('status'):
-        # Уведомляем партнера об изменении статуса магазина
-        if instance.status == 'approved':
-            NotificationService.create_notification(
-                user_id=instance.partner.id,
-                notification_type='store_approval',
-                title='Магазин одобрен',
-                message=f'Ваш магазин "{instance.name}" был одобрен администратором.',
-                extra_data={
-                    'store_id': instance.id,
-                    'store_name': instance.name,
-                    'status': instance.status
-                }
-            )
-        elif instance.status == 'rejected':
-            NotificationService.create_notification(
-                user_id=instance.partner.id,
-                notification_type='store_approval',
-                title='Магазин отклонен',
-                message=f'Ваш магазин "{instance.name}" был отклонен администратором.',
-                extra_data={
-                    'store_id': instance.id,
-                    'store_name': instance.name,
-                    'status': instance.status
-                }
-            )
+
 
 @receiver(post_save, sender=StoreDebt)
 def store_debt_notification(sender, instance, created, **kwargs):
@@ -70,6 +58,7 @@ def store_debt_notification(sender, instance, created, **kwargs):
                 'amount': float(instance.amount)
             }
         )
+
 
 @receiver(post_save, sender=StoreDebtPayment)
 def store_payment_notification(sender, instance, created, **kwargs):

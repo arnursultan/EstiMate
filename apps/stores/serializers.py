@@ -3,14 +3,11 @@ from django.utils import timezone
 from .models import City, Store, StoreDebt, StoreDebtPayment, StoreExpense
 
 
-
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ['id', 'name']
 
-
-# В файле apps/stores/serializers.py обновляем сериализатор StoreSerializer
 
 class StoreSerializer(serializers.ModelSerializer):
     city_name = serializers.CharField(source='city.name', read_only=True)
@@ -33,7 +30,7 @@ class StoreSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'inn', 'phone', 'city', 'city_name',
             'address', 'expenses', 'partner', 'partner_name',
-            'status', 'is_active', 'created_at', 'updated_at', 'total_debt',
+            'status', 'is_active', 'is_deleted', 'created_at', 'updated_at', 'total_debt',
             'total_paid_debt', 'remaining_debt'
         ]
         read_only_fields = ['created_at', 'updated_at', 'partner', 'total_debt', 'total_paid_debt', 'remaining_debt']
@@ -52,6 +49,10 @@ class StoreSerializer(serializers.ModelSerializer):
         if phone and not phone.startswith('+'):
             raise serializers.ValidationError("Номер телефона должен начинаться с +")
 
+        # Устанавливаем статус approved и is_deleted=False
+        data['status'] = 'approved'
+        data['is_deleted'] = False
+
         return data
 
     def create(self, validated_data):
@@ -60,7 +61,6 @@ class StoreSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-# Также обновим StoreListSerializer для включения поля is_active
 class StoreListSerializer(serializers.ModelSerializer):
     city_name = serializers.CharField(source='city.name', read_only=True)
     partner_name = serializers.SerializerMethodField()
@@ -73,12 +73,13 @@ class StoreListSerializer(serializers.ModelSerializer):
         model = Store
         fields = [
             'id', 'name', 'city_name', 'partner', 'partner_name',
-            'status', 'remaining_debt', 'is_active',
-            'inn', 'phone'  # Добавлены поля inn и phone
+            'status', 'remaining_debt', 'is_active', 'is_deleted',
+            'inn', 'phone'
         ]
 
     def get_partner_name(self, obj):
         return f"{obj.partner.first_name} {obj.partner.last_name}"
+
 
 class StoreDebtSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.name', read_only=True)
