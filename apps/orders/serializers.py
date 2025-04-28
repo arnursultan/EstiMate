@@ -222,6 +222,9 @@ class OrderSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+# Обновление файла apps/orders/serializers.py
+# Исправление проблем с обработкой возвратов товаров и бонусными товарами
+
 class OrderWithItemsSerializer(OrderSerializer):
     items = serializers.ListField(
         child=serializers.DictField(),
@@ -294,8 +297,8 @@ class OrderWithItemsSerializer(OrderSerializer):
 
                 # Проверяем наличие товара в общем каталоге
                 product = Product.objects.get(id=product_id)
-                if not product.is_active:
-                    raise serializers.ValidationError({"error": f"Товар '{product.name}' не активен"})
+                if not product.is_active or product.is_deleted:
+                    raise serializers.ValidationError({"error": f"Товар '{product.name}' не активен или удален"})
 
                 if quantity > product.quantity:
                     raise serializers.ValidationError(
@@ -336,6 +339,12 @@ class OrderWithItemsSerializer(OrderSerializer):
                 # Проверяем наличие элемента в инвентаре партнера
                 inventory_item = PartnerInventory.objects.get(id=inventory_id, partner=user)
 
+                # Проверяем, не удален ли товар
+                if inventory_item.product.is_deleted:
+                    raise serializers.ValidationError(
+                        {"error": f"Товар '{inventory_item.product.name}' был удален и недоступен для заказа"}
+                    )
+
                 if quantity > inventory_item.quantity:
                     raise serializers.ValidationError(
                         {
@@ -360,40 +369,70 @@ class OrderWithItemsSerializer(OrderSerializer):
         total_price = 0
         any_item_created = False
 
-        for item_data in items_data:
-            try:
+        # Словарь для запоминания временно резервированных товаров
+        # Ключ - product_id, значение - зарезервированное количество
+        reserved_products = {}
+
+        try:
+            for item_data in items_data:
                 product_id = self._get_product_id(item_data)
                 quantity = int(item_data.get('quantity', 0))
 
-                product = Product.objects.get(id=product_id)
+                product = Product.objects.select_for_update().get(id=product_id)
 
-                # Уменьшаем количество товара у администратора
-                if product.quantity >= quantity:
-                    product.quantity -= quantity
-                    product.save()
-
-                    # Создаем элемент заказа
-                    order_item = OrderItem.objects.create(
-                        order=order,
-                        product=product,
-                        quantity=quantity,
-                        price=product.price
+                # Проверяем, что товар активен и не удален
+                if not product.is_active or product.is_deleted:
+                    raise serializers.ValidationError(
+                        {"error": f"Товар '{product.name}' не активен или удален"}
                     )
 
-                    total_price += float(order_item.total_price)
-                    any_item_created = True
-                else:
+                # Проверяем наличие товара
+                if product.quantity < quantity:
                     raise serializers.ValidationError(
                         {"error": f"Недостаточно товара '{product.name}' на складе. Доступно: {product.quantity} шт."}
                     )
-            except Product.DoesNotExist:
-                raise serializers.ValidationError({"error": f"Товар с ID {product_id} не найден"})
 
-        if not any_item_created:
-            transaction.set_rollback(True)
-            raise serializers.ValidationError({"error": "Не удалось создать ни один элемент заказа"})
+                # Временно резервируем товар (для случая, если заказ будет отклонен)
+                product.quantity -= quantity
+                product.save()
 
-        return total_price
+                # Запоминаем резервацию
+                reserved_products[product.id] = quantity
+
+                # Создаем элемент заказа
+                order_item = OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=quantity,
+                    price=product.price
+                )
+
+                total_price += float(order_item.total_price)
+                any_item_created = True
+
+            if not any_item_created:
+                # Откатываем транзакцию, если не удалось создать ни один элемент заказа
+                transaction.set_rollback(True)
+                raise serializers.ValidationError({"error": "Не удалось создать ни один элемент заказа"})
+
+            return total_price
+
+        except Exception as e:
+            # В случае ошибки возвращаем товары на склад администратора
+            for product_id, quantity in reserved_products.items():
+                try:
+                    product = Product.objects.get(id=product_id)
+                    product.quantity += quantity
+                    product.save()
+                except Product.DoesNotExist:
+                    pass  # Если товар не найден, пропускаем
+
+            # Если это была ошибка валидации, пробрасываем её
+            if isinstance(e, serializers.ValidationError):
+                raise
+
+            # Иначе создаем общую ошибку
+            raise serializers.ValidationError({"error": f"Ошибка при обработке заказа: {str(e)}"})
 
     def _process_partner_to_store_items(self, order, items_data, user):
         """Обработка товаров для заказа магазину из инвентаря партнера"""
@@ -415,6 +454,12 @@ class OrderWithItemsSerializer(OrderSerializer):
                 inventory_item = PartnerInventory.objects.select_for_update().get(id=inventory_id, partner=user)
                 product = inventory_item.product
 
+                # Проверяем, не удален ли товар
+                if product.is_deleted:
+                    raise serializers.ValidationError(
+                        {"error": f"Товар '{product.name}' был удален и недоступен для заказа"}
+                    )
+
                 # Проверяем наличие нужного количества
                 if inventory_item.quantity >= quantity:
                     # Создаем элемент заказа
@@ -424,6 +469,16 @@ class OrderWithItemsSerializer(OrderSerializer):
                         quantity=quantity,
                         price=product.price
                     )
+
+                    # Проверяем, действительно ли товар участвует в бонусной программе
+                    # Исправление проблемы с бонусными товарами (пункт 10)
+                    if product.is_bonus and quantity >= 20:
+                        bonus_quantity = quantity // 20
+                        order_item.bonus_quantity = bonus_quantity
+                        order_item.save(update_fields=['bonus_quantity'])
+                    else:
+                        order_item.bonus_quantity = 0
+                        order_item.save(update_fields=['bonus_quantity'])
 
                     # Уменьшаем количество в инвентаре
                     inventory_item.quantity -= quantity
@@ -488,8 +543,8 @@ class OrderStatusUpdateSerializer(serializers.ModelSerializer):
 
             # Отклонение заказа
             elif new_status == 'rejected' and old_status == 'in_process':
-                # Для отклонения заказа ничего делать не нужно
-                pass
+                # Возвращаем товары на склад администратора при отклонении заказа
+                self._process_rejected_admin_to_partner(instance)
 
         # Для заказов от партнера к магазину нельзя изменить статус, они автоматически подтверждаются
         elif instance.order_type == 'partner_to_store':
@@ -503,23 +558,33 @@ class OrderStatusUpdateSerializer(serializers.ModelSerializer):
 
     def _process_confirmed_admin_to_partner(self, order):
         """Обработка подтверждения заказа от администратора к партнеру"""
-        # Обновляем количество товаров на складе и в инвентаре партнера
+        # При подтверждении заказа товары добавляются в инвентарь партнера
         for item in order.order_items.all():
             product = item.product
 
-            # Уменьшаем количество товара на складе администратора
-            if product.quantity >= item.quantity:
-                product.quantity -= item.quantity
-                product.save()
+            # Добавляем товар в инвентарь партнера
+            partner_inventory, created = PartnerInventory.objects.get_or_create(
+                partner=order.partner,
+                product=product,
+                defaults={'quantity': 0}
+            )
+            partner_inventory.quantity += item.quantity
+            partner_inventory.save()
 
-                # Увеличиваем количество товара в инвентаре партнера
-                partner_inventory, created = PartnerInventory.objects.get_or_create(
-                    partner=order.partner,
-                    product=product,
-                    defaults={'quantity': 0}
-                )
-                partner_inventory.quantity += item.quantity
-                partner_inventory.save()
+            logger.info(
+                f"Товар {product.name} добавлен в инвентарь партнера {order.partner.email}: {item.quantity} шт.")
+
+    def _process_rejected_admin_to_partner(self, order):
+        """Обработка отклонения заказа от администратора к партнеру"""
+        # При отклонении заказа товары возвращаются на склад администратора
+        for item in order.order_items.all():
+            product = item.product
+
+            # Возвращаем товары на склад администратора
+            product.quantity += item.quantity
+            product.save()
+
+            logger.info(f"Товар {product.name} возвращен на склад администратора: {item.quantity} шт.")
 
 
 class DefectGroupSerializer(serializers.Serializer):

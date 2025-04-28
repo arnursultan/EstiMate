@@ -1,5 +1,4 @@
-import os
-import time
+# Обновление файла apps/users/models.py
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinLengthValidator, MaxLengthValidator
@@ -8,14 +7,21 @@ import re
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, phone, first_name, last_name, password=None, role="partner",status = "pending", **extra_fields):
+    def create_user(self, email, phone, first_name, last_name, password=None, role="partner", status="pending",
+                    **extra_fields):
         if not email:
             raise ValueError("У пользователя должен быть email")
         if not self.validate_email(email):
             raise ValueError("Некорректный формат email")
 
         email = self.normalize_email(email)
-        user = self.model(email=email, phone=phone, first_name=first_name, last_name=last_name, role=role,status = status, **extra_fields)
+
+        # Приведение имени и фамилии к правильному формату
+        first_name = self._format_name(first_name)
+        last_name = self._format_name(last_name)
+
+        user = self.model(email=email, phone=phone, first_name=first_name, last_name=last_name, role=role,
+                          status=status, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -31,6 +37,15 @@ class UserManager(BaseUserManager):
     def validate_email(email):
         email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
         return len(email) <= 50 and re.match(email_regex, email)
+
+    @staticmethod
+    def _format_name(name):
+        """Форматирует имя или фамилию - первая буква заглавная, остальные строчные"""
+        if not name:
+            return ""
+        name = name.strip()
+        return name[0].upper() + name[1:].lower() if name else ""
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
@@ -63,12 +78,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         ],
         verbose_name="Фамилия"
     )
-    photo = models.ImageField(upload_to='users/photos/',default= "users/photos/default.jpg", blank=True, null=True, verbose_name="Фото профиля")
+    photo = models.ImageField(upload_to='users/photos/', default="users/photos/default.jpg", blank=True, null=True,
+                              verbose_name="Фото профиля")
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="partner", verbose_name="Роль")
     token_reset = models.CharField(max_length=5, blank=True, null=True, verbose_name="Токен сброса пароля")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending", verbose_name="Статус аккаунта")
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     is_staff = models.BooleanField(default=False, verbose_name="Сотрудник")
+    # Добавляем поле для мягкого удаления
+    is_deleted = models.BooleanField(default=False, verbose_name="Удален")
 
     objects = UserManager()
 
@@ -81,3 +99,35 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = "Пользователя"
         verbose_name_plural = "Пользователи"
+
+    def save(self, *args, **kwargs):
+        """Переопределение save для автоматического форматирования имени и фамилии"""
+        # Форматирование имени и фамилии - первая буква заглавная, остальные строчные
+        if self.first_name:
+            self.first_name = self.first_name.strip()
+            if self.first_name:
+                self.first_name = self.first_name[0].upper() + self.first_name[1:].lower()
+
+        if self.last_name:
+            self.last_name = self.last_name.strip()
+            if self.last_name:
+                self.last_name = self.last_name[0].upper() + self.last_name[1:].lower()
+
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_active(cls):
+        """Получить всех активных и не удаленных пользователей"""
+        return cls.objects.filter(is_active=True, is_deleted=False)
+
+    def soft_delete(self):
+        """Мягкое удаление пользователя"""
+        self.is_deleted = True
+        self.save(update_fields=['is_deleted'])
+        return True
+
+    def restore(self):
+        """Восстановление пользователя"""
+        self.is_deleted = False
+        self.save(update_fields=['is_deleted'])
+        return True

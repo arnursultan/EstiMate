@@ -12,6 +12,10 @@ from apps.stores.models import StoreDebt, StoreDebtPayment, StoreExpense
 class PartnerStatisticsService:
     """Сервис для работы со статистикой партнера"""
 
+    # Обновление файла apps/finance/services.py
+
+    # В классе PartnerStatisticsService обновить метод get_partner_statistics для учета бракованных товаров как расходов
+
     def get_partner_statistics(self, partner_id, date=None, date_range=None, period=None):
         """
         Получение статистики партнера
@@ -69,8 +73,16 @@ class PartnerStatisticsService:
             order__in=sold_orders
         )
 
-        # Получаем расходы
-        expenses = StoreExpense.objects.filter(
+        # Получаем расходы партнера
+        partner_expenses = PartnerExpense.objects.filter(
+            partner=partner,
+            expense_date__gte=start_date,
+            expense_date__lte=end_date
+        )
+
+        # Получаем расходы магазинов (для обратной совместимости, будет удалено после полного перехода)
+        # В будущем можно удалить после полной миграции на расходы партнера
+        store_expenses = StoreExpense.objects.filter(
             store__partner=partner,
             expense_date__gte=start_date,
             expense_date__lte=end_date
@@ -85,14 +97,27 @@ class PartnerStatisticsService:
             item.quantity * item.price for item in sold_items
         ) or 0)
 
-        total_expenses = float(sum(expense.amount for expense in expenses) or 0)
+        # Общая сумма расходов партнера
+        total_partner_expenses = float(sum(expense.amount for expense in partner_expenses) or 0)
+
+        # Общая сумма расходов магазинов (устаревшее)
+        total_store_expenses = float(sum(expense.amount for expense in store_expenses) or 0)
+
+        # Общая сумма всех расходов
+        total_expenses = total_partner_expenses + total_store_expenses
+
+        # Рассчитываем стоимость бракованных товаров
+        # Учитываем брак как расход (Пункт 5 технического задания)
+        total_defect_amount = float(sum(
+            defect.quantity * defect.product.price for defect in defect_items
+        ) or 0)
+
+        # Общее количество бракованных товаров
+        total_defects = sum(defect.quantity for defect in defect_items)
 
         # Рассчитываем остатки инвентаря
         inventory_items = PartnerInventory.objects.filter(partner=partner)
         remaining_items_count = sum(item.quantity for item in inventory_items)
-
-        # Общее количество бракованных товаров
-        total_defects = sum(defect.quantity for defect in defect_items)
 
         # Собираем данные о товарах
         products_data = self._get_products_summary(requested_items, sold_items)
@@ -136,8 +161,34 @@ class PartnerStatisticsService:
             stores_data[store_id]["total_sold"] += float(order.total_price or 0)
             stores_data[store_id]["total_items"] += sum(item.quantity for item in order.order_items.all())
 
-        # Вычисляем прибыль
-        profit = total_sold_amount - total_expenses
+        # Детальная информация о расходах
+        expenses_detail = []
+        for expense in partner_expenses:
+            expenses_detail.append({
+                "id": expense.id,
+                "amount": float(expense.amount),
+                "description": expense.description,
+                "date": expense.expense_date.isoformat(),
+                "created_at": expense.created_at.isoformat()
+            })
+
+        # Вычисляем прибыль с учетом брака как расхода
+        profit = total_sold_amount - total_expenses - total_defect_amount
+
+        # Информация о бракованных товарах
+        defects_detail = []
+        for defect in defect_items:
+            defects_detail.append({
+                "id": defect.id,
+                "product_id": defect.product.id,
+                "product_name": defect.product.name,
+                "quantity": defect.quantity,
+                "price": float(defect.product.price),
+                "total_price": float(defect.product.price * defect.quantity),
+                "order_id": defect.order.id,
+                "description": defect.description,
+                "created_at": defect.created_at.isoformat()
+            })
 
         # Формируем итоговый ответ
         result = {
@@ -164,11 +215,20 @@ class PartnerStatisticsService:
                 "stores": list(stores_data.values())
             },
             "debt": total_sold_amount,
-            "expenses": total_expenses,
-            "defects": total_defects,
+            "expenses": {
+                "total": total_expenses,
+                "partner_expenses": total_partner_expenses,
+                "store_expenses": total_store_expenses,
+                "details": expenses_detail
+            },
+            "defects": {
+                "count": total_defects,
+                "total_amount": total_defect_amount,
+                "details": defects_detail
+            },
             "remaining_items": remaining_items_count,
             "total_amount": total_sold_amount,
-            "profit": profit,
+            "profit": profit,  # Прибыль с учетом брака как расхода
             "products_summary": products_data
         }
 

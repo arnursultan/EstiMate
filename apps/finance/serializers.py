@@ -3,7 +3,8 @@ from .models import (
     PartnerFinanceEntry,
     StoreFinanceEntry,
     DailyStatistics,
-    ProductDailyStatistics
+    ProductDailyStatistics,
+    PartnerExpense,
 )
 from apps.stores.models import Store
 from django.utils import timezone
@@ -148,3 +149,43 @@ class StoreFilterSerializer(serializers.Serializer):
             data['date_from'] = data['date_to']
 
         return data
+
+
+# Добавление в файл apps/finance/serializers.py
+
+class PartnerExpenseSerializer(serializers.ModelSerializer):
+    """Сериализатор для расходов партнера"""
+    partner_name = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = PartnerExpense
+        fields = [
+            'id', 'partner', 'partner_name', 'amount', 'description',
+            'expense_date', 'created_at'
+        ]
+        read_only_fields = ['created_at', 'partner']
+
+    def get_partner_name(self, obj):
+        return f"{obj.partner.first_name} {obj.partner.last_name}"
+
+    def validate(self, data):
+        # Проверяем наличие описания
+        description = data.get('description', '').strip()
+        if not description:
+            raise serializers.ValidationError({"description": "Описание расхода обязательно"})
+
+        # Проверяем сумму расхода
+        amount = data.get('amount', 0)
+        if amount <= 0:
+            raise serializers.ValidationError({"amount": "Сумма расхода должна быть больше нуля"})
+
+        # Устанавливаем дату расхода по умолчанию, если не указана
+        if not data.get('expense_date'):
+            data['expense_date'] = timezone.now().date()
+
+        return data
+
+    def create(self, validated_data):
+        # Добавляем текущего пользователя как партнера
+        validated_data['partner'] = self.context['request'].user
+        return super().create(validated_data)

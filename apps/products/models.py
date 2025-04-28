@@ -3,6 +3,13 @@ from django.core.validators import MinValueValidator
 from apps.users.models import User
 from decimal import Decimal
 
+# Обновление файла apps/products/models.py
+
+from django.db import models
+from django.core.validators import MinValueValidator
+from apps.users.models import User
+from decimal import Decimal
+
 
 class Product(models.Model):
     """Модель товара"""
@@ -20,6 +27,8 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активен")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    # Добавляем поле для мягкого удаления
+    is_deleted = models.BooleanField(default=False, verbose_name="Удален")
 
     class Meta:
         verbose_name = "Товар"
@@ -28,6 +37,39 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.price} сом"
+
+    def save(self, *args, **kwargs):
+        """Переопределение save для автоматического форматирования названия товара"""
+        if self.name:
+            # Первая буква заглавная, остальные как есть
+            self.name = self.name.strip()
+            if self.name:
+                self.name = self.name[0].upper() + self.name[1:]
+
+        if self.description:
+            # Аналогично для описания
+            self.description = self.description.strip()
+            if self.description:
+                self.description = self.description[0].upper() + self.description[1:]
+
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_active(cls):
+        """Получить все активные и не удаленные товары"""
+        return cls.objects.filter(is_active=True, is_deleted=False)
+
+    def soft_delete(self):
+        """Мягкое удаление товара"""
+        self.is_deleted = True
+        self.save(update_fields=['is_deleted'])
+        return True
+
+    def restore(self):
+        """Восстановление товара"""
+        self.is_deleted = False
+        self.save(update_fields=['is_deleted'])
+        return True
 
 
 class PartnerInventory(models.Model):

@@ -4,6 +4,7 @@ from apps.stores.models import Store
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
+from django.core.exceptions import  ValidationError
 
 
 class FinanceEntry(models.Model):
@@ -261,3 +262,49 @@ class FinanceStatistics(models.Model):
 
     def __str__(self):
         return f"Статистика за {self.date}"
+
+
+# Обновление файла apps/finance/models.py
+
+# Добавление новой модели расходов партнера
+class PartnerExpense(models.Model):
+    """Модель расходов партнера"""
+    partner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="expense_records",
+        verbose_name="Партнер"
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name="Сумма расхода"
+    )
+    description = models.TextField(
+        verbose_name="Описание расхода",
+        help_text="Обязательное поле. Укажите, на что были потрачены средства."
+    )
+    expense_date = models.DateField(verbose_name="Дата расхода")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Расход партнера"
+        verbose_name_plural = "Расходы партнеров"
+        ordering = ['-expense_date', '-created_at']
+        indexes = [
+            models.Index(fields=['partner', 'expense_date']),
+        ]
+
+    def __str__(self):
+        return f"{self.partner.first_name} {self.partner.last_name} - Расход {self.amount} сом ({self.expense_date})"
+
+    def clean(self):
+        """Валидация: описание расхода обязательно"""
+        if not self.description or not self.description.strip():
+            raise ValidationError("Необходимо указать описание расхода")
+
+    def save(self, *args, **kwargs):
+        """Проверяем, что описание расхода заполнено"""
+        self.clean()
+        super().save(*args, **kwargs)
