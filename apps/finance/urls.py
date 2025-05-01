@@ -22,4 +22,5 @@ urlpatterns = [
     # path('partner-statistics/<int:pk>/', PartnerStatisticsView.as_view(), name='partner-statistics-detail'),
     path('admin-statistics/', AdminFinanceStatisticsView.as_view(), name='admin-statistics'),
     path('admin-partners-statistics/', AdminPartnersStatisticsView.as_view(), name='admin-partners-statistics'),
+    path('partner-statistics/<int:pk>/', PartnerStatisticsView.as_view(), name='partner-statistics-detail'),
 ]

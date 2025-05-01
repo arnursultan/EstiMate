@@ -6,7 +6,8 @@ from .views import (
     CityViewSet,
     StoreViewSet,
     StoreDebtViewSet, # Добавляем, если он был в отдельном файле или не было роутера
-    StoreDebtPaymentViewSet # ДОБАВЛЕН
+    StoreDebtPaymentViewSet,
+    StoresSummaryStatisticsView# ДОБАВЛЕН
     # StoreExpenseViewSet - УДАЛЕН
 )
 
@@ -34,7 +35,7 @@ urlpatterns = [
     # path('', include(store_debts_router.urls)),
     # path('', include(store_payments_router.urls)),
     # --- Конец ---
-
+    path('stores-summary-statistics/', StoresSummaryStatisticsView.as_view(), name='stores-summary-statistics'),
     # Дополнительные actions, если они не вложенные
     path('stores/summary/', StoreViewSet.as_view({'get': 'stores_summary'}), name='stores-summary'), # Упрощенный вариант
     path('stores/city-summary/', StoreViewSet.as_view({'get': 'city_summary'}), name='city-summary'), # Упрощенный вариант

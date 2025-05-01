@@ -18,6 +18,7 @@ from .views import (
     RejectUserAPIView,
     ApproveUserAPIView,
     DeactivateOwnAccountAPIView,
+    UserActivateAPIView,
     # PartnerDailySummaryView, - УДАЛЕН
     # AdminDashboardView, - УДАЛЕН
 )
@@ -28,7 +29,8 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
 
     path("profile/", PartnerProfileAPIView.as_view(), name="profile"),
-    path("profile/deactivate/", DeactivateOwnAccountAPIView.as_view(), name="deactivate"), # Для пользователя
+    path("profile/deactivate/", DeactivateOwnAccountAPIView.as_view(), name="deactivate"),
+    path("admin/users/<int:pk>/activate/", UserActivateAPIView.as_view(), name="admin-user-activate"),# Для пользователя
 
     path("admin/users/", AdminUserAPIView.as_view(), name="admin-user-list"), # Изменено имя для ясности
     path("admin/users/<int:pk>/", AdminUserDetailAPIView.as_view(), name="admin-user-detail"),

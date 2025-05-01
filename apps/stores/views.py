@@ -29,6 +29,8 @@ from django.db.models import F
 from apps.finance.services import PartnerStatisticsService
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from apps.finance.services import StoreGroupStatisticsService # Импорт нового сервиса
+from apps.finance.views import get_date_range_from_params
 
 
 
@@ -673,3 +675,52 @@ class StoreDebtViewSet(viewsets.ModelViewSet):
              "total_amount": float(total_amount),
              "count": queryset.count()
          })
+
+
+class StoresSummaryStatisticsView(APIView):
+    """
+    Представление для получения агрегированной статистики по группе магазинов.
+    Админ видит статистику по всем магазинам (или отфильтрованным).
+    Партнер видит статистику только по своим магазинам.
+    """
+    permission_classes = [permissions.IsAuthenticated] # Доступ по роли проверяется внутри
+
+    @swagger_auto_schema(
+        operation_summary="Сводная статистика по магазинам",
+        manual_parameters=[
+             openapi.Parameter('timespan', openapi.IN_QUERY, description="Период (today, yesterday, week, ..., all)", type=openapi.TYPE_STRING, default='all'),
+             openapi.Parameter('date', openapi.IN_QUERY, description="Дата (YYYY-MM-DD)", type=openapi.TYPE_STRING, format='date'),
+             openapi.Parameter('start_date', openapi.IN_QUERY, description="Начальная дата (YYYY-MM-DD)", type=openapi.TYPE_STRING, format='date'),
+             openapi.Parameter('end_date', openapi.IN_QUERY, description="Конечная дата (YYYY-MM-DD)", type=openapi.TYPE_STRING, format='date'),
+             openapi.Parameter('city_id', openapi.IN_QUERY, description="Фильтр по ID города", type=openapi.TYPE_INTEGER),
+             openapi.Parameter('partner_id', openapi.IN_QUERY, description="Фильтр по ID партнера (только для админа)", type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        user = request.user
+        city_id = request.query_params.get('city_id')
+        partner_id = request.query_params.get('partner_id')
+
+        # Проверка partner_id для админа
+        if user.role != 'admin' and partner_id:
+             return Response({"detail": "Фильтр по партнеру доступен только администратору."}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            start_date, end_date, selected_timespan = get_date_range_from_params(request)
+        except serializers.ValidationError as e:
+             return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+
+        service = StoreGroupStatisticsService()
+        statistics = service.get_stores_statistics(
+            user=user, # Передаем пользователя для проверки прав
+            date_range=(start_date, end_date),
+            city_id=city_id,
+            partner_id=partner_id
+        )
+
+        if "error" in statistics:
+            status_code = status.HTTP_403_FORBIDDEN if statistics["error"] == "Доступ запрещен" else status.HTTP_404_NOT_FOUND
+            return Response({"detail": statistics["error"]}, status=status_code)
+
+        statistics["selected_timespan"] = selected_timespan
+        return Response(statistics)

@@ -375,3 +375,150 @@ class AdminStatisticsService:
         }
         print(f"[Service] Итоговая статистика по партнерам: {result}")
         return result
+
+
+class StoreGroupStatisticsService:
+    """Сервис для расчета статистики по группе магазинов."""
+
+    _get_dates_from_period = PartnerStatisticsService._get_dates_from_period # Используем тот же хелпер
+
+    def get_stores_statistics(self, user, date_range, city_id=None, partner_id=None):
+        """
+        Расчет статистики по группе магазинов.
+        user: Запрашивающий пользователь (для определения прав)
+        date_range: tuple (start_date, end_date)
+        city_id: опциональный ID города
+        partner_id: опциональный ID партнера (для админа)
+        """
+        start_date, end_date = date_range
+        query_start_date = start_date or date(2000, 1, 1)
+        print(f"\n--- [Service] Статистика по Магазинам для User={user.id} за Даты: {query_start_date} - {end_date}, City={city_id}, Partner={partner_id} ---")
+
+        # --- Фильтруем магазины ---
+        stores_qs = Store.objects.filter(is_deleted=False, is_active=True, status='approved')
+        if user.role == 'partner':
+            # Партнер видит только свои магазины
+            stores_qs = stores_qs.filter(partner=user)
+        elif user.role == 'admin':
+            # Админ может фильтровать по партнеру
+            if partner_id:
+                stores_qs = stores_qs.filter(partner_id=partner_id)
+        else:
+            # Другие роли не видят магазины
+            return {"error": "Доступ запрещен"}
+
+        # Фильтр по городу
+        if city_id:
+             stores_qs = stores_qs.filter(city_id=city_id)
+
+        store_ids = list(stores_qs.values_list('id', flat=True))
+        stores_count = len(store_ids)
+        print(f"[Service Stores] Найдено {stores_count} магазинов для статистики.")
+        if stores_count == 0:
+             # Если магазины не найдены, возвращаем пустую статистику
+             return self._get_empty_stats(start_date, end_date)
+
+
+        # --- Создаем datetime диапазон ---
+        try:
+            tz = timezone.get_current_timezone()
+            start_datetime = timezone.make_aware(datetime.combine(query_start_date, time.min), tz)
+            end_datetime = timezone.make_aware(datetime.combine(end_date, time.max), tz)
+        except Exception as e:
+            logger.exception("Ошибка при создании timezone-aware datetime диапазона для магазинов")
+            return {"error": "Ошибка обработки диапазона дат"}
+
+        # --- Получаем данные для ВСЕХ отфильтрованных магазинов ---
+        # Заказы В эти магазины
+        orders_qs = Order.objects.filter(
+            store_id__in=store_ids, # Фильтр по ID магазинов
+            order_type='partner_to_store',
+            status='confirmed',
+            created_at__gte=start_datetime,
+            created_at__lte=end_datetime
+        )
+        orders_count = orders_qs.count()
+
+        # Элементы заказов
+        order_items = OrderItem.objects.filter(order__in=orders_qs).select_related('product')
+
+        # Брак
+        defect_items = DefectItem.objects.filter(order__in=orders_qs).select_related('product')
+
+        # Долги, созданные за период
+        period_debts = StoreDebt.objects.filter(
+            store_id__in=store_ids,
+            created_at__date__gte=query_start_date,
+            created_at__date__lte=end_date
+        )
+
+        # Платежи за период
+        period_payments = StoreDebtPayment.objects.filter(
+            store_id__in=store_ids,
+            payment_date__gte=start_datetime,
+            payment_date__lte=end_datetime
+        )
+
+        # Расходы партнеров этих магазинов за период
+        partner_ids = list(stores_qs.values_list('partner_id', flat=True).distinct())
+        period_partner_expenses = PartnerExpense.objects.filter(
+             partner_id__in=partner_ids,
+             expense_date__gte=query_start_date,
+             expense_date__lte=end_date
+         )
+
+        # --- Агрегированные расчеты ---
+        total_sales = order_items.aggregate(total=Sum(F('price') * F('quantity')))['total'] or Decimal('0.00')
+        total_ordered_quantity = order_items.aggregate(total=Sum('quantity'))['total'] or 0
+        total_bonus_quantity = order_items.aggregate(total=Sum('bonus_quantity'))['total'] or 0
+
+        total_defect_cost = sum(d.quantity * (d.product.price if d.product else 0) for d in defect_items) or Decimal('0.00')
+        total_defect_quantity = sum(d.quantity for d in defect_items)
+
+        total_debt_created = period_debts.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+        total_payments_received = period_payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+        total_partner_expenses = period_partner_expenses.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+
+        # Общий долг ВСЕХ выбранных магазинов на ТЕКУЩИЙ момент
+        total_debt_all_time = stores_qs.aggregate(
+             debt_sum=Sum('debts__amount'), # Сумма всех долгов
+             paid_sum=Sum('debt_payments__amount') # Сумма всех оплат
+        )
+        total_remaining_debt_all_time = (total_debt_all_time['debt_sum'] or 0) - (total_debt_all_time['paid_sum'] or 0)
+
+
+        # Общая прибыль за период = Оплаты - РасходыПартнеров - СтоимостьБрака
+        total_profit_period = total_payments_received - total_partner_expenses - total_defect_cost
+
+        return {
+            "date_range": {
+                "start_date": start_date.isoformat() if start_date else None,
+                "end_date": end_date.isoformat(),
+                "formatted": "За все время" if start_date is None else (start_date.strftime("%d.%m.%Y") if start_date == end_date else f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}")
+            },
+            "filters": { # Информация о примененных фильтрах
+                 "city_id": city_id,
+                 "partner_id": partner_id if user.role == 'admin' else user.id # Показываем ID партнера
+             },
+            "summary": {
+                "stores_count": stores_count,
+                "orders_count": orders_count,
+                "total_sales_amount": float(total_sales),
+                "total_payments_received": float(total_payments_received),
+                "total_partner_expenses": float(total_partner_expenses),
+                "total_defect_cost": float(total_defect_cost),
+                "total_profit": float(total_profit_period),
+                "total_ordered_quantity": total_ordered_quantity,
+                "total_bonus_quantity": total_bonus_quantity,
+                "total_defect_quantity": total_defect_quantity,
+                "total_remaining_debt": float(total_remaining_debt_all_time) # Общий остаток долга по этим магазинам
+            }
+        }
+
+    def _get_empty_stats(self, start_date, end_date):
+         # Возвращает структуру с нулями, если магазины не найдены
+         return {
+             "date_range": {"start_date": start_date.isoformat() if start_date else None,"end_date": end_date.isoformat(),"formatted": "..."},
+             "filters": {},
+             "summary": {"stores_count": 0,"orders_count": 0,"total_sales_amount": 0.0,"total_payments_received": 0.0,"total_partner_expenses": 0.0,"total_defect_cost": 0.0,"total_profit": 0.0,"total_ordered_quantity": 0,"total_bonus_quantity": 0,"total_defect_quantity": 0,"total_remaining_debt": 0.0}
+         }

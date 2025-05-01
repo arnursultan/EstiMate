@@ -600,3 +600,37 @@ class CustomTokenRefreshView(TokenRefreshView):
              logger.exception(f"Неожиданная ошибка при обновлении токена: {e}")
              return Response({"detail": "Произошла ошибка при обновлении токена."},
                              status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UserActivateAPIView(APIView):
+    """Активация пользователя администратором (is_active=True)."""
+    permission_classes = [IsAdminUser] # Только админ
+
+    def get_object(self, pk):
+         # Можно активировать даже удаленного? Или только неактивного?
+         # Лучше работать только с неудаленными, но неактивными.
+         # Если нужно активировать удаленного, сначала его нужно восстановить.
+        return get_object_or_404(User, pk=pk, is_deleted=False)
+
+    @swagger_auto_schema(
+        operation_summary="Активация пользователя (Админ)",
+        responses={
+            200: openapi.Response("Пользователь успешно активирован", UserDetailSerializer),
+            400: 'Пользователь уже активен',
+            404: 'Пользователь не найден (или удален)'
+        }
+    )
+    def post(self, request, pk): # Используем POST
+        user = self.get_object(pk)
+
+        if user.is_active:
+            return Response(
+                {"detail": "Пользователь уже активен."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.is_active = True
+        user.save(update_fields=['is_active'])
+        logger.info(f"Администратор {request.user.email} активировал пользователя {user.email}.")
+        # Возвращаем обновленные данные пользователя
+        return Response(UserDetailSerializer(user).data, status=status.HTTP_200_OK)
