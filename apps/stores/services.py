@@ -3,7 +3,7 @@ from django.db.models import Sum, Count, Q, F, ExpressionWrapper, DecimalField
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-from .models import Store, StoreDebt, StoreDebtPayment, StoreExpense
+from .models import Store, StoreDebt, StoreDebtPayment
 from apps.orders.models import Order, OrderItem, DefectItem
 
 

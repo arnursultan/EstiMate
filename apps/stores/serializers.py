@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.utils import timezone
-from .models import City, Store, StoreDebt, StoreDebtPayment, StoreExpense
-
+from .models import City, Store, StoreDebt, StoreDebtPayment # Убрали StoreExpense
+from decimal import Decimal # Импорт Decimal
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,50 +14,66 @@ class StoreSerializer(serializers.ModelSerializer):
     partner_name = serializers.SerializerMethodField()
     total_debt = serializers.DecimalField(
         max_digits=10, decimal_places=2,
-        read_only=True,
+        read_only=True, coerce_to_string=False # Важно для чисел с плавающей точкой
     )
     total_paid_debt = serializers.DecimalField(
         max_digits=10, decimal_places=2,
-        read_only=True,
+        read_only=True, coerce_to_string=False
     )
     remaining_debt = serializers.DecimalField(
         max_digits=10, decimal_places=2,
-        read_only=True,
+        read_only=True, coerce_to_string=False
     )
 
     class Meta:
         model = Store
         fields = [
             'id', 'name', 'inn', 'phone', 'city', 'city_name',
-            'address', 'expenses', 'partner', 'partner_name',
+            'address', # Убрали 'expenses'
+            'partner', 'partner_name',
             'status', 'is_active', 'is_deleted', 'created_at', 'updated_at', 'total_debt',
             'total_paid_debt', 'remaining_debt'
         ]
-        read_only_fields = ['created_at', 'updated_at', 'partner', 'total_debt', 'total_paid_debt', 'remaining_debt']
+        # Убрали expenses из read_only_fields
+        read_only_fields = [
+            'created_at', 'updated_at', 'partner', 'total_debt',
+            'total_paid_debt', 'remaining_debt', 'is_deleted'
+            ]
 
     def get_partner_name(self, obj):
-        return f"{obj.partner.first_name} {obj.partner.last_name}"
+        return f"{obj.partner.first_name} {obj.partner.last_name}" if obj.partner else None
 
     def validate(self, data):
         # Проверка ИНН
         inn = data.get('inn')
-        if inn and len(inn) < 10:
-            raise serializers.ValidationError("ИНН должен содержать не менее 10 цифр")
+        if inn and len(inn) < 10: # Оставляем базовую проверку
+            raise serializers.ValidationError({"inn": "ИНН должен содержать не менее 10 цифр"})
 
         # Проверка телефона
         phone = data.get('phone')
-        if phone and not phone.startswith('+'):
-            raise serializers.ValidationError("Номер телефона должен начинаться с +")
+        if phone and not phone.startswith('+'): # Оставляем базовую проверку
+             raise serializers.ValidationError({"phone": "Номер телефона должен начинаться с +"})
 
-        # Устанавливаем статус approved и is_deleted=False
-        data['status'] = 'approved'
-        data['is_deleted'] = False
+        # Проверка имени магазина - первая буква заглавная
+        name = data.get('name')
+        if name:
+            name = name.strip()
+            if name:
+                 data['name'] = name[0].upper() + name[1:] # Форматируем здесь при создании/обновлении
+
+        # Статус по умолчанию устанавливается в модели или view
+        # data['status'] = 'approved'
+        # data['is_deleted'] = False
 
         return data
 
     def create(self, validated_data):
-        if self.context['request'].user.role == 'partner':
-            validated_data['partner'] = self.context['request'].user
+        # Устанавливаем партнера и статус при создании через API
+        user = self.context['request'].user
+        validated_data['partner'] = user
+        # Устанавливаем статус 'approved' и is_deleted=False по умолчанию при создании через API
+        validated_data['status'] = 'approved'
+        validated_data['is_deleted'] = False
         return super().create(validated_data)
 
 
@@ -66,7 +82,7 @@ class StoreListSerializer(serializers.ModelSerializer):
     partner_name = serializers.SerializerMethodField()
     remaining_debt = serializers.DecimalField(
         max_digits=10, decimal_places=2,
-        read_only=True,
+        read_only=True, coerce_to_string=False
     )
 
     class Meta:
@@ -78,11 +94,12 @@ class StoreListSerializer(serializers.ModelSerializer):
         ]
 
     def get_partner_name(self, obj):
-        return f"{obj.partner.first_name} {obj.partner.last_name}"
+        return f"{obj.partner.first_name} {obj.partner.last_name}" if obj.partner else None
 
 
 class StoreDebtSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.name', read_only=True)
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=Decimal('0.01'), coerce_to_string=False)
 
     class Meta:
         model = StoreDebt
@@ -92,59 +109,54 @@ class StoreDebtSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['created_at', 'updated_at']
 
+    # Убираем validate, т.к. min_value уже в поле
+    # def validate(self, data): ...
+
+# --- НОВЫЙ СЕРИАЛИЗАТОР ---
+class StoreDebtPaymentSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(source='store.name', read_only=True)
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=Decimal('0.01'), coerce_to_string=False)
+
+    class Meta:
+        model = StoreDebtPayment
+        fields = ['id', 'store', 'store_name', 'amount', 'description', 'payment_date']
+        read_only_fields = ['payment_date']
+
     def validate(self, data):
+        store = data.get('store')
         amount = data.get('amount')
-        if amount and amount <= 0:
-            raise serializers.ValidationError("Сумма долга должна быть больше нуля")
+        request = self.context.get('request')
+
+        if not store:
+            # Пытаемся получить магазин из контекста URL, если не передан в data
+            view = self.context.get('view')
+            if view and hasattr(view, 'kwargs'):
+                 store_id = view.kwargs.get('store_pk') or view.kwargs.get('pk')
+                 if store_id:
+                     try:
+                         store = Store.objects.get(id=store_id)
+                         data['store'] = store
+                     except Store.DoesNotExist:
+                         raise serializers.ValidationError({"store": "Магазин не найден."})
+                 else:
+                     raise serializers.ValidationError({"store": "Необходимо указать магазин."})
+            else:
+                 raise serializers.ValidationError({"store": "Необходимо указать магазин."})
+
+        if not amount: # Проверка на None и 0
+             raise serializers.ValidationError({"amount": "Сумма оплаты должна быть больше нуля"})
+
+        # Проверяем, что у магазина есть долг
+        remaining_debt = store.remaining_debt
+        if remaining_debt <= Decimal('0.00'):
+            raise serializers.ValidationError({"detail": "У магазина нет неоплаченного долга"})
+
+        # Проверяем, что сумма оплаты не превышает оставшийся долг
+        if amount > remaining_debt:
+            raise serializers.ValidationError(f"Сумма оплаты ({amount}) превышает оставшийся долг ({remaining_debt} сом)")
+
+        # Проверка прав доступа пользователя (админ или владелец магазина)
+        if request and not (request.user.role == 'admin' or (request.user.role == 'partner' and store.partner == request.user)):
+             raise serializers.ValidationError("У вас нет прав для добавления оплаты этому магазину")
+
         return data
-
-
-class DateRangeSerializer(serializers.Serializer):
-    start_date = serializers.DateField(required=False)
-    end_date = serializers.DateField(required=False)
-    date = serializers.DateField(required=False)
-    city_id = serializers.IntegerField(required=False)
-
-    def validate(self, data):
-        if 'date' not in data and ('start_date' not in data or 'end_date' not in data):
-            data['date'] = timezone.now().date()
-        return data
-
-
-class StoreStatisticsSerializer(serializers.Serializer):
-    store_id = serializers.IntegerField()
-    store_name = serializers.CharField()
-    date_range = serializers.DictField()
-    orders_count = serializers.IntegerField()
-    total_ordered_quantity = serializers.IntegerField()
-    total_ordered_price = serializers.FloatField()
-    total_bonus_quantity = serializers.IntegerField()
-    total_defect_quantity = serializers.IntegerField()
-    total_defect_price = serializers.FloatField()
-    total_debt = serializers.FloatField()
-    total_paid_debt = serializers.FloatField()
-    remaining_debt = serializers.FloatField()
-    period_debt = serializers.FloatField()
-    period_paid = serializers.FloatField()
-    period_expenses = serializers.FloatField()
-    profit = serializers.FloatField()
-    products = serializers.ListField(child=serializers.DictField())
-
-
-class MultipleStoresStatisticsSerializer(serializers.Serializer):
-    date_range = serializers.DictField()
-    stores_count = serializers.IntegerField()
-    orders_count = serializers.IntegerField()
-    total_ordered_quantity = serializers.IntegerField()
-    total_ordered_price = serializers.FloatField()
-    total_bonus_quantity = serializers.IntegerField()
-    total_defect_quantity = serializers.IntegerField()
-    total_defect_price = serializers.FloatField()
-    total_debt = serializers.FloatField()
-    total_paid_debt = serializers.FloatField()
-    remaining_debt = serializers.FloatField()
-    period_debt = serializers.FloatField()
-    period_paid = serializers.FloatField()
-    period_expenses = serializers.FloatField()
-    profit = serializers.FloatField()
-    stores = serializers.ListField(child=serializers.DictField())

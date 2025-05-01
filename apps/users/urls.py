@@ -1,3 +1,4 @@
+# apps/users/urls.py
 from django.urls import path
 from .views import (
     RegisterView,
@@ -11,32 +12,39 @@ from .views import (
     AdminUserAPIView,
     AdminUserDetailAPIView,
     UserDeleteAPIView,
+    UserRestoreAPIView, # ДОБАВЛЕН
     UserBlockAPIView,
     UserUnblockAPIView,
     RejectUserAPIView,
     ApproveUserAPIView,
     DeactivateOwnAccountAPIView,
-    # PartnerDailySummaryView,
-    # AdminDashboardView,
+    # PartnerDailySummaryView, - УДАЛЕН
+    # AdminDashboardView, - УДАЛЕН
 )
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
+
     path("profile/", PartnerProfileAPIView.as_view(), name="profile"),
-    path("profile/delete/<int:pk>/", UserDeleteAPIView.as_view(), name="delete"),
-    path("profile/reject/<int:pk>/", RejectUserAPIView.as_view(), name="reject"),
-    path("profile/approve/<int:pk>/", ApproveUserAPIView.as_view(), name="approve"),
-    path("profile/deactivate/", DeactivateOwnAccountAPIView.as_view(), name="deactivate"),
-    path("admin/", AdminUserAPIView.as_view(), name="admin"),
-    path("admin/<int:pk>/", AdminUserDetailAPIView.as_view(), name="admin_detail"),
-    path("admin/block/<int:pk>/", UserBlockAPIView.as_view(), name="block"),
-    path("admin/unblock/<int:pk>/", UserUnblockAPIView.as_view(), name="unblock"),
+    path("profile/deactivate/", DeactivateOwnAccountAPIView.as_view(), name="deactivate"), # Для пользователя
+
+    path("admin/users/", AdminUserAPIView.as_view(), name="admin-user-list"), # Изменено имя для ясности
+    path("admin/users/<int:pk>/", AdminUserDetailAPIView.as_view(), name="admin-user-detail"),
+    path("admin/users/<int:pk>/delete/", UserDeleteAPIView.as_view(), name="admin-user-delete"), # Метод DELETE
+    path("admin/users/<int:pk>/restore/", UserRestoreAPIView.as_view(), name="admin-user-restore"), # Метод POST
+    path("admin/users/<int:pk>/block/", UserBlockAPIView.as_view(), name="admin-user-block"), # Метод POST
+    path("admin/users/<int:pk>/unblock/", UserUnblockAPIView.as_view(), name="admin-user-unblock"), # Метод POST
+    path("admin/users/<int:pk>/approve/", ApproveUserAPIView.as_view(), name="admin-user-approve"), # Метод POST
+    path("admin/users/<int:pk>/reject/", RejectUserAPIView.as_view(), name="admin-user-reject"), # Метод POST
+
     path("password-reset/", PasswordResetView.as_view(), name="password_reset"),
     path("password-reset/verify/", PasswordResetVerifyView.as_view(), name="password_reset_verify"),
     path("password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    # path('daily-summary/', PartnerDailySummaryView.as_view(), name='daily-summary'),
-    # path('admin/dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
+
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
+
+    # path('daily-summary/', PartnerDailySummaryView.as_view(), name='daily-summary'), - УДАЛЕН
+    # path('admin/dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'), - УДАЛЕН
 ]

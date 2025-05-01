@@ -2,16 +2,19 @@
 from celery import shared_task
 from django.utils import timezone
 from django.core.cache import cache
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, F
 from datetime import timedelta, datetime
 import json
 import logging
+from decimal import Decimal # Добавим Decimal
 
 from .services import PartnerStatisticsService, AdminStatisticsService
 from apps.users.models import User
-from .models import FinanceStatistics
+# Импортируем PartnerExpense вместо StoreExpense
+from .models import FinanceStatistics, PartnerExpense
 from apps.orders.models import Order, OrderItem, DefectItem
-from apps.stores.models import StoreDebt, StoreDebtPayment, StoreExpense
+from apps.stores.models import StoreDebt, StoreDebtPayment # StoreExpense удален
+from apps.products.models import Product # Импортируем Product для расчета стоимости брака/бонусов
 
 logger = logging.getLogger(__name__)
 
@@ -19,185 +22,133 @@ logger = logging.getLogger(__name__)
 @shared_task
 def calculate_daily_finance_statistics():
     """
-    Задача для ежедневного расчета и кэширования финансовой статистики
+    Задача для ежедневного расчета и кэширования финансовой статистики за ВЧЕРАШНИЙ день.
     """
     yesterday = timezone.now().date() - timedelta(days=1)
+    logger.info(f"Запуск расчета статистики за {yesterday}...")
+    date_range = (yesterday, yesterday) # Определяем диапазон
 
-    # Рассчитываем статистику для каждого партнера
-    for partner in User.objects.filter(role='partner', is_active=True):
+    # --- Расчет и кэширование статистики для партнеров ---
+    active_partners = User.objects.filter(role='partner', is_active=True, is_deleted=False, status='approved')
+    logger.info(f"Найдено {active_partners.count()} активных партнеров для расчета статистики.")
+    service_partner = PartnerStatisticsService()
+    for partner in active_partners:
         try:
-            service = PartnerStatisticsService()
-            statistics = service.get_partner_statistics(
+            statistics = service_partner.get_partner_statistics(
                 partner_id=partner.id,
-                date=yesterday
+                date_range=date_range
             )
+            if "error" not in statistics:
+                 # Кэшируем результат на сутки
+                 date_cache_key = f"{yesterday.isoformat()}_{yesterday.isoformat()}"
+                 cache_key = f"partner_stats_{partner.id}_{date_cache_key}"
+                 cache.set(cache_key, statistics, 60 * 60 * 24)
+                 logger.debug(f"Статистика для партнера {partner.id} за {yesterday} рассчитана и закэширована.")
+            else:
+                 logger.warning(f"Ошибка при расчете статистики для партнера {partner.id}: {statistics['error']}")
 
-            # Кэшируем результат на сутки
-            cache_key = f"partner_stats_{partner.id}_{yesterday}"
-            cache.set(cache_key, statistics, 60 * 60 * 24)
         except Exception as e:
-            logger.error(f"Ошибка при расчете статистики для партнера {partner.id}: {str(e)}")
+            logger.exception(f"Критическая ошибка при расчете статистики для партнера {partner.id}: {str(e)}")
 
-    # Рассчитываем статистику для администраторов
-    for admin in User.objects.filter(role='admin', is_active=True):
+    # --- Расчет и кэширование статистики для админов ---
+    active_admins = User.objects.filter(role='admin', is_active=True)
+    logger.info(f"Найдено {active_admins.count()} активных администраторов для расчета статистики.")
+    service_admin = AdminStatisticsService()
+    for admin in active_admins:
         try:
-            service = AdminStatisticsService()
-            statistics = service.get_admin_statistics(
+            statistics = service_admin.get_admin_statistics(
                 admin_id=admin.id,
-                date=yesterday
+                date_range=date_range
             )
-
-            # Кэшируем результат на сутки
-            cache_key = f"admin_stats_{admin.id}_{yesterday}"
-            cache.set(cache_key, statistics, 60 * 60 * 24)
+            if "error" not in statistics:
+                 # Кэшируем результат на сутки
+                 date_cache_key = f"{yesterday.isoformat()}_{yesterday.isoformat()}"
+                 cache_key = f"admin_stats_{admin.id}_{date_cache_key}"
+                 cache.set(cache_key, statistics, 60 * 60 * 24)
+                 logger.debug(f"Статистика для администратора {admin.id} за {yesterday} рассчитана и закэширована.")
+            else:
+                  logger.warning(f"Ошибка при расчете статистики для администратора {admin.id}: {statistics['error']}")
         except Exception as e:
-            logger.error(f"Ошибка при расчете статистики для администратора {admin.id}: {str(e)}")
+            logger.exception(f"Критическая ошибка при расчете статистики для администратора {admin.id}: {str(e)}")
 
-    # Сохраняем общую статистику в базу данных
+    # --- Сохранение ОБЩЕЙ статистики в базу данных ---
+    logger.info(f"Расчет общей статистики за {yesterday} для сохранения в БД...")
     try:
-        # Расчет общих показателей за день
-        # ИСПРАВЛЕНО: Фильтрация заказов без элементов (пустых заказов)
-        orders = Order.objects.filter(created_at__date=yesterday)
-        valid_orders = []
+        # Заказы за вчерашний день
+        orders_qs = Order.objects.filter(created_at__date=yesterday)
 
-        for order in orders:
-            if order.order_items.count() > 0:
-                valid_orders.append(order.id)
+        # --- ВАЖНО: Фильтруем "пустые" заказы (без OrderItem) ---
+        valid_order_ids = OrderItem.objects.filter(order__in=orders_qs).values_list('order_id', flat=True).distinct()
+        valid_orders_qs = orders_qs.filter(id__in=valid_order_ids)
+        total_orders = valid_orders_qs.count()
+        logger.info(f"Найдено {total_orders} валидных заказов за {yesterday}.")
 
-        # Продолжаем только с валидными заказами
-        if valid_orders:
-            orders = Order.objects.filter(id__in=valid_orders)
-            # ИЗМЕНЕНО: Фильтруем только заказы от партнеров к магазинам
-            store_orders = orders.filter(order_type='partner_to_store')
-            order_items = OrderItem.objects.filter(order__in=store_orders)
+        # Заказы В МАГАЗИНЫ (для расчета продаж, брака, бонусов)
+        store_orders_qs = valid_orders_qs.filter(order_type='partner_to_store')
+        store_order_items = OrderItem.objects.filter(order__in=store_orders_qs).select_related('product')
 
-            # Общее количество заказов
-            total_orders = len(valid_orders)
+        # Общая сумма продаж (созданный долг магазинов)
+        total_sales = store_order_items.aggregate(
+             total=Sum(F('price') * F('quantity'))
+         )['total'] or Decimal('0.00')
 
-            # Общая сумма продаж
-            total_sales = order_items.aggregate(
-                total=Sum('price', field='price * quantity')
-            ).get('total', 0) or 0
+        # Общая сумма расходов ВСЕХ ПАРТНЕРОВ за день
+        total_expenses = PartnerExpense.objects.filter(
+            expense_date=yesterday
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
 
-            # Общая сумма расходов
-            total_expenses = StoreExpense.objects.filter(
-                expense_date=yesterday
-            ).aggregate(total=Sum('amount')).get('total', 0) or 0
+        # Количество и стоимость бракованных товаров
+        defect_items = DefectItem.objects.filter(order__in=store_orders_qs).select_related('product')
+        total_defects_count = defect_items.aggregate(total=Sum('quantity'))['total'] or 0
+        total_defects_cost = sum(d.quantity * d.product.price for d in defect_items) or Decimal('0.00')
 
-            # Количество бракованных товаров
-            total_defects = DefectItem.objects.filter(
-                order__in=store_orders
-            ).aggregate(total=Sum('quantity')).get('total', 0) or 0
+        # Количество бонусных товаров
+        total_bonuses_count = store_order_items.aggregate(total=Sum('bonus_quantity'))['total'] or 0
 
-            # Количество бонусных товаров
-            total_bonuses = order_items.aggregate(
-                total=Sum('bonus_quantity')
-            ).get('total', 0) or 0
+        # Платежи по долгам за день
+        total_debt_payments = StoreDebtPayment.objects.filter(
+            payment_date__date=yesterday
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
 
-            # Платежи по долгам
-            total_debt_payments = StoreDebtPayment.objects.filter(
-                payment_date__date=yesterday
-            ).aggregate(total=Sum('amount')).get('total', 0) or 0
+        # Долги, созданные за день
+        daily_debt_created = StoreDebt.objects.filter(
+            created_at__date=yesterday
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+        # Проверка: daily_debt_created должно быть ~= total_sales
 
-            # Долги за день
-            daily_debt = StoreDebt.objects.filter(
-                created_at__date=yesterday
-            ).aggregate(total=Sum('amount')).get('total', 0) or 0
-
-            # Оставшийся долг (долги - платежи)
-            remaining_debt = daily_debt - total_debt_payments
-
-            # Сформируем дополнительные данные в формате JSON
-            additional_data = {
-                'orders_by_type': {
-                    'admin_to_partner': orders.filter(order_type='admin_to_partner').count(),
-                    'partner_to_store': store_orders.count()
-                },
-                'financial': {
-                    'total_debt': float(daily_debt),
-                    'total_payments': float(total_debt_payments),
-                    'remaining_debt': float(remaining_debt),
-                    'total_expenses': float(total_expenses)
-                },
-                'products_summary': []
+        # Сохраняем статистику в базу данных
+        stats_obj, created = FinanceStatistics.objects.update_or_create(
+            date=yesterday,
+            defaults={
+                'total_orders': total_orders,
+                'total_sales': total_sales,
+                'total_expenses': total_expenses,
+                'total_defects': total_defects_count,
+                'total_bonuses': total_bonuses_count,
+                'data_json': { # Дополнительные данные
+                    'daily_debt_created': float(daily_debt_created),
+                    'daily_payments_received': float(total_debt_payments),
+                    'daily_defect_cost': float(total_defects_cost),
+                     # Можно добавить еще что-то при необходимости
+                 }
             }
-
-            # Собираем данные по товарам
-            product_stats = {}
-            for item in order_items:
-                product_id = item.product_id
-                if product_id not in product_stats:
-                    product_stats[product_id] = {
-                        'id': product_id,
-                        'name': item.product.name,
-                        'quantity': 0,
-                        'bonus_quantity': 0,
-                        'total_price': 0
-                    }
-                product_stats[product_id]['quantity'] += item.quantity
-                product_stats[product_id]['bonus_quantity'] += (item.bonus_quantity or 0)
-                product_stats[product_id]['total_price'] += float(item.price * item.quantity)
-
-            additional_data['products_summary'] = list(product_stats.values())
-
-            # ИЗМЕНЕНО: Расчет общего баланса по новой формуле
-            # Общий баланс = доходы + оставшийся долг - расходы - бонусы - брак
-            avg_price = 0
-            if order_items.count() > 0:
-                avg_price = float(sum(item.price for item in order_items)) / order_items.count()
-
-            bonuses_value = avg_price * total_bonuses
-            defects_value = float(sum(
-                defect.quantity * defect.product.price for defect in DefectItem.objects.filter(order__in=store_orders)))
-
-            total_balance = float(total_sales) + float(remaining_debt) - float(
-                total_expenses) - bonuses_value - defects_value
-
-            # Сохраняем обновленную статистику в базу данных
-            FinanceStatistics.objects.create(
-                date=yesterday,
-                total_orders=total_orders,
-                total_sales=total_sales,
-                total_expenses=total_expenses,
-                total_defects=total_defects,
-                total_bonuses=total_bonuses,
-                data_json={
-                    **additional_data,
-                    'total_balance': total_balance,
-                    'remaining_debt': float(remaining_debt),
-                    'bonuses_value': float(bonuses_value),
-                    'defects_value': float(defects_value)
-                }
-            )
-            logger.info(f"Статистика за {yesterday} успешно сохранена")
+        )
+        if created:
+             logger.info(f"Создана запись статистики в БД за {yesterday}.")
         else:
-            # Создаем пустую статистику
-            FinanceStatistics.objects.create(
-                date=yesterday,
-                total_orders=0,
-                total_sales=0,
-                total_expenses=0,
-                total_defects=0,
-                total_bonuses=0,
-                data_json={
-                    'orders_by_type': {'admin_to_partner': 0, 'partner_to_store': 0},
-                    'financial': {'total_debt': 0, 'total_payments': 0, 'remaining_debt': 0, 'total_expenses': 0},
-                    'products_summary': [],
-                    'total_balance': 0,
-                    'bonuses_value': 0,
-                    'defects_value': 0
-                }
-            )
-            logger.info(f"Создана пустая статистика за {yesterday} (нет валидных заказов)")
+             logger.info(f"Обновлена запись статистики в БД за {yesterday}.")
 
     except Exception as e:
-        logger.error(f"Ошибка при сохранении глобальной статистики: {str(e)}")
+        logger.exception(f"Ошибка при сохранении общей статистики за {yesterday}: {str(e)}")
 
 
 @shared_task
 def run_daily_finance_statistics():
     """Запускает расчет финансовой статистики за вчерашний день"""
-    calculate_daily_finance_statistics.delay()
+    logger.info("Запуск задачи run_daily_finance_statistics...")
+    calculate_daily_finance_statistics.delay() # Используем .delay() для асинхронного вызова
+
+# Задача архивации остается без изменений, т.к. она работает с Order
 
 
 @shared_task

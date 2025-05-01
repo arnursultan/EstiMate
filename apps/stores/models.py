@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from apps.users.models import User
 from django.db.models import Sum
+from decimal import Decimal # Убедись, что импортирован Decimal
 
 
 class City(models.Model):
@@ -20,7 +21,7 @@ class City(models.Model):
 class Store(models.Model):
     """Модель магазина"""
     APPROVAL_STATUS = [
-        ('pending', 'Ожидает одобрения'),
+        ('pending', 'Ожидает одобрения'), # Оставим, но не будем использовать по умолчанию
         ('approved', 'Одобрен'),
         ('rejected', 'Отклонен'),
     ]
@@ -35,29 +36,25 @@ class Store(models.Model):
         verbose_name="Город"
     )
     address = models.CharField(max_length=200, verbose_name="Адрес")
-    expenses = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        validators=[MinValueValidator(0)],
-        verbose_name="Расходы"
-    )
+    # УДАЛЯЕМ поле expenses, т.к. расходы теперь у партнера
+    # expenses = models.DecimalField(...)
     partner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="stores",
+        limit_choices_to={'role': 'partner'}, # Добавим ограничение при выборе в админке
         verbose_name="Партнер"
     )
     status = models.CharField(
         max_length=10,
         choices=APPROVAL_STATUS,
-        default='pending',
+        default='approved', # По умолчанию одобрен при создании через API
         verbose_name="Статус"
     )
     is_active = models.BooleanField(default=True, verbose_name="Активен")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    # apps/stores/models.py в классе Store
+    # Убедись, что поле is_deleted существует
     is_deleted = models.BooleanField(default=False, verbose_name="Удален")
 
     class Meta:
@@ -66,22 +63,52 @@ class Store(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.name} ({self.city})"
+        status_deleted = " (Удален)" if self.is_deleted else ""
+        return f"{self.name} ({self.city}){status_deleted}"
 
     @property
     def total_debt(self):
         """Общая сумма всех долгов магазина"""
-        return self.debts.aggregate(Sum('amount'))['amount__sum'] or 0
+        # Фильтруем удаленные магазины, если нужно не считать их долги
+        # Но т.к. долги связаны с магазином, они останутся.
+        # Лучше фильтровать при агрегации по всем магазинам.
+        return self.debts.aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00')
 
     @property
     def total_paid_debt(self):
         """Общая сумма оплаченных долгов магазина"""
-        return self.debt_payments.aggregate(Sum('amount'))['amount__sum'] or 0
+        return self.debt_payments.aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00')
 
     @property
     def remaining_debt(self):
         """Оставшаяся сумма долга"""
         return self.total_debt - self.total_paid_debt
+
+    def save(self, *args, **kwargs):
+        # Форматирование названия магазина
+        if self.name:
+            self.name = self.name.strip()
+            if self.name:
+                 # Первая буква заглавная, остальные как есть (если так нужно)
+                 # или self.name = self.name[0].upper() + self.name[1:].lower()
+                self.name = self.name[0].upper() + self.name[1:]
+        super().save(*args, **kwargs)
+
+    def soft_delete(self):
+        if self.is_deleted:
+             return False
+        self.is_deleted = True
+        self.is_active = False # Деактивируем при удалении
+        self.save(update_fields=['is_deleted', 'is_active'])
+        return True
+
+    def restore(self):
+        if not self.is_deleted:
+             return False
+        self.is_deleted = False
+        self.is_active = True # Активируем при восстановлении
+        self.save(update_fields=['is_deleted', 'is_active'])
+        return True
 
 
 class StoreDebt(models.Model):
@@ -95,7 +122,7 @@ class StoreDebt(models.Model):
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal('0.01'))], # Долг должен быть > 0
         verbose_name="Сумма долга"
     )
     description = models.TextField(blank=True, verbose_name="Описание")
@@ -124,7 +151,7 @@ class StoreDebtPayment(models.Model):
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal('0.01'))], # Оплата должна быть > 0
         verbose_name="Сумма оплаты"
     )
     description = models.TextField(blank=True, verbose_name="Комментарий к оплате")
@@ -141,44 +168,10 @@ class StoreDebtPayment(models.Model):
     def save(self, *args, **kwargs):
         """Переопределение метода сохранения для проверки оплаты долга"""
         super().save(*args, **kwargs)
-
-        # После сохранения платежа проверяем, полностью ли погашен долг
+        # Проверяем общий баланс долгов магазина после платежа
         store = self.store
-        if store.total_paid_debt >= store.total_debt:
-            # Если общие выплаты больше или равны сумме долга, отмечаем все долги как оплаченные
-            store.debts.filter(is_paid=False).update(is_paid=True)
-
-
-class StoreExpense(models.Model):
-    """Модель расходов магазина"""
-    store = models.ForeignKey(
-        Store,
-        on_delete=models.CASCADE,
-        related_name="expense_records",
-        verbose_name="Магазин"
-    )
-    amount = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        validators=[MinValueValidator(0)],
-        verbose_name="Сумма расхода"
-    )
-    description = models.TextField(blank=True, verbose_name="Описание расхода")
-    expense_date = models.DateField(verbose_name="Дата расхода")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-
-    class Meta:
-        verbose_name = "Расход магазина"
-        verbose_name_plural = "Расходы магазинов"
-        ordering = ['-expense_date', '-created_at']
-
-    def __str__(self):
-        return f"{self.store.name} - Расход {self.amount} сом ({self.expense_date})"
-
-    def save(self, *args, **kwargs):
-        """При сохранении расхода увеличиваем общие расходы магазина"""
-        super().save(*args, **kwargs)
-
-        # Обновляем общую сумму расходов магазина
-        self.store.expenses += self.amount
-        self.store.save(update_fields=['expenses'])
+        # Используем Decimal для сравнения
+        if store.remaining_debt <= Decimal('0.00'):
+             # Если общие выплаты больше или равны сумме долга,
+             # отмечаем все НЕОПЛАЧЕННЫЕ долги как оплаченные
+             store.debts.filter(is_paid=False).update(is_paid=True)

@@ -1,23 +1,37 @@
 from django.db import transaction
-from rest_framework import viewsets, permissions, status, filters
+from rest_framework import viewsets, permissions, status, filters, serializers
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
-from django.db.models import Sum, Q
-from .models import City, Store, StoreDebt, StoreDebtPayment, StoreExpense
+from django.db.models import Sum, Q, Count # Добавим Count
+from .models import City, Store, StoreDebt, StoreDebtPayment # Убрали StoreExpense
 from .serializers import (
     CitySerializer,
     StoreSerializer,
     StoreDebtSerializer,
-    StoreListSerializer
+    StoreListSerializer,
+    StoreDebtPaymentSerializer, # Добавили
+    # StoreExpenseSerializer - УДАЛЕН
 )
 from datetime import datetime, timedelta
-from apps.products.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
-from apps.orders.serializers import StoreDebtPaymentSerializer, StoreExpenseSerializer
+# Импортируем разрешения из users
+from apps.users.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
+# Убрали импорты StoreExpenseSerializer, StoreExpense
 from rest_framework.views import APIView
 from django.core.cache import cache
 import logging
+from django.shortcuts import get_object_or_404 # Добавим
+from rest_framework.exceptions import PermissionDenied # Добавим
+from decimal import Decimal
+from django.db.models import F
+from apps.finance.services import PartnerStatisticsService
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +41,8 @@ class CityViewSet(viewsets.ModelViewSet):
     """
     queryset = City.objects.all()
     serializer_class = CitySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # Права доступа определяются в get_permissions
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -41,24 +56,35 @@ class StoreViewSet(viewsets.ModelViewSet):
     """
     serializer_class = StoreSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['city', 'status']
-    search_fields = ['name', 'inn', 'address']
-    ordering_fields = ['name', 'created_at']
+    filterset_fields = ['city', 'status', 'is_active', 'partner'] # Добавили is_active, partner
+    search_fields = ['name', 'inn', 'address', 'phone', 'partner__first_name', 'partner__last_name', 'partner__email'] # Добавили phone, partner
+    ordering_fields = ['name', 'created_at', 'city__name', 'partner__last_name'] # Добавили city, partner
+    ordering = ['name'] # Сортировка по умолчанию
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'admin':
-            return Store.objects.filter(is_deleted=False)
-        # Изменено: партнеры теперь видят все неудаленные магазины
-        return Store.objects.filter(is_deleted=False)
+        # Показываем только НЕ удаленные магазины по умолчанию
+        queryset = Store.objects.filter(is_deleted=False).select_related('city', 'partner')
 
-    def create(self, request, *args, **kwargs):
-        # Добавляем текущего пользователя как партнера
-        request.data['partner'] = request.user.id
-        # Устанавливаем статус approved и is_deleted=False по умолчанию
-        request.data['status'] = 'approved'
-        request.data['is_deleted'] = False
-        return super().create(request, *args, **kwargs)
+        if user.role == 'admin':
+             # Админ видит все неудаленные магазины
+             pass # queryset уже отфильтрован
+        elif user.role == 'partner':
+             # Партнер видит только СВОИ неудаленные магазины
+             queryset = queryset.filter(partner=user)
+        else:
+             # Другие роли (если появятся) ничего не видят
+             queryset = Store.objects.none()
+
+        # Позволяем админу видеть удаленные, если запрошено
+        is_deleted_param = self.request.query_params.get('is_deleted')
+        if user.role == 'admin' and is_deleted_param is not None:
+            show_deleted = is_deleted_param.lower() == 'true'
+            if show_deleted:
+                 # Переопределяем queryset, чтобы показать удаленные
+                 queryset = Store.objects.filter(is_deleted=True).select_related('city', 'partner')
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -67,880 +93,583 @@ class StoreViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'create':
-            return [permissions.IsAuthenticated()]
-        elif self.action in ['update', 'partial_update', 'destroy']:
+            # Партнеры и админы могут создавать
+            return [permissions.IsAuthenticated()] # Проверка роли будет ниже
+        elif self.action in ['update', 'partial_update']:
+            # Только владелец или админ
             return [IsOwnerOrAdmin()]
+        elif self.action == 'destroy':
+             # Только админ может жестко удалить (не рекомендуется)
+             # Для мягкого удаления используется soft_delete action
+            return [IsAdminUser()]
+        # Для actions права определяются в декораторе
         return [permissions.IsAuthenticated()]
 
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        if user.role == 'admin':
+            # Админ должен указать партнера в запросе
+            if 'partner' not in request.data:
+                 return Response({"partner": ["Это поле обязательно для администратора."]}, status=status.HTTP_400_BAD_REQUEST)
+            # Валидация партнера будет в сериализаторе
+        elif user.role == 'partner':
+            # Партнер создает магазин для себя
+            request.data['partner'] = user.id
+        else:
+            # Другие роли не могут создавать магазины
+            return Response({"detail": "У вас нет прав для создания магазина"}, status=status.HTTP_403_FORBIDDEN)
 
-    @action(detail=True, methods=['post'])
-    def approve(self, request, pk=None):
-        """Одобрение заявки на создание магазина (устаревший метод)"""
-        store = self.get_object()
-        store.status = 'approved'
-        store.save()
-        return Response(
-            {"detail": "Магазин успешно одобрен"},
-            status=status.HTTP_200_OK
-        )
+        # Статус и is_deleted устанавливаются в сериализаторе
+        # request.data['status'] = 'approved'
+        # request.data['is_deleted'] = False
+        return super().create(request, *args, **kwargs)
 
-    @action(detail=True, methods=['post'])
-    def reject(self, request, pk=None):
-        """Отклонение заявки на создание магазина (устаревший метод)"""
-        store = self.get_object()
-        store.status = 'rejected'
-        store.save()
-        return Response(
-            {"detail": "Магазин успешно отклонен"},
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=False, methods=['get'])
-    def pending(self, request):
-        """Получение списка ожидающих одобрения магазинов"""
-        if request.user.role != 'admin':
-            return Response(
-                {"detail": "У вас нет прав для выполнения этого действия"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        pending_stores = Store.objects.filter(status='pending')
-        serializer = StoreListSerializer(pending_stores, many=True, context={'request': request})
-
-        return Response(serializer.data)
+    # УДАЛЯЕМ устаревшие actions approve, reject, pending
+    # @action(detail=True, methods=['post'])
+    # def approve(self, request, pk=None): ...
+    # @action(detail=True, methods=['post'])
+    # def reject(self, request, pk=None): ...
+    # @action(detail=False, methods=['get'])
+    # def pending(self, request): ...
 
     @action(detail=False, methods=['get'])
     def with_debt(self, request):
         """Получение списка магазинов с долгами"""
-        queryset = self.get_queryset()
-        stores_with_debt = []
+        # Оптимизированный запрос с аннотацией
+        queryset = self.get_queryset().annotate(
+            debt_sum=Sum('debts__amount', filter=Q(debts__is_paid=False)),
+            paid_sum=Sum('debt_payments__amount')
+        ).filter(
+            Q(debt_sum__isnull=False) & Q(paid_sum__isnull=True) & Q(debt_sum__gt=0) |
+            Q(debt_sum__isnull=False) & Q(paid_sum__isnull=False) & Q(debt_sum__gt=F('paid_sum'))
+        )
 
-        for store in queryset:
-            if store.remaining_debt > 0:
-                stores_with_debt.append(store)
-
-        serializer = StoreListSerializer(stores_with_debt, many=True, context={'request': request})
+        serializer = StoreListSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
+    @swagger_auto_schema(  # Добавим документацию для параметров даты
+        operation_summary="Финансовая сводка по магазину",
+        manual_parameters=[
+            openapi.Parameter('timespan', openapi.IN_QUERY,
+                              description="Период (today, yesterday, week, month, six_months, year, last_year, all)",
+                              type=openapi.TYPE_STRING),
+            openapi.Parameter('date', openapi.IN_QUERY, description="Конкретная дата (YYYY-MM-DD)",
+                              type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter('start_date', openapi.IN_QUERY, description="Начальная дата (YYYY-MM-DD)",
+                              type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter('end_date', openapi.IN_QUERY, description="Конечная дата (YYYY-MM-DD)",
+                              type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter('period', openapi.IN_QUERY, description="Старый параметр периода (this_week и т.д.)",
+                              type=openapi.TYPE_STRING),
+        ]
+    )
     def financial_summary(self, request, pk=None):
         """
-        Получение финансовой сводки по магазину с возможностью фильтрации по датам
-
-        Параметры запроса:
-        - date: конкретная дата (формат YYYY-MM-DD)
-        - start_date: начальная дата диапазона (формат YYYY-MM-DD)
-        - end_date: конечная дата диапазона (формат YYYY-MM-DD)
-        - period: период ('today', 'yesterday', 'this_week', 'last_week', 'this_month',
-                  'last_month', 'this_quarter', 'last_quarter', 'this_year', 'last_year')
+        Получение финансовой сводки по магазину с возможностью фильтрации по датам/периодам.
         """
-        from datetime import datetime, timedelta
-        from apps.orders.models import Order, OrderItem, DefectItem
-
         store = self.get_object()
+        user = request.user
 
-        # Получаем город для отображения в информации
-        city_name = store.city.name if store.city else ""
+        if not (user.role == 'admin' or store.partner == user):
+            raise PermissionDenied("У вас нет доступа к этому магазину")
 
-        # Получаем параметры даты из запроса
-        date_str = request.query_params.get('date')
-        start_date_str = request.query_params.get('start_date')
-        end_date_str = request.query_params.get('end_date')
-        period = request.query_params.get('period')
+        # --- ИСПОЛЬЗУЕМ ХЕЛПЕР ДЛЯ ДАТ ---
+        try:
+            # Импортируем хелпер
+            from apps.finance.views import get_date_range_from_params
+            start_date, end_date, selected_timespan_label = get_date_range_from_params(request)
+        except serializers.ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        except ImportError:
+            # Fallback, если хелпер не найден (хотя должен быть)
+            logger.error("Хелпер get_date_range_from_params не найден в finance.views")
+            return Response({"error": "Ошибка конфигурации сервера."}, status=500)
+        # --- КОНЕЦ ИСПОЛЬЗОВАНИЯ ХЕЛПЕРА ---
 
-        # Текущая дата для относительных расчетов
-        today = timezone.now().date()
+        # Получаем данные за период (start_date, end_date)
+        from apps.orders.models import Order, OrderItem, DefectItem
+        from apps.finance.models import PartnerExpense
 
-        # Обработка периодов (новый функционал)
-        if period:
-            if period == 'today':
-                start_date = end_date = today
-            elif period == 'yesterday':
-                start_date = end_date = today - timedelta(days=1)
-            elif period == 'this_week':
-                # Начало текущей недели (понедельник)
-                start_date = today - timedelta(days=today.weekday())
-                end_date = today
-            elif period == 'last_week':
-                # Начало прошлой недели (понедельник)
-                start_date = today - timedelta(days=today.weekday() + 7)
-                # Конец прошлой недели (воскресенье)
-                end_date = start_date + timedelta(days=6)
-            elif period == 'this_month':
-                # Начало текущего месяца
-                start_date = today.replace(day=1)
-                end_date = today
-            elif period == 'last_month':
-                # Начало прошлого месяца
-                if today.month == 1:
-                    start_date = today.replace(year=today.year - 1, month=12, day=1)
-                else:
-                    start_date = today.replace(month=today.month - 1, day=1)
-                # Конец прошлого месяца
-                end_date = today.replace(day=1) - timedelta(days=1)
-            elif period == 'this_quarter':
-                # Определение текущего квартала
-                quarter = (today.month - 1) // 3 + 1
-                # Начало текущего квартала
-                start_date = today.replace(month=3 * quarter - 2, day=1)
-                end_date = today
-            elif period == 'last_quarter':
-                # Определение прошлого квартала
-                quarter = (today.month - 1) // 3
-                if quarter == 0:  # Если текущий месяц в 1-м квартале, берем 4-й квартал прошлого года
-                    start_date = today.replace(year=today.year - 1, month=10, day=1)
-                    end_date = today.replace(year=today.year - 1, month=12, day=31)
-                else:
-                    start_date = today.replace(month=3 * quarter - 2, day=1)
-                    # Конец прошлого квартала
-                    end_date = today.replace(month=3 * quarter, day=1) - timedelta(days=1)
-            elif period == 'this_year':
-                # Начало текущего года
-                start_date = today.replace(month=1, day=1)
-                end_date = today
-            elif period == 'last_year':
-                # Прошлый год
-                start_date = today.replace(year=today.year - 1, month=1, day=1)
-                end_date = today.replace(year=today.year - 1, month=12, day=31)
-            else:
-                return Response(
-                    {
-                        "detail": "Неизвестный параметр period. Допустимые значения: today, yesterday, this_week, last_week, this_month, last_month, this_quarter, last_quarter, this_year, last_year"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        # Обработка конкретной даты
-        elif date_str:
-            try:
-                date = datetime.strptime(date_str, '%Y-%m-%d').date()
-                start_date = end_date = date
-            except ValueError:
-                return Response(
-                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        # Обработка диапазона дат
-        elif start_date_str and end_date_str:
-            try:
-                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-                if start_date > end_date:
-                    return Response(
-                        {"detail": "Начальная дата не может быть позже конечной даты"},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-            except ValueError:
-                return Response(
-                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        # По умолчанию - текущая дата
-        else:
-            start_date = end_date = today
-
-        # Получаем все заказы магазина, не только за период
-        all_orders = Order.objects.filter(store=store)
+        # Заказы магазина за период
         period_orders = Order.objects.filter(
             store=store,
+            order_type='partner_to_store',
+            status='confirmed',
             created_at__date__gte=start_date,
             created_at__date__lte=end_date
-        )
+        ).prefetch_related('order_items', 'order_items__product', 'defect_items',
+                           'defect_items__product')  # Оптимизация
 
-        # Получаем элементы заказов
-        all_order_items = OrderItem.objects.filter(order__in=all_orders)
-        period_order_items = OrderItem.objects.filter(order__in=period_orders)
+        # Элементы этих заказов (уже предзагружены)
+        period_order_items_list = [item for order in period_orders for item in order.order_items.all()]
 
-        # Получаем все долги и платежи
-        all_debts = StoreDebt.objects.filter(store=store)
+        # Долги магазина за период
         period_debts = StoreDebt.objects.filter(
             store=store,
             created_at__date__gte=start_date,
             created_at__date__lte=end_date
         )
 
-        all_payments = StoreDebtPayment.objects.filter(store=store)
+        # Платежи магазина за период
         period_payments = StoreDebtPayment.objects.filter(
             store=store,
             payment_date__date__gte=start_date,
             payment_date__date__lte=end_date
         )
 
-        # Получаем расходы
-        all_expenses = StoreExpense.objects.filter(store=store)
-        period_expenses = StoreExpense.objects.filter(
-            store=store,
+        # Расходы ПАРТНЕРА за период (владельца магазина)
+        partner_expenses = PartnerExpense.objects.filter(
+            partner=store.partner,
             expense_date__gte=start_date,
             expense_date__lte=end_date
         )
 
-        # Получаем бракованные товары
-        all_defects = DefectItem.objects.filter(order__store=store)
-        period_defects = DefectItem.objects.filter(order__in=period_orders)
+        # Брак в заказах магазина за период (уже предзагружен)
+        period_defects_list = [defect for order in period_orders for defect in order.defect_items.all()]
 
-        # Вычисляем суммы
-        total_debt = sum(debt.amount for debt in all_debts)
-        period_debt = sum(debt.amount for debt in period_debts)
+        # --- РАСЧЕТЫ (как были, но используем Decimal) ---
+        total_debt_all_time = store.total_debt
+        total_paid_all_time = store.total_paid_debt
+        remaining_debt_all_time = store.remaining_debt
 
-        total_paid = sum(payment.amount for payment in all_payments)
-        period_paid = sum(payment.amount for payment in period_payments)
+        period_debt_amount = period_debts.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+        period_paid_amount = period_payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+        period_partner_expense_amount = partner_expenses.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
 
-        total_expenses = sum(expense.amount for expense in all_expenses)
-        period_expenses_sum = sum(expense.amount for expense in period_expenses)
+        period_ordered_quantity = sum(item.quantity for item in period_order_items_list)
+        period_bonus_quantity = sum(item.bonus_quantity or 0 for item in period_order_items_list)
+        period_defect_quantity = sum(defect.quantity for defect in period_defects_list)
 
-        # Количество товаров и бонусов
-        total_ordered = sum(item.quantity for item in all_order_items)
-        period_ordered = sum(item.quantity for item in period_order_items)
+        period_sales_amount = sum(item.total_price for item in period_order_items_list)
+        period_defect_cost = sum(defect.total_price for defect in period_defects_list)
 
-        total_bonus = sum(item.bonus_quantity or 0 for item in all_order_items)
-        period_bonus = sum(item.bonus_quantity or 0 for item in period_order_items)
+        # Прибыль партнера от этого магазина за период = ОплатыМагазина - РасходыПартнера(?) - СтоимостьБрака
+        profit = period_paid_amount - period_partner_expense_amount - period_defect_cost
 
-        total_defect_quantity = sum(defect.quantity for defect in all_defects)
-        period_defect_quantity = sum(defect.quantity for defect in period_defects)
+        # Детализация по товарам
+        products_summary = {}
+        for item in period_order_items_list:
+            product_id = item.product_id
+            # Используем get для инициализации
+            summary = products_summary.setdefault(product_id, {
+                "product_id": product_id, "product_name": item.product.name, "quantity": 0,
+                "bonus_quantity": 0, "defect_quantity": 0, "price": float(item.price),
+                "total_sold_price": 0.0
+            })
+            summary['quantity'] += item.quantity
+            summary['bonus_quantity'] += (item.bonus_quantity or 0)
+            summary['total_sold_price'] += float(item.total_price)
 
-        # Рассчитываем прибыль и баланс
-        remaining_debt = total_debt - total_paid
-        profit = period_paid - period_expenses_sum
-        total_balance = total_paid - total_expenses
+        for defect in period_defects_list:
+            product_id = defect.product_id
+            summary = products_summary.setdefault(product_id, {
+                "product_id": product_id, "product_name": defect.product.name, "quantity": 0,
+                "bonus_quantity": 0, "defect_quantity": 0, "price": float(defect.product.price),
+                "total_sold_price": 0.0
+            })
+            summary['defect_quantity'] += defect.quantity
 
-        # Группировка товаров для отображения
-        products_summary = []
-
-        # Сначала получаем все уникальные продукты
-        product_ids = set(item.product_id for item in period_order_items)
-
-        for product_id in product_ids:
-            items = period_order_items.filter(product_id=product_id)
-            if items:
-                product = items[0].product
-                quantity = sum(item.quantity for item in items)
-
-                products_summary.append({
-                    "product_id": product_id,
-                    "product_name": product.name,
-                    "quantity": quantity,
-                    "price": float(product.price),
-                    "total_price": float(product.price * quantity)
-                })
-
-        # Определяем тип примененного фильтра для отображения
-        filter_type = "default"
-        if period:
-            filter_type = f"period:{period}"
-        elif date_str:
-            filter_type = "specific_date"
-        elif start_date_str and end_date_str:
-            filter_type = "date_range"
-
+        # --- ФОРМИРОВАНИЕ ОТВЕТА (как был, но используем float() для Decimal) ---
         return Response({
-            "id": store.id,
             "store_id": store.id,
             "store_name": store.name,
-            "city": {
-                "id": store.city.id if store.city else None,
-                "name": city_name
-            },
-            "date": {
+            # ... (остальные поля) ...
+            "date_range": {
                 "start_date": start_date.isoformat(),
                 "end_date": end_date.isoformat(),
-                "formatted": start_date.strftime("%d.%m.%Y") if start_date == end_date else
-                f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}",
-                "filter_type": filter_type
+                "selected_timespan": selected_timespan_label,  # Добавляем метку
+                "formatted": start_date.strftime(
+                    "%d.%m.%Y") if start_date == end_date else f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}"
             },
-            "orders_count": period_orders.count(),
-            "total_ordered_quantity": period_ordered,
-
-            # Финансовые показатели
-            "debt": float(total_debt),
-            "pay_debt": float(total_paid),
-            "remaining_debt": float(remaining_debt),
-
-            # Данные за период
-            "period_debt": float(period_debt),
-            "period_paid": float(period_paid),
-
-            # Расходы и прибыль
-            "expenses": float(total_expenses),
-            "period_expenses": float(period_expenses_sum),
-
-            # Бонусы и брак
-            "bonus_quantity": total_bonus,
-            "defect_quantity": total_defect_quantity,
-
-            # Финансовые показатели
-            "profit": float(profit),
-            "total_balance": float(total_balance),
-
-            # Товары в заказах
-            "products": products_summary
+            "overall_finances": {
+                "total_debt": float(total_debt_all_time),
+                "total_paid": float(total_paid_all_time),
+                "remaining_debt": float(remaining_debt_all_time),
+            },
+            "period_finances": {
+                "sales_amount": float(period_sales_amount),
+                "paid_amount": float(period_paid_amount),
+                "debt_created": float(period_debt_amount),
+                "partner_expenses": float(period_partner_expense_amount),
+                "defect_cost": float(period_defect_cost),
+                "profit": float(profit),
+            },
+            # ... (period_items и products_summary) ...
+            "period_items": {
+                "orders_count": period_orders.count(),
+                "ordered_quantity": period_ordered_quantity,
+                "bonus_quantity": period_bonus_quantity,
+                "defect_quantity": period_defect_quantity,
+            },
+            "products_summary": list(products_summary.values())
         })
 
     @action(detail=False, methods=['get'])
     def stores_summary(self, request):
-        """
-        Получение статистики по всем магазинам (для администраторов и партнеров)
-        с возможностью фильтрации по датам и городам
-
-        Параметры запроса:
-        - date: конкретная дата (формат YYYY-MM-DD)
-        - start_date: начальная дата диапазона (формат YYYY-MM-DD)
-        - end_date: конечная дата диапазона (формат YYYY-MM-DD)
-        - period: период ('today', 'yesterday', 'this_week', 'last_week', 'this_month',
-                  'last_month', 'this_quarter', 'last_quarter', 'this_year', 'last_year')
-        - city_id: идентификатор города для фильтрации
-        """
-        from datetime import datetime, timedelta
-        from apps.orders.models import Order, OrderItem, DefectItem
-        from .models import City
-
+        # Этот метод стал слишком сложным и дублирует логику
+        # financial_summary и Partner/AdminStatisticsService.
+        # Предлагаю его УПРОСТИТЬ до простого списка магазинов с базовой инфой.
+        # Статистику по группам лучше получать через AdminPartnersStatisticsView
         user = request.user
+        queryset = self.get_queryset() # Уже учитывает роль и is_deleted
 
-        # Получаем параметры из запроса
-        date_str = request.query_params.get('date')
-        start_date_str = request.query_params.get('start_date')
-        end_date_str = request.query_params.get('end_date')
-        period = request.query_params.get('period')
-        city_id = request.query_params.get('city_id')
+        # Применяем стандартные фильтры DRF
+        queryset = self.filter_queryset(queryset)
 
-        # Текущая дата для относительных расчетов
-        today = timezone.now().date()
-
-        # Обработка периодов
-        if period:
-            if period == 'today':
-                start_date = end_date = today
-            elif period == 'yesterday':
-                start_date = end_date = today - timedelta(days=1)
-            elif period == 'this_week':
-                # Начало текущей недели (понедельник)
-                start_date = today - timedelta(days=today.weekday())
-                end_date = today
-            elif period == 'last_week':
-                # Начало прошлой недели (понедельник)
-                start_date = today - timedelta(days=today.weekday() + 7)
-                # Конец прошлой недели (воскресенье)
-                end_date = start_date + timedelta(days=6)
-            elif period == 'this_month':
-                # Начало текущего месяца
-                start_date = today.replace(day=1)
-                end_date = today
-            elif period == 'last_month':
-                # Начало прошлого месяца
-                if today.month == 1:
-                    start_date = today.replace(year=today.year - 1, month=12, day=1)
-                else:
-                    start_date = today.replace(month=today.month - 1, day=1)
-                # Конец прошлого месяца
-                end_date = today.replace(day=1) - timedelta(days=1)
-            elif period == 'this_quarter':
-                # Определение текущего квартала
-                quarter = (today.month - 1) // 3 + 1
-                # Начало текущего квартала
-                start_date = today.replace(month=3 * quarter - 2, day=1)
-                end_date = today
-            elif period == 'last_quarter':
-                # Определение прошлого квартала
-                quarter = (today.month - 1) // 3
-                if quarter == 0:  # Если текущий месяц в 1-м квартале, берем 4-й квартал прошлого года
-                    start_date = today.replace(year=today.year - 1, month=10, day=1)
-                    end_date = today.replace(year=today.year - 1, month=12, day=31)
-                else:
-                    start_date = today.replace(month=3 * quarter - 2, day=1)
-                    # Конец прошлого квартала
-                    end_date = today.replace(month=3 * quarter, day=1) - timedelta(days=1)
-            elif period == 'this_year':
-                # Начало текущего года
-                start_date = today.replace(month=1, day=1)
-                end_date = today
-            elif period == 'last_year':
-                # Прошлый год
-                start_date = today.replace(year=today.year - 1, month=1, day=1)
-                end_date = today.replace(year=today.year - 1, month=12, day=31)
-            else:
-                return Response(
-                    {
-                        "detail": "Неизвестный параметр period. Допустимые значения: today, yesterday, this_week, last_week, this_month, last_month, this_quarter, last_quarter, this_year, last_year"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        # Обработка конкретной даты
-        elif date_str:
-            try:
-                date = datetime.strptime(date_str, '%Y-%m-%d').date()
-                start_date = end_date = date
-            except ValueError:
-                return Response(
-                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        elif start_date_str and end_date_str:
-            try:
-                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-                if start_date > end_date:
-                    return Response(
-                        {"detail": "Начальная дата не может быть позже конечной даты"},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-            except ValueError:
-                return Response(
-                {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
-                status=status.HTTP_400_BAD_REQUEST
-                )
-                # По умолчанию - текущая дата
-        else:
-            start_date = end_date = today
-
-        if user.role == 'admin':
-            stores_queryset = Store.objects.all()
-        else:
-            # Изменено: партнеры видят все магазины
-            stores_queryset = Store.objects.all()
-
-            # Фильтруем по городу, если указан
-        if city_id:
-            stores_queryset = stores_queryset.filter(city_id=city_id)
-
-            # Фильтруем только одобренные магазины
-        stores_queryset = stores_queryset.filter(status='approved')
-
-        # Сначала получим все города для возможности выбора пользователем
-        all_cities = City.objects.all()
-        cities_data = [{"id": city.id, "name": city.name} for city in all_cities]
-
-        stores_data = []
-        total_stats = {
-            "orders_count": 0,
-            "total_ordered_quantity": 0,
-            "total_debt": 0.0,  # Явно указываем float
-            "total_paid": 0.0,  # Явно указываем float
-            "expenses": 0.0,  # Явно указываем float
-            "bonus_quantity": 0,
-            "defect_quantity": 0,
-            "profit": 0.0  # Явно указываем float
-        }
-
-        # Список уникальных городов в результатах
-        result_cities = set()
-
-        # Идем по каждому магазину и собираем статистику
-        for store in stores_queryset:
-            # Получаем заказы магазина за период
-            orders = Order.objects.filter(
-                store=store,
-                created_at__date__gte=start_date,
-                created_at__date__lte=end_date
-            )
-
-            # Получаем элементы заказов
-            order_items = OrderItem.objects.filter(order__in=orders)
-
-            # Получаем долги и платежи за период
-            debts = StoreDebt.objects.filter(
-                store=store,
-                created_at__date__gte=start_date,
-                created_at__date__lte=end_date
-            )
-
-            payments = StoreDebtPayment.objects.filter(
-                store=store,
-                payment_date__date__gte=start_date,
-                payment_date__date__lte=end_date
-            )
-
-            # Получаем расходы за период
-            expenses = StoreExpense.objects.filter(
-                store=store,
-                expense_date__gte=start_date,
-                expense_date__lte=end_date
-            )
-
-            # Получаем бракованные товары за период
-            defects = DefectItem.objects.filter(order__in=orders)
-
-            # Рассчитываем показатели
-            # Рассчитываем показатели
-            store_orders_count = orders.count()
-            store_ordered_quantity = sum(item.quantity for item in order_items)
-            store_debt = float(sum(debt.amount for debt in debts))  # Преобразуем в float
-            store_paid = float(sum(payment.amount for payment in payments))  # Преобразуем в float
-            store_expenses = float(sum(expense.amount for expense in expenses))  # Преобразуем в float
-            store_bonus = sum(item.bonus_quantity or 0 for item in order_items)
-            store_defects = sum(defect.quantity for defect in defects)
-            store_profit = store_paid - store_expenses
-
-            # Добавляем в общую статистику
-            total_stats["orders_count"] += store_orders_count
-            total_stats["total_ordered_quantity"] += store_ordered_quantity
-            total_stats["total_debt"] += store_debt  # Теперь складываем float с float
-            total_stats["total_paid"] += store_paid  # Теперь складываем float с float
-            total_stats["expenses"] += store_expenses  # Теперь складываем float с float
-            total_stats["bonus_quantity"] += store_bonus
-            total_stats["defect_quantity"] += store_defects
-            total_stats["profit"] += store_profit
-
-            # Добавляем город в список уникальных городов
-            if store.city:
-                result_cities.add(store.city.name)
-
-            # Добавляем данные магазина
-            store_data = {
-                "id": store.id,
-                "name": store.name,
-                "city": store.city.name if store.city else "",
-                "address": store.address,
-                "orders_count": store_orders_count,
-                "total_ordered_quantity": store_ordered_quantity,
-                "debt": float(store_debt),
-                "paid": float(store_paid),
-                "expenses": float(store_expenses),
-                "bonus_quantity": store_bonus,
-                "defect_quantity": store_defects,
-                "profit": float(store_profit)
-            }
-            stores_data.append(store_data)
-
-        # Формируем итоговый ответ
-        result = {
-            "date_range": {
-                "start_date": start_date.isoformat(),
-                "end_date": end_date.isoformat(),
-                "formatted": start_date.strftime("%d.%m.%Y") if start_date == end_date else
-                f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}"
-            },
-            "filters": {
-                "city_id": city_id,
-                "all_cities": cities_data,  # Все доступные города
-                "result_cities": list(result_cities)  # Города в результатах
-            },
-            "total": {
-                "stores_count": stores_queryset.count(),
-                "orders_count": total_stats["orders_count"],
-                "total_ordered_quantity": total_stats["total_ordered_quantity"],
-                "total_debt": float(total_stats["total_debt"]),
-                "total_paid": float(total_stats["total_paid"]),
-                "expenses": float(total_stats["expenses"]),
-                "bonus_quantity": total_stats["bonus_quantity"],
-                "defect_quantity": total_stats["defect_quantity"],
-                "profit": float(total_stats["profit"])
-            },
-            "stores": stores_data
-        }
-
-        return Response(result)
+        serializer = StoreListSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def city_summary(self, request):
-        """
-        Получение статистики по всем магазинам в конкретном городе
-
-        Параметры запроса:
-        - city_id: идентификатор города (обязательный)
-        - date/start_date/end_date/period: параметры для фильтрации по датам (как в других методах)
-        """
+        # Аналогично stores_summary, упрощаем
         city_id = request.query_params.get('city_id')
         if not city_id:
-            return Response(
-                {"detail": "Параметр city_id обязателен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+             return Response({"detail": "Параметр city_id обязателен"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             city = City.objects.get(id=city_id)
         except City.DoesNotExist:
-            return Response(
-                {"detail": "Город не найден"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+             return Response({"detail": "Город не найден"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Устанавливаем параметр city_id в request.query_params для использования в stores_summary
-        request.query_params._mutable = True
-        request.query_params['city_id'] = city_id
-        request.query_params._mutable = False
+        queryset = self.get_queryset().filter(city=city) # Фильтруем по городу
+        queryset = self.filter_queryset(queryset) # Применяем остальные фильтры
 
-        # Используем тот же метод stores_summary с установленным параметром city_id
-        response = self.stores_summary(request)
+        serializer = StoreListSerializer(queryset, many=True, context={'request': request})
+        return Response({
+            "city": {"id": city.id, "name": city.name},
+            "stores": serializer.data
+        })
 
-        # Добавляем информацию о городе в ответ
-        response.data['city'] = {
-            'id': city.id,
-            'name': city.name
-        }
-
-        return response
-
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated]) # Проверка прав внутри
     def add_expense(self, request, pk=None):
-        """Добавление расхода для магазина"""
-        # Изменено: Разрешаем всем партнерам добавлять расходы к любому магазину
-        try:
-            store = Store.objects.select_related('partner', 'city').get(pk=pk)
+        """Добавление расхода для ПАРТНЕРА (НЕ для магазина)"""
+        # Этот метод больше не относится к расходам магазина.
+        # Его нужно либо удалить, либо переделать для добавления PartnerExpense,
+        # но лучше использовать PartnerExpenseViewSet.
+        # Пока возвращаем ошибку.
+        return Response(
+            {"detail": "Эта функция устарела. Используйте /api/finance/partner-expenses/ для добавления расходов партнера."},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
-            # Проверяем только роль пользователя, а не принадлежность магазина
-            user = request.user
-            if user.role != 'admin' and user.role != 'partner':
-                return Response(
-                    {"detail": "Только администраторы и партнеры могут добавлять расходы"},
-                    status=status.HTTP_403_FORBIDDEN
-                )
 
-            # Оптимизированное создание
-            with transaction.atomic():
-                serializer = StoreExpenseSerializer(
-                    data={
-                        "store": store.id,
-                        "amount": request.data.get("amount"),
-                        "description": request.data.get("description", ""),
-                        "expense_date": request.data.get("expense_date", timezone.now().date().isoformat())
-                    },
-                    context={"request": request}
-                )
-
-                serializer.is_valid(raise_exception=True)
-                expense = serializer.save()
-
-            return Response(
-                StoreExpenseSerializer(expense).data,
-                status=status.HTTP_201_CREATED
-            )
-        except Store.DoesNotExist:
-            return Response(
-                {"detail": "Магазин не найден"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        except Exception as e:
-            return Response(
-                {"detail": f"Ошибка при создании расхода: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated]) # Проверка прав внутри
     def pay_debt(self, request, pk=None):
         """Частичная оплата долга магазина"""
-        store = self.get_object()
-
-        # Изменено: проверяем только роль пользователя, а не принадлежность магазина
+        store = self.get_object() # Получаем магазин (права проверены в get_object)
         user = request.user
-        if user.role != 'admin' and user.role != 'partner':
-            return Response(
-                {"detail": "Только администраторы и партнеры могут оплачивать долги"},
-                status=status.HTTP_403_FORBIDDEN
-            )
+
+        # Проверка прав доступа (повторно, для надежности)
+        if not (user.role == 'admin' or (user.role == 'partner' and store.partner == user)):
+            raise PermissionDenied("У вас нет прав для добавления оплаты этому магазину")
 
         # Проверяем, что у магазина есть долг
-        if store.remaining_debt <= 0:
-            return Response(
-                {"detail": "У магазина нет неоплаченного долга"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        if store.remaining_debt <= Decimal('0.00'):
+            return Response({"detail": "У магазина нет неоплаченного долга"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Создаем платеж
+        # Используем сериализатор для валидации и создания платежа
+        # Передаем store в контексте, если он не передается в data
         serializer = StoreDebtPaymentSerializer(
-            data={
-                "store": store.id,
-                "amount": request.data.get("amount"),
-                "description": request.data.get("description", "Частичная оплата долга")
-            },
-            context={"request": request}
+            data=request.data,
+            context={'request': request, 'view': self, 'store': store} # Добавляем store в контекст
         )
 
         serializer.is_valid(raise_exception=True)
-        payment = serializer.save()
+        payment = serializer.save() # Сериализатор проверит права и сумму
 
-        # Если долг полностью погашен, отмечаем все долги как оплаченные
-        if store.remaining_debt <= 0:
-            store.debts.filter(is_paid=False).update(is_paid=True)
+        # StoreDebtPayment.save() обновит статусы долгов, если нужно
+        logger.info(f"Пользователь {user.email} добавил оплату {payment.amount} для магазина {store.name}")
 
+        # Возвращаем данные созданного платежа
         return Response(
             StoreDebtPaymentSerializer(payment).data,
             status=status.HTTP_201_CREATED
         )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
     def activate(self, request, pk=None):
         """Активация магазина"""
-        store = self.get_object()
-
-        if not request.user.role == 'admin':
-            return Response(
-                {"detail": "Только администратор может активировать магазин"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
+        store = self.get_object() # Получаем только неудаленные
         if store.is_active:
-            return Response(
-                {"detail": "Магазин уже активен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+            return Response({"detail": "Магазин уже активен"}, status=status.HTTP_400_BAD_REQUEST)
         store.is_active = True
-        store.save()
+        store.save(update_fields=['is_active'])
+        logger.info(f"Администратор {request.user.email} активировал магазин {store.name}")
+        return Response(StoreSerializer(store).data, status=status.HTTP_200_OK) # Возвращаем данные
 
-        return Response(
-            {"detail": "Магазин успешно активирован"},
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
     def deactivate(self, request, pk=None):
         """Деактивация магазина"""
-        store = self.get_object()
-
-        if not request.user.role == 'admin':
-            return Response(
-                {"detail": "Только администратор может деактивировать магазин"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
+        store = self.get_object() # Получаем только неудаленные
         if not store.is_active:
-            return Response(
-                {"detail": "Магазин уже деактивирован"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+            return Response({"detail": "Магазин уже деактивирован"}, status=status.HTTP_400_BAD_REQUEST)
         store.is_active = False
-        store.save()
+        store.save(update_fields=['is_active'])
+        logger.info(f"Администратор {request.user.email} деактивировал магазин {store.name}")
+        return Response(StoreSerializer(store).data, status=status.HTTP_200_OK) # Возвращаем данные
 
-        return Response(
-            {"detail": "Магазин успешно деактивирован"},
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsOwnerOrAdmin]) # Владелец или админ
     def soft_delete(self, request, pk=None):
-        """Мягкое удаление магазина (установка is_deleted=True)"""
-        store = self.get_object()
+        """Мягкое удаление магазина"""
+        store = self.get_object() # Получаем только неудаленные
+        if store.is_deleted: # На всякий случай
+             return Response({"detail": "Магазин уже удален"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not (request.user.role == 'admin' or request.user == store.partner):
-            return Response(
-                {"detail": "У вас нет прав для удаления этого магазина"},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        if store.soft_delete():
+             logger.info(f"Пользователь {request.user.email} удалил (мягко) магазин {store.name}")
+             return Response({"detail": "Магазин успешно помечен как удаленный"}, status=status.HTTP_200_OK)
+        else:
+             return Response({"detail": "Не удалось удалить магазин"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        if store.is_deleted:
-            return Response(
-                {"detail": "Магазин уже удален"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
 
-        store.is_deleted = True
-        store.save()
-
-        return Response(
-            {"detail": "Магазин успешно удален"},
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser]) # Только админ
     def restore(self, request, pk=None):
-        """Восстановление удаленного магазина (установка is_deleted=False)"""
-        # Здесь особый случай - нам нужно получить даже удаленные магазины
+        """Восстановление удаленного магазина"""
         try:
-            store = Store.objects.get(pk=pk)
+             # Используем _base_manager для поиска среди всех, включая удаленные
+            store = Store._base_manager.get(pk=pk)
         except Store.DoesNotExist:
-            return Response(
-                {"detail": "Магазин не найден"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        if not request.user.role == 'admin':
-            return Response(
-                {"detail": "Только администратор может восстанавливать удаленные магазины"},
-                status=status.HTTP_403_FORBIDDEN
-            )
+            return Response({"detail": "Магазин не найден"}, status=status.HTTP_404_NOT_FOUND)
 
         if not store.is_deleted:
-            return Response(
-                {"detail": "Магазин не был удален"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "Магазин не был удален"}, status=status.HTTP_400_BAD_REQUEST)
 
-        store.is_deleted = False
-        store.save()
+        if store.restore():
+            logger.info(f"Администратор {request.user.email} восстановил магазин {store.name}")
+            return Response(StoreSerializer(store).data, status=status.HTTP_200_OK) # Возвращаем данные
+        else:
+             return Response({"detail": "Не удалось восстановить магазин"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response(
-            {"detail": "Магазин успешно восстановлен"},
-            status=status.HTTP_200_OK
-        )
+    # --- НОВЫЙ ACTION ДЛЯ СЛИЯНИЯ ---
+    @action(detail=False, methods=['post'], permission_classes=[IsAdminUser])
+    def merge_stores(self, request):
+        original_store_id = request.data.get('original_store_id')
+        clone_store_id = request.data.get('clone_store_id')
+
+        if not original_store_id or not clone_store_id:
+            return Response({"error": "Необходимо указать original_store_id и clone_store_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if original_store_id == clone_store_id:
+            return Response({"error": "ID магазинов не должны совпадать"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Получаем оба магазина
+            original_store = Store.objects.get(id=original_store_id, is_deleted=False) # Оригинал должен быть не удален
+            clone_store = Store.objects.get(id=clone_store_id) # Клон может быть удален
+
+            logger.info(f"Начало слияния магазина ID {clone_store_id} в магазин ID {original_store_id} админом {request.user.email}")
+
+            with transaction.atomic():
+                # 1. Перепривязываем заказы
+                from apps.orders.models import Order
+                updated_orders = Order.objects.filter(store=clone_store).update(store=original_store)
+                logger.info(f"Перенесено заказов: {updated_orders}")
+
+                # 2. Перепривязываем долги
+                updated_debts = StoreDebt.objects.filter(store=clone_store).update(store=original_store)
+                logger.info(f"Перенесено долгов: {updated_debts}")
+
+                # 3. Перепривязываем оплаты долгов
+                updated_payments = StoreDebtPayment.objects.filter(store=clone_store).update(store=original_store)
+                logger.info(f"Перенесено оплат долгов: {updated_payments}")
+
+                # 4. TODO: Перепривязать ДРУГИЕ СВЯЗАННЫЕ МОДЕЛИ (если есть)
+                # Например, статистика, если она связана с магазином напрямую
+                # DailyStatistics.objects.filter(store=clone_store).update(store=original_store)
+
+                # 5. Мягкое удаление клона (если еще не удален)
+                if not clone_store.is_deleted:
+                    clone_store.soft_delete()
+                    logger.info(f"Магазин-клон ID {clone_store_id} помечен как удаленный.")
+                else:
+                    logger.info(f"Магазин-клон ID {clone_store_id} уже был удален.")
+
+            logger.info(f"Слияние магазина ID {clone_store_id} в магазин ID {original_store_id} успешно завершено.")
+            return Response({
+                "detail": f"Данные магазина ID {clone_store_id} успешно перенесены в магазин ID {original_store_id}. Клон помечен как удаленный.",
+                "updated_orders": updated_orders,
+                "updated_debts": updated_debts,
+                "updated_payments": updated_payments,
+                # Добавить счетчики для других моделей
+            }, status=status.HTTP_200_OK)
+
+        except Store.DoesNotExist:
+            return Response({"error": "Один или оба магазина не найдены (или оригинал удален)."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.exception(f"Ошибка слияния магазинов: {e}")
+            return Response({"error": "Произошла ошибка при слиянии магазинов."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class StoreDebtViewSet(viewsets.ModelViewSet):
+# --- НОВЫЙ ViewSet ---
+class StoreDebtPaymentViewSet(viewsets.ModelViewSet):
     """
-    Представление для работы с долгами магазинов
+    Представление для работы с платежами по долгам магазинов
     """
-    serializer_class = StoreDebtSerializer
+    serializer_class = StoreDebtPaymentSerializer
+    permission_classes = [permissions.IsAuthenticated] # Права проверяются в сериализаторе/действиях
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['store', 'is_paid']
-    ordering_fields = ['amount', 'created_at']
+    filterset_fields = ['store', 'store__city', 'store__partner'] # Добавили фильтры
+    ordering_fields = ['payment_date', 'amount']
+    ordering = ['-payment_date']
 
     def get_queryset(self):
         user = self.request.user
+        queryset = StoreDebtPayment.objects.select_related('store', 'store__partner', 'store__city') # Оптимизация
+
         if user.role == 'admin':
-            return StoreDebt.objects.all()
-        return StoreDebt.objects.filter(store__partner=user)
+            return queryset # Админ видит все
+        elif user.role == 'partner':
+            # Партнер видит платежи только по своим магазинам
+            return queryset.filter(store__partner=user)
+        else:
+            return StoreDebtPayment.objects.none()
+
+    # Переопределяем create, чтобы убедиться, что используется правильный сериализатор и контекст
+    def create(self, request, *args, **kwargs):
+         serializer = self.get_serializer(data=request.data)
+         try:
+              serializer.is_valid(raise_exception=True)
+              # Сериализатор выполнит проверку прав и суммы
+              self.perform_create(serializer)
+              headers = self.get_success_headers(serializer.data)
+              return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+         except (serializers.ValidationError, PermissionDenied) as e:
+              logger.warning(f"Ошибка создания платежа пользователем {request.user.email}: {e}")
+              # Возвращаем детали ошибки
+              error_detail = e.detail if isinstance(e, serializers.ValidationError) else {"detail": str(e)}
+              return Response(error_detail, status=status.HTTP_400_BAD_REQUEST if isinstance(e, serializers.ValidationError) else status.HTTP_403_FORBIDDEN)
+
 
     def get_permissions(self):
+         # Используем IsOwnerOrAdmin для update/destroy
         if self.action in ['update', 'partial_update', 'destroy']:
-            return [IsOwnerOrAdmin()]
+             # IsOwnerOrAdmin проверяет поле 'partner' у объекта Store,
+             # а у нас объект StoreDebtPayment. Нужно кастомное разрешение или проверка в методе.
+             # Проще всего проверить в самом методе perform_update/perform_destroy.
+             # Пока оставим общее разрешение, но помним об этом.
+             # return [IsOwnerOrAdmin()] # НЕПРАВИЛЬНО для StoreDebtPayment
+             return [permissions.IsAuthenticated()] # Проверку сделаем ниже
         return [permissions.IsAuthenticated()]
 
-    @action(detail=True, methods=['post'])
-    def mark_paid(self, request, pk=None):
-        """Отметить долг как полностью оплаченный"""
-        debt = self.get_object()
+    def perform_update(self, serializer):
+         # Проверка прав перед обновлением
+         instance = serializer.instance
+         user = self.request.user
+         if not (user.role == 'admin' or instance.store.partner == user):
+              raise PermissionDenied("У вас нет прав изменять этот платеж.")
+         # Не позволяем менять сумму или магазин после создания
+         if 'amount' in serializer.validated_data and serializer.validated_data['amount'] != instance.amount:
+             raise serializers.ValidationError({"amount": "Нельзя изменить сумму существующего платежа."})
+         if 'store' in serializer.validated_data and serializer.validated_data['store'] != instance.store:
+              raise serializers.ValidationError({"store": "Нельзя изменить магазин для существующего платежа."})
+         serializer.save()
 
-        # Проверка, что пользователь имеет доступ к долгу
-        if request.user.role != 'admin' and debt.store.partner != request.user:
-            return Response(
-                {"detail": "У вас нет прав для выполнения этого действия"},
-                status=status.HTTP_403_FORBIDDEN
-            )
+    def perform_destroy(self, instance):
+         # Проверка прав перед удалением
+         user = self.request.user
+         if not (user.role == 'admin' or instance.store.partner == user):
+              raise PermissionDenied("У вас нет прав удалять этот платеж.")
+         logger.warning(f"Пользователь {user.email} удаляет платеж ID {instance.id} магазина {instance.store.name} на сумму {instance.amount}.")
+         instance.delete()
 
-        if debt.is_paid:
-            return Response(
-                {"detail": "Долг уже оплачен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
 
-        # Создаем платеж на полную сумму долга
-        StoreDebtPayment.objects.create(
-            store=debt.store,
-            amount=debt.amount,
-            description=f"Полная оплата долга (ID: {debt.id})"
-        )
 
-        # Отмечаем долг как оплаченный
-        debt.is_paid = True
-        debt.updated_at = timezone.now()
-        debt.save()
+class StoreDebtViewSet(viewsets.ModelViewSet):
+     serializer_class = StoreDebtSerializer
+     permission_classes = [permissions.IsAuthenticated] # Уточнить права
+     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+     filterset_fields = ['store', 'is_paid', 'store__city', 'store__partner']
+     ordering_fields = ['amount', 'created_at']
+     ordering = ['-created_at']
 
-        return Response(
-            {"detail": "Долг успешно отмечен как оплаченный"},
-            status=status.HTTP_200_OK
-        )
+     def get_queryset(self):
+         user = self.request.user
+         queryset = StoreDebt.objects.select_related('store')
+         if user.role == 'admin':
+             return queryset
+         elif user.role == 'partner':
+             return queryset.filter(store__partner=user)
+         return StoreDebt.objects.none()
 
-    @action(detail=False, methods=['get'])
-    def store_debts(self, request):
-        """Получение всех долгов конкретного магазина"""
-        store_id = request.query_params.get('store_id')
-        if not store_id:
-            return Response(
-                {"detail": "Необходимо указать ID магазина"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+     def get_permissions(self):
+         if self.action in ['update', 'partial_update', 'destroy']:
+             # return [IsOwnerOrAdmin()] # Неправильно, нужно проверять store.partner
+             return [permissions.IsAuthenticated()] # Проверку делать в методах
+         return [permissions.IsAuthenticated()]
 
-        queryset = self.get_queryset().filter(store_id=store_id)
+     def perform_update(self, serializer):
+         instance = serializer.instance
+         user = self.request.user
+         if not (user.role == 'admin' or instance.store.partner == user):
+             raise PermissionDenied("У вас нет прав изменять этот долг.")
+         # Запретить изменение суммы или магазина?
+         if 'amount' in serializer.validated_data and serializer.validated_data['amount'] != instance.amount:
+             raise serializers.ValidationError({"amount": "Нельзя изменить сумму существующего долга."})
+         if 'store' in serializer.validated_data and serializer.validated_data['store'] != instance.store:
+             raise serializers.ValidationError({"store": "Нельзя изменить магазин для существующего долга."})
+         serializer.save()
 
-        # Фильтрация по статусу оплаты
-        is_paid = request.query_params.get('is_paid')
-        if is_paid is not None:
-            is_paid_bool = is_paid.lower() == 'true'
-            queryset = queryset.filter(is_paid=is_paid_bool)
+     def perform_destroy(self, instance):
+         user = self.request.user
+         if not (user.role == 'admin' or instance.store.partner == user):
+             raise PermissionDenied("У вас нет прав удалять этот долг.")
+         # Подумать, нужно ли удалять долги или только помечать?
+         logger.warning(f"Пользователь {user.email} удаляет долг ID {instance.id} магазина {instance.store.name} на сумму {instance.amount}.")
+         instance.delete()
 
-        serializer = StoreDebtSerializer(queryset, many=True)
+     @action(detail=True, methods=['post'])
+     def mark_paid(self, request, pk=None):
+          # Логика из старого ViewSet'а
+          debt = self.get_object()
+          user = request.user
+          if not (user.role == 'admin' or debt.store.partner == user):
+               raise PermissionDenied("У вас нет прав для выполнения этого действия")
 
-        # Рассчитываем общую сумму
-        total_amount = sum(debt.amount for debt in queryset)
+          if debt.is_paid:
+               return Response({"detail": "Долг уже оплачен"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({
-            "debts": serializer.data,
-            "total_amount": total_amount,
-            "count": queryset.count()
-        })
+          # Создаем платеж на ПОЛНУЮ ОСТАВШУЮСЯ сумму долга
+          # Или на всю сумму долга, если платежей не было?
+          # Лучше создавать платеж на конкретную сумму через StoreDebtPaymentViewSet
+          # Этот action может быть просто для пометки is_paid=True
+          debt.is_paid = True
+          debt.save(update_fields=['is_paid'])
+          logger.info(f"Пользователь {user.email} отметил долг ID {debt.id} как оплаченный.")
+          return Response({"detail": "Долг успешно отмечен как оплаченный"}, status=status.HTTP_200_OK)
+
+     @action(detail=False, methods=['get'])
+     def store_debts(self, request):
+         # Логика из старого ViewSet'а
+         store_id = request.query_params.get('store_id')
+         if not store_id:
+             return Response({"detail": "Необходимо указать ID магазина"}, status=status.HTTP_400_BAD_REQUEST)
+
+         # Проверка доступа к магазину
+         user = request.user
+         try:
+             store = Store.objects.get(id=store_id)
+             if not (user.role == 'admin' or store.partner == user):
+                 raise PermissionDenied("У вас нет доступа к этому магазину")
+         except Store.DoesNotExist:
+             return Response({"detail": "Магазин не найден"}, status=status.HTTP_404_NOT_FOUND)
+         except PermissionDenied as e:
+              return Response({"detail": str(e)}, status=status.HTTP_403_FORBIDDEN)
+
+
+         queryset = self.get_queryset().filter(store_id=store_id)
+         is_paid = request.query_params.get('is_paid')
+         if is_paid is not None:
+             is_paid_bool = is_paid.lower() == 'true'
+             queryset = queryset.filter(is_paid=is_paid_bool)
+
+         serializer = StoreDebtSerializer(queryset, many=True)
+         total_amount = queryset.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+
+         return Response({
+             "store_id": store_id,
+             "store_name": store.name,
+             "debts": serializer.data,
+             "total_amount": float(total_amount),
+             "count": queryset.count()
+         })

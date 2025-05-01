@@ -5,22 +5,58 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Product, PartnerInventory
 from .serializers import (
     ProductSerializer,
-    PartnerInventorySerializer,
-    ProductListSerializer
+    ProductListSerializer,
+    PartnerInventorySerializer, # Добавили
+    PartnerInventoryDetailSerializer # Добавили
 )
-from .permissions import IsAdminUser
+# Импортируем разрешения из users
+from apps.users.permissions import IsAdminUser, IsPartnerUser, IsInventoryOwnerOrAdmin
+from django.shortcuts import get_object_or_404 # Добавим
+import logging # Добавим
+from django.core.exceptions import PermissionDenied
 
+
+logger = logging.getLogger(__name__) # Добавим
 
 class ProductViewSet(viewsets.ModelViewSet):
     """
     Представление для работы с товарами
     """
-    queryset = Product.objects.all()
+    # queryset определяется в get_queryset
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['is_bonus', 'is_active']
+    filterset_fields = ['is_bonus', 'is_active'] # is_deleted фильтруется в get_queryset
     search_fields = ['name', 'description']
-    ordering_fields = ['price', 'created_at', 'name']
+    ordering_fields = ['price', 'created_at', 'name', 'quantity'] # Добавили quantity
+    ordering = ['name'] # Сортировка по умолчанию
+
+    def get_queryset(self):
+        user = self.request.user
+        # По умолчанию показываем только активные и не удаленные
+        queryset = Product.objects.filter(is_active=True, is_deleted=False)
+
+        # Позволяем админу видеть неактивные/удаленные через параметры
+        is_active_param = self.request.query_params.get('is_active')
+        is_deleted_param = self.request.query_params.get('is_deleted')
+
+        if user.role == 'admin':
+            # Админ может запросить все товары
+            if is_active_param is None and is_deleted_param is None:
+                 # Если фильтры не указаны, админ видит активные и неудаленные (как все)
+                 pass
+            else:
+                 # Если указан хотя бы один фильтр, админ видит все и фильтрует по запросу
+                 queryset = Product.objects.all() # Начинаем со всех
+                 if is_active_param is not None:
+                      show_active = is_active_param.lower() == 'true'
+                      queryset = queryset.filter(is_active=show_active)
+                 if is_deleted_param is not None:
+                      show_deleted = is_deleted_param.lower() == 'true'
+                      queryset = queryset.filter(is_deleted=show_deleted)
+
+        # Другие пользователи видят только активные и неудаленные
+        return queryset
+
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -28,197 +64,189 @@ class ProductViewSet(viewsets.ModelViewSet):
         return ProductSerializer
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy', 'activate', 'deactivate', 'upload_image']:
-            return [IsAdminUser()]
-        return [permissions.IsAuthenticated()]
+        if self.action in ['create', 'update', 'partial_update', 'destroy',
+                           'activate', 'deactivate', 'soft_delete', 'restore',
+                           'upload_image']:
+            return [IsAdminUser()] # Только админ может менять каталог
+        return [permissions.IsAuthenticated()] # Все остальные могут смотреть
+
+    # Действия activate, deactivate, upload_image остаются как были
+
+    # --- НОВЫЕ ДЕЙСТВИЯ SOFT DELETE / RESTORE ---
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
+    def soft_delete(self, request, pk=None):
+        """Мягкое удаление товара"""
+        product = get_object_or_404(Product, pk=pk) # Ищем среди неудаленных
+        if product.is_deleted: # На всякий случай
+             return Response({"detail": "Товар уже удален"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if product.soft_delete():
+            logger.info(f"Администратор {request.user.email} удалил (мягко) товар {product.name}")
+            return Response({"detail": "Товар успешно помечен как удаленный"}, status=status.HTTP_200_OK)
+        else:
+             return Response({"detail": "Не удалось удалить товар"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
-    def activate(self, request, pk=None):
-        """Активация товара"""
-        product = self.get_object()
+    def restore(self, request, pk=None):
+        """Восстановление мягко удаленного товара"""
+        try:
+             # Ищем среди всех с помощью _base_manager
+            product = Product._base_manager.get(pk=pk)
+        except Product.DoesNotExist:
+            return Response({"detail": "Товар не найден"}, status=status.HTTP_404_NOT_FOUND)
 
-        if product.is_active:
-            return Response(
-                {"detail": "Товар уже активен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        if not product.is_deleted:
+            return Response({"detail": "Товар не был удален"}, status=status.HTTP_400_BAD_REQUEST)
 
-        product.is_active = True
-        product.save()
+        if product.restore():
+            logger.info(f"Администратор {request.user.email} восстановил товар {product.name}")
+            return Response(ProductSerializer(product, context={'request': request}).data, status=status.HTTP_200_OK) # Возвращаем данные
+        else:
+             return Response({"detail": "Не удалось восстановить товар"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response(
-            {"detail": "Товар успешно активирован"},
-            status=status.HTTP_200_OK
-        )
+    # --- Actions для заказов ---
+    # available_products_for_store - удаляем, т.к. есть products_for_store_orders
+    # @action(detail=False, methods=['get'])
+    # def available_products_for_store(self, request): ...
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
-    def deactivate(self, request, pk=None):
-        """Деактивация товара"""
-        product = self.get_object()
+    @action(detail=False, methods=['get'], permission_classes=[IsPartnerUser])
+    def products_for_admin_orders(self, request):
+        """
+        Получить список товаров для заказа у администратора (из Product).
+        """
+        # Используем get_queryset текущего ViewSet, который уже фильтрует
+        # активные и неудаленные товары
+        products = self.filter_queryset(self.get_queryset().filter(quantity__gt=0)) # Только те, что в наличии
 
-        if not product.is_active:
-            return Response(
-                {"detail": "Товар уже деактивирован"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        product_list = []
+        for product in products:
+            image_url = None
+            if product.image:
+                 try: # Добавим try-except для build_absolute_uri
+                      image_url = request.build_absolute_uri(product.image.url)
+                 except:
+                      image_url = product.image.url # Fallback
 
-        product.is_active = False
-        product.save()
+            product_list.append({
+                'id': product.id, # ID Товара
+                'name': product.name,
+                'description': product.description,
+                'price': float(product.price),
+                'available_quantity': product.quantity, # Количество на складе админа
+                'image_url': image_url,
+                'is_bonus': product.is_bonus
+            })
 
-        return Response(
-            {"detail": "Товар успешно деактивирован"},
-            status=status.HTTP_200_OK
-        )
+        return Response(product_list)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
-    def upload_image(self, request, pk=None):
-        """Загрузка изображения товара"""
-        product = self.get_object()
-        file = request.data.get('image')
+    @action(detail=False, methods=['get'], permission_classes=[IsPartnerUser])
+    def products_for_store_orders(self, request):
+        """
+        Получить список товаров из инвентаря партнера для заказа в магазин.
+        Возвращает ID записи инвентаря.
+        """
+        user = request.user
+        # Получаем только активные и неудаленные товары из инвентаря партнера с количеством > 0
+        inventory_items = PartnerInventory.objects.filter(
+            partner=user,
+            quantity__gt=0,
+            product__is_active=True, # Доп. проверка на активность товара
+            product__is_deleted=False # Доп. проверка на удаление товара
+        ).select_related('product') # Оптимизация
 
-        if not file:
-            return Response(
-                {"detail": "Файл изображения не предоставлен"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # Применяем фильтры поиска/сортировки если они есть в запросе
+        # inventory_items = self.filter_queryset(inventory_items) # Нельзя, т.к. фильтры для Product
 
-        # Сохраняем изображение непосредственно в модели Product
-        product.image = file
-        product.save()
+        available_products = []
+        for item in inventory_items:
+            product = item.product
+            image_url = None
+            if product.image:
+                 try:
+                      image_url = request.build_absolute_uri(product.image.url)
+                 except:
+                      image_url = product.image.url # Fallback
 
-        return Response(
-            ProductSerializer(product, context={'request': request}).data,
-            status=status.HTTP_200_OK
-        )
+            available_products.append({
+                'inventory_id': item.id,  # ID записи в таблице инвентаря партнера <--- ВАЖНО
+                'product_id': product.id,  # ID в общем каталоге (для информации)
+                'name': product.name,
+                'description': product.description,
+                'price': float(product.price),
+                'available_quantity': item.quantity, # Количество у партнера
+                'image_url': image_url,
+                'is_bonus': product.is_bonus
+            })
+
+        return Response(available_products)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
 
-    # Добавляем в apps/products/views.py
 
-    @action(detail=False, methods=['get'])
-    def available_products_for_store(self, request):
-        """
-        Получить список товаров из инвентаря партнера, доступных для заказа в магазин.
-
-        Этот эндпоинт показывает только товары из инвентаря текущего партнера с количеством > 0.
-        Для удобства работы с фронтенд приложением, товары имеют информацию о доступном количестве.
-        """
-        user = request.user
-        if user.role != 'partner':
-            return Response(
-                {"error": "Только партнеры могут получить список товаров из своего инвентаря"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        # Получаем только товары из инвентаря партнера с количеством > 0
-        inventory_items = PartnerInventory.objects.filter(
-            partner=user,
-            quantity__gt=0
-        ).select_related('product')
-
-        # Формируем список доступных товаров
-        available_products = []
-        for item in inventory_items:
-            available_products.append({
-                'id': item.product.id,  # Используем глобальный ID продукта
-                'name': item.product.name,
-                'description': item.product.description,
-                'price': float(item.product.price),
-                'available_quantity': item.quantity,
-                'image_url': request.build_absolute_uri(item.product.image.url) if item.product.image else None,
-                'is_bonus': item.product.is_bonus
-            })
-
-        return Response(available_products)
-
-    @action(detail=False, methods=['get'])
-    def products_for_admin_orders(self, request):
-        """
-        Получить список товаров для заказа у администратора.
-        Этот эндпоинт возвращает товары из общего каталога для заказа 'admin_to_partner'.
-        """
-        if request.user.role != 'partner':
-            return Response(
-                {"error": "Только партнеры могут просматривать эти товары"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        # Получаем только активные товары с количеством > 0 из общего каталога
-        products = Product.objects.filter(is_active=True, quantity__gt=0)
-
-        product_list = []
-        for product in products:
-            product_list.append({
-                'id': product.id,
-                'name': product.name,
-                'description': product.description,
-                'price': float(product.price),
-                'available_quantity': product.quantity,
-                'image_url': request.build_absolute_uri(product.image.url) if product.image else None,
-                'is_bonus': product.is_bonus
-            })
-
-        return Response(product_list)
-
-    @action(detail=False, methods=['get'])
-    def products_for_store_orders(self, request):
-        """
-        Получить список товаров из инвентаря партнера для заказа в магазин.
-        Важно: этот эндпоинт возвращает ID записей инвентаря (а не ID товаров).
-        """
-        user = request.user
-        if user.role != 'partner':
-            return Response(
-                {"error": "Только партнеры могут получить список товаров из своего инвентаря"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        # Получаем только товары из инвентаря партнера с количеством > 0
-        inventory_items = PartnerInventory.objects.filter(
-            partner=user,
-            quantity__gt=0
-        ).select_related('product')
-
-        # Формируем список доступных товаров
-        available_products = []
-        for item in inventory_items:
-            product = item.product
-            available_products.append({
-                'inventory_id': item.id,  # ID записи в таблице инвентаря партнера
-                'product_id': product.id,  # Для информации - ID в общем каталоге
-                'name': product.name,
-                'description': product.description,
-                'price': float(product.price),
-                'available_quantity': item.quantity,
-                'image_url': request.build_absolute_uri(product.image.url) if product.image else None,
-                'is_bonus': product.is_bonus
-            })
-
-        return Response(available_products)
-
+# --- НОВЫЙ ViewSet ---
 class PartnerInventoryViewSet(viewsets.ModelViewSet):
     """
     Представление для работы с инвентарем партнера
     """
-    serializer_class = PartnerInventorySerializer
+    serializer_class = PartnerInventorySerializer # Используем базовый для CRUD
+    permission_classes = [permissions.IsAuthenticated] # Общее разрешение
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['product__is_bonus']
-    search_fields = ['product__name']
-    ordering_fields = ['quantity', 'created_at']
+    # Фильтруем по ID товара или по флагу бонуса связанного товара
+    filterset_fields = ['product', 'product__is_bonus']
+    search_fields = ['product__name'] # Поиск по имени связанного товара
+    ordering_fields = ['quantity', 'created_at', 'product__name'] # Добавим сортировку по имени товара
+    ordering = ['product__name'] # По умолчанию сортируем по товару
 
     def get_queryset(self):
         user = self.request.user
+        queryset = PartnerInventory.objects.select_related('partner', 'product') # Оптимизация
+
         if user.role == 'admin':
-            return PartnerInventory.objects.all()
-        return PartnerInventory.objects.filter(partner=user)
+            # Админ видит инвентарь всех партнеров
+            pass
+        elif user.role == 'partner':
+            # Партнер видит только свой инвентарь
+            queryset = queryset.filter(partner=user)
+        else:
+            return PartnerInventory.objects.none()
+
+        # Фильтруем по связанному продукту (активен и не удален)
+        queryset = queryset.filter(product__is_active=True, product__is_deleted=False)
+
+        return queryset
+
+    def get_serializer_class(self):
+        # Для чтения используем детальный сериализатор
+        if self.action in ['list', 'retrieve']:
+            return PartnerInventoryDetailSerializer
+        # Для создания/обновления используем базовый
+        return PartnerInventorySerializer
 
     def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
-            return [permissions.IsAuthenticated()]
+        # Админ может всё. Партнер может читать свой инвентарь, создавать записи (?).
+        # Партнер НЕ должен иметь возможность напрямую менять количество через этот API.
+        # Количество должно меняться через заказы.
+        if self.action == 'create':
+             # Запрещаем создание через API напрямую? Или разрешаем админу?
+             return [IsAdminUser()] # Только админ может создать запись (например, начальный остаток)
+        elif self.action in ['update', 'partial_update', 'destroy']:
+             # Используем кастомное разрешение
+             return [IsInventoryOwnerOrAdmin()]
+        # list, retrieve доступны всем аутентифицированным (фильтрация в get_queryset)
         return [permissions.IsAuthenticated()]
+
+    def perform_create(self, serializer):
+         # Админ должен указать партнера при создании
+         if self.request.user.role == 'admin':
+              # Партнер должен быть в данных запроса, валидация в сериализаторе
+              serializer.save()
+         else:
+             # Эта ветка не должна вызываться из-за get_permissions, но на всякий случай
+             raise PermissionDenied("Только администратор может создавать записи инвентаря.")
+
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
