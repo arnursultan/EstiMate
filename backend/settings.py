@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "channels",
     "corsheaders",
     'django_celery_beat',
+    'model_utils',
 
     "apps.users",
     "apps.products",

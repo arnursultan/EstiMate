@@ -1,10 +1,14 @@
+# apps/orders/views.py
 from rest_framework import viewsets, permissions, status, filters, serializers
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q, Sum, Count # Добавили Count
-from datetime import datetime
+from django.db.models import Q, Sum, Count, Prefetch, F # Добавили Prefetch
+from datetime import datetime, date, time # Добавили date, time
+from django.utils import timezone # Добавили timezone
+from django.shortcuts import get_object_or_404, Http404 # Добавили Http404
+from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound # Добавили
+
 from .models import Order, OrderItem, DefectItem
 from .serializers import (
     OrderSerializer,
@@ -13,30 +17,41 @@ from .serializers import (
     OrderItemSerializer,
     DefectItemSerializer,
     DefectGroupSerializer,
-    # StoreDebtPaymentSerializer, - УДАЛЕН ИЗ ИМПОРТОВ
-    # StoreExpenseSerializer, - УДАЛЕН ИЗ ИМПОРТОВ
-    # PartnerInventoryDetailSerializer - УДАЛЕН ИЗ ИМПОРТОВ
 )
-# Убрали импорты: Store, StoreDebt, StoreDebtPayment, StoreExpense, PartnerInventory
-from apps.users.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin # Импорт из users
-# Убрали импорт PartnerInventorySerializer
+# Импортируем нужные модели и разрешения
+from apps.stores.models import Store
+from apps.users.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
 from django.db import transaction
 import logging
-from django.shortcuts import get_object_or_404 # Добавили
-from rest_framework.exceptions import PermissionDenied # Добавили
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from datetime import timezone
+from decimal import Decimal
+
 
 logger = logging.getLogger(__name__)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
     """
-    Представление для работы с заказами
+    Представление для работы с заказами.
+    Поддерживает фильтрацию по дате создания.
     """
     serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['order_type', 'status', 'is_group_order', 'store', 'partner']
+    # Добавляем фильтры по дате создания
+    filterset_fields = {
+        'order_type': ['exact'],
+        'status': ['exact', 'in'],
+        'is_group_order': ['exact'],
+        'store': ['exact'],
+        'partner': ['exact'],
+        # ИЗМЕНЕНИЕ: Добавляем фильтры по дате (точное совпадение и диапазон)
+        'created_at': ['exact', 'date', 'date__gte', 'date__lte', 'year', 'month', 'day'],
+    }
     search_fields = ['store__name', 'partner__email', 'partner__first_name']
-    ordering_fields = ['created_at', 'updated_at']
+    ordering_fields = ['created_at', 'updated_at'] # Убрали total_price для производительности
     ordering = ['-created_at'] # Новые заказы сверху
 
     def get_queryset(self):
@@ -45,7 +60,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         queryset = Order.objects.select_related(
             'created_by', 'partner', 'store', 'store__city'
         ).prefetch_related(
-            'order_items', 'order_items__product', 'defect_items', 'defect_items__product'
+            # Prefetch для свойств total_price, total_bonus_items, total_items_quantity
+            Prefetch('order_items', queryset=OrderItem.objects.select_related('product')),
+            Prefetch('defect_items', queryset=DefectItem.objects.select_related('product'))
         )
 
         if user.role == 'admin':
@@ -59,35 +76,24 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'create':
-            # Используем OrderWithItemsSerializer, т.к. заказ без товаров бессмысленен
             return OrderWithItemsSerializer
         elif self.action in ['update', 'partial_update'] and 'status' in self.request.data:
-             # Для обновления статуса используем отдельный сериализатор
             return OrderStatusUpdateSerializer
-        # Во всех остальных случаях (list, retrieve) используем базовый
         return OrderSerializer
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
-        # Передаем items в контекст для OrderWithItemsSerializer, если они есть
-        # Сериализатор сам проверит 'items' в request.data
-        # context['items'] = self.request.data.get('items', [])
-        # context['order_items'] = self.request.data.get('order_items', [])
         return context
 
     def get_permissions(self):
         if self.action == 'destroy':
-            # Жесткое удаление только админу (не рекомендуется)
             return [IsAdminUser()]
         elif self.action in ['update', 'partial_update']:
-            # Обновлять (менять статус) может админ или создатель? Зависит от логики.
-            # OrderStatusUpdateSerializer содержит свою логику прав.
-            # Общее обновление полей заказа - только админ?
-            # Пока оставим IsOwnerOrAdmin (проверяет created_by или partner)
-             return [IsOwnerOrAdmin()]
-        # Создавать могут партнеры и админы (проверяется в create)
-        # Читать могут владельцы и админы (проверяется в get_queryset)
+            # Обновлять статус может админ или создатель (проверяется в OrderStatusUpdateSerializer)
+            # Обновлять другие поля заказа - возможно, только админ? Уточнить.
+            # Пока оставляем IsOwnerOrAdmin (проверяет created_by или partner)
+            return [IsOwnerOrAdmin()]
         return [permissions.IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
@@ -95,11 +101,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         try:
             serializer.is_valid(raise_exception=True)
-            # Логика создания заказа, обновления остатков и создания долга - внутри serializer.create()
             instance = serializer.save()
             logger.info(f"Заказ ID {instance.id} успешно создан пользователем {request.user.email}.")
             headers = self.get_success_headers(serializer.data)
-            # Возвращаем данные через OrderSerializer для консистентности ответа
             return Response(
                  OrderSerializer(instance, context=self.get_serializer_context()).data,
                  status=status.HTTP_201_CREATED,
@@ -114,21 +118,25 @@ class OrderViewSet(viewsets.ModelViewSet):
             logger.exception(f"Необработанная ошибка при создании заказа пользователем {request.user.email}: {str(e)}")
             return Response({"error": "Возникла ошибка при создании заказа."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated]) # Права проверяются внутри сериализатора
+    @action(detail=True, methods=['post'], url_path='update-status') # Явный путь для action
+    @swagger_auto_schema(
+        operation_summary="Обновление статуса заказа",
+        request_body=OrderStatusUpdateSerializer,
+        responses={200: OrderSerializer, 400: "Ошибка валидации/Неверный переход", 403: "Нет прав"}
+    )
     def update_status(self, request, pk=None):
-        """Обновление статуса заказа"""
-        order = self.get_object() # Получаем заказ (права на чтение проверены)
+        """Обновление статуса заказа (только Админ для admin_to_partner)."""
+        order = self.get_object()
         serializer = OrderStatusUpdateSerializer(
             instance=order,
             data=request.data,
-            context={'request': request} # Передаем request для проверки прав в сериализаторе
+            context={'request': request}
         )
         try:
              serializer.is_valid(raise_exception=True)
-             serializer.save()
-             logger.info(f"Статус заказа ID {order.id} обновлен на {order.status} пользователем {request.user.email}")
-             # Возвращаем полные данные заказа
-             return Response(OrderSerializer(order, context=self.get_serializer_context()).data)
+             updated_order = serializer.save()
+             logger.info(f"Статус заказа ID {order.id} обновлен на {updated_order.status} пользователем {request.user.email}")
+             return Response(OrderSerializer(updated_order, context=self.get_serializer_context()).data)
         except (serializers.ValidationError, PermissionDenied) as e:
              logger.warning(f"Ошибка обновления статуса заказа {order.id} пользователем {request.user.email}: {e.detail if hasattr(e, 'detail') else str(e)}")
              error_detail = e.detail if hasattr(e, 'detail') else {"detail": str(e)}
@@ -138,7 +146,101 @@ class OrderViewSet(viewsets.ModelViewSet):
              logger.exception(f"Необработанная ошибка при обновлении статуса заказа {order.id} пользователем {request.user.email}: {e}")
              return Response({"error": "Возникла ошибка при обновлении статуса."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # Остальные actions (admin_orders, store_orders, in_process, statistics, get_store_orders) остаются без изменений
+    # --- Actions для фильтрации списков (можно использовать стандартные фильтры) ---
+    # Оставляем их для обратной совместимости или если нужна особая логика
+
+    @action(detail=False, methods=['get'], url_path='admin-orders')
+    @swagger_auto_schema(operation_summary="Заказы Админу (admin_to_partner)")
+    def admin_orders(self, request):
+        """Получение заказов от партнера к администратору"""
+        queryset = self.filter_queryset(self.get_queryset().filter(order_type='admin_to_partner'))
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='store-orders')
+    @swagger_auto_schema(operation_summary="Заказы Магазинам (partner_to_store)")
+    def store_orders(self, request):
+        """Получение заказов от партнера к магазину"""
+        queryset = self.filter_queryset(self.get_queryset().filter(order_type='partner_to_store'))
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='in-process')
+    @swagger_auto_schema(operation_summary="Заказы в обработке")
+    def in_process(self, request):
+        """Получение заказов в обработке (status='in_process')"""
+        queryset = self.filter_queryset(self.get_queryset().filter(status='in_process'))
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    # Action statistics можно оставить для общих цифр, если нужно
+    @action(detail=False, methods=['get'])
+    def statistics(self, request):
+        """Получение общей статистики по заказам для текущего пользователя/админа"""
+        queryset = self.get_queryset() # Фильтрует по правам
+        valid_orders_queryset = queryset.annotate(item_count=Count('order_items')).filter(item_count__gt=0) # Только с товарами
+
+        total_orders = valid_orders_queryset.count()
+        status_counts = valid_orders_queryset.values('status').annotate(count=Count('id')).order_by('status')
+        type_counts = valid_orders_queryset.values('order_type').annotate(count=Count('id')).order_by('order_type')
+        group_type_counts = valid_orders_queryset.values('is_group_order').annotate(count=Count('id'))
+        confirmed_orders_price = valid_orders_queryset.filter(status='confirmed').aggregate(
+             total=Sum(F('order_items__price') * F('order_items__quantity')) # Суммируем по связанным элементам
+        )['total'] or Decimal('0.00')
+
+        return Response({
+            'total_orders': total_orders,
+            'status_counts': {item['status']: item['count'] for item in status_counts},
+            'type_counts': {item['order_type']: item['count'] for item in type_counts},
+            'group_type_counts': {'group': next((item['count'] for item in group_type_counts if item['is_group_order']), 0),
+                                   'single': next((item['count'] for item in group_type_counts if not item['is_group_order']), 0)},
+            'confirmed_orders_price': float(confirmed_orders_price),
+        })
+
+    @action(detail=False, methods=['get'], url_path='get-store-orders')
+    @swagger_auto_schema(operation_summary="Получить заказы магазина по дате")
+    def get_store_orders(self, request):
+        """Получение заказов магазина по дате"""
+        store_id = request.query_params.get('store_id')
+        date_str = request.query_params.get('date')
+
+        if not store_id: return Response({"detail": "Необходимо указать ID магазина"}, status=status.HTTP_400_BAD_REQUEST)
+        if not date_str: return Response({"detail": "Необходимо указать дату"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try: target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError: return Response({"detail": "Неверный формат даты"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Используем get_queryset для проверки прав доступа
+        orders = self.get_queryset().filter(
+            store_id=store_id,
+            created_at__date=target_date,
+            order_type='partner_to_store'
+        ).annotate(item_count=Count('order_items')).filter(item_count__gt=0) # Только с товарами
+
+        order_data = [{
+            'order_id': order.id,
+            'created_at': order.created_at.isoformat(),
+            'total_price': float(order.total_price), # Используем свойство
+            'items_count': order.item_count # Используем аннотацию
+        } for order in orders]
+
+        return Response({
+            'store_id': store_id, 'date': target_date.isoformat(),
+            'orders_count': len(order_data), 'orders': order_data
+        })
+
 
 # --- OrderItemViewSet ---
 class OrderItemViewSet(viewsets.ModelViewSet):
@@ -147,283 +249,350 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     Доступ через /api/orders/{order_pk}/items/
     """
     serializer_class = OrderItemSerializer
-    permission_classes = [permissions.IsAuthenticated] # Права на конкретные действия проверяются ниже
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['product']
-    search_fields = ['product__name']
-    ordering_fields = ['created_at', 'quantity', 'price']
-    ordering = ['-created_at']
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = OrderItem.objects.none() # Базовый queryset пустой, определяется в get_queryset
 
     def get_order(self):
-        """Получает объект заказа из URL"""
-        order_pk = self.kwargs.get('order_pk')
-        order = get_object_or_404(Order, pk=order_pk)
-        # Проверяем доступ к самому заказу
-        user = self.request.user
-        if not (user.role == 'admin' or order.created_by == user or order.partner == user):
-             raise PermissionDenied("У вас нет доступа к этому заказу.")
-        return order
+        """Получает объект заказа из URL и проверяет права."""
+        if getattr(self, '_order', None) is None: # Кэшируем результат
+             if getattr(self, 'swagger_fake_view', False): self._order = None; return self._order
+             order_pk = self.kwargs.get('order_pk')
+             if not order_pk: logger.error("OrderItemViewSet вызван без order_pk"); self._order = None; return self._order
+             try:
+                 order = get_object_or_404(Order, pk=order_pk)
+                 user = self.request.user
+                 if not (user.role == 'admin' or order.created_by == user or order.partner == user):
+                      raise PermissionDenied("У вас нет доступа к этому заказу.")
+                 self._order = order
+             except Http404: # Заменяем на NotFound
+                  raise NotFound(detail="Заказ не найден.")
+             except PermissionDenied: # Пробрасываем дальше
+                  raise
+        return self._order
 
     def get_queryset(self):
         order = self.get_order()
-        return OrderItem.objects.filter(order=order).select_related('product')
+        if order: return OrderItem.objects.filter(order=order).select_related('product')
+        return OrderItem.objects.none()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['order'] = self.get_order() # Передаем заказ в контекст
+        order = self.get_order()
+        if order: context['order'] = order
         context['request'] = self.request
         return context
 
     def get_permissions(self):
         order = self.get_order()
-        # Разрешаем чтение всем, кто имеет доступ к заказу
+        if order is None and not getattr(self, 'swagger_fake_view', False):
+             return [permissions.DenyAll()]
+
         if self.action in ['list', 'retrieve']:
             return [permissions.IsAuthenticated()]
-        # Изменять/удалять элементы может только админ или создатель заказа,
-        # и только если заказ 'in_process'
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-             if order.status != 'in_process':
-                  # Нельзя менять подтвержденные или отклоненные заказы
-                  return [permissions.DenyAll()] # Используем DenyAll
-             # Проверяем создателя или админа
-             return [IsOwnerOrAdmin()] # IsOwnerOrAdmin проверит created_by или admin role
-        return [permissions.IsAuthenticated()] # По умолчанию
+             if order and order.status != 'in_process': return [permissions.DenyAll()]
+             return [IsOwnerOrAdmin()] # Проверяет создателя заказа или админа
+        return [permissions.IsAuthenticated()]
 
     def perform_create(self, serializer):
-        # Заказ уже установлен в контексте и будет использован сериализатором
-        # Проверка наличия и остатков делается в сериализаторе
-        # TODO: Подумать об обновлении остатков при добавлении/изменении элемента в 'in_process' заказе
-        # Сейчас остатки меняются только при подтверждении/отклонении всего заказа
-        serializer.save()
+        order = self.get_order()
+        if not order: raise ValidationError("Не удалось определить заказ.")
+        if order.status != 'in_process': raise ValidationError("Нельзя добавить товар в обработанный заказ.")
+        # Сериализатор должен проверить остатки перед save()
+        serializer.save(order=order)
+        # TODO: Подумать о пересчете total_price заказа после добавления/изменения элемента?
+        # order.total_price = order.calculate_total_price() # Пример
+        # order.save()
 
     def perform_update(self, serializer):
-         # TODO: Подумать об обновлении остатков при изменении количества
+         # TODO: Логика пересчета, если нужно
          serializer.save()
 
     def perform_destroy(self, instance):
-         # TODO: Подумать об обновлении остатков при удалении элемента
+         # TODO: Логика пересчета, если нужно
          logger.warning(f"Пользователь {self.request.user.email} удаляет элемент заказа ID {instance.id} из заказа ID {instance.order.id}")
          instance.delete()
 
 
 # --- DefectItemViewSet ---
+
+    # apps/orders/views.py
+
+    # Убедись, что все эти импорты присутствуют в начале файла
+    from rest_framework import viewsets, permissions, status, filters, serializers
+    from rest_framework.decorators import action
+    from rest_framework.response import Response
+    from django_filters.rest_framework import DjangoFilterBackend
+    from django.db.models import Q, Sum, Count, Prefetch
+    from datetime import datetime, date, time
+    from django.utils import timezone
+    from django.shortcuts import get_object_or_404, Http404
+    from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
+    from drf_yasg.utils import swagger_auto_schema
+    from drf_yasg import openapi
+    from django.db import transaction
+    import logging
+
+    from .models import Order, OrderItem, DefectItem
+    from .serializers import (
+        OrderSerializer, OrderWithItemsSerializer, OrderStatusUpdateSerializer,
+        OrderItemSerializer, DefectItemSerializer, DefectGroupSerializer
+    )
+    from apps.stores.models import Store  # Импортируем Store
+    from apps.users.permissions import IsAdminUser, IsPartnerUser, IsOwnerOrAdmin
+
+    logger = logging.getLogger(__name__)
+
+    # --- OrderViewSet ---
+    # (Код OrderViewSet и OrderItemViewSet без изменений по сравнению с версиями,
+    # где исправляли бонусы и SET_NULL)
+
+    # --- ИСПРАВЛЕННЫЙ DefectItemViewSet ---
 class DefectItemViewSet(viewsets.ModelViewSet):
-    """
-    Представление для работы с бракованными товарами в заказе.
-    Доступ через /api/orders/{order_pk}/defects/ или /api/defects/
-    """
     serializer_class = DefectItemSerializer
-    permission_classes = [permissions.IsAuthenticated] # Права проверяются ниже
+    permission_classes = [permissions.IsAuthenticated]  # Права уточняются ниже
+    queryset = DefectItem.objects.none()  # Определяется в get_queryset
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['order', 'product']
-    search_fields = ['product__name', 'description']
+    filterset_fields = {  # Уточняем фильтры
+            'order': ['exact'],
+            'order__store': ['exact'],  # Фильтр по магазину через заказ
+            'product': ['exact'],
+            'created_at': ['date', 'date__gte', 'date__lte'],  # Фильтр по дате создания брака
+        }
+    search_fields = ['product__name', 'description', 'order__store__name']  # Добавим поиск по магазину
     ordering_fields = ['created_at', 'quantity']
     ordering = ['-created_at']
 
     def get_order(self):
-        """Получает объект заказа из URL (если используется вложенный роутер)"""
-        order_pk = self.kwargs.get('order_pk')
-        if order_pk:
-             order = get_object_or_404(Order, pk=order_pk)
-             # Проверяем доступ к заказу
-             user = self.request.user
-             if not (user.role == 'admin' or order.created_by == user or order.partner == user):
-                  raise PermissionDenied("У вас нет доступа к этому заказу.")
-             return order
-        return None
+        if getattr(self, '_order', 'NOT_FETCHED') == 'NOT_FETCHED':
+            if getattr(self, 'swagger_fake_view', False): self._order = None; return self._order
+            order_pk = self.kwargs.get('order_pk')
+            if not order_pk: self._order = None; return self._order  # Не вложенный URL
+            try:
+                    # Получаем заказ без проверки прав здесь, права проверим в get_permissions/actions
+                order = get_object_or_404(Order.objects.select_related('store', 'partner', 'created_by'),
+                                              pk=order_pk)
+                self._order = order
+            except Http404:
+                raise NotFound(detail="Заказ не найден.")
+        return self._order
 
     def get_queryset(self):
         user = self.request.user
         queryset = DefectItem.objects.select_related('order', 'product', 'order__store', 'order__partner')
+        order = self.get_order()  # Пытаемся получить заказ из URL
 
-        # Если доступ через вложенный URL /orders/{order_pk}/defects/
-        order = self.get_order()
-        if order:
-             return queryset.filter(order=order)
-
-        # Если доступ через /defects/ (общий список)
-        if user.role == 'admin':
-            return queryset # Админ видит все
-        elif user.role == 'partner':
-            # Партнер видит брак только по заказам, которые он СОЗДАЛ
-            return queryset.filter(order__created_by=user)
-        else:
+        if order:  # Если URL вложенный /orders/{pk}/defects/
+                # Проверяем доступ к этому конкретному заказу
+            if not (user.role == 'admin' or order.created_by == user or order.partner == user):
+                return DefectItem.objects.none()  # Нет доступа
+            return queryset.filter(order=order)
+            # Если URL /defects/ (общий список)
+        elif not getattr(self, 'swagger_fake_view', False):
+            if user.role == 'admin':
+                return queryset  # Админ видит все
+            elif user.role == 'partner':
+                return queryset.filter(order__created_by=user)  # Партнер видит брак по своим заказам
+            else:
+                return DefectItem.objects.none()
+        else:  # При генерации схемы для /defects/
             return DefectItem.objects.none()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         order = self.get_order()
-        if order:
-            context['order'] = order # Передаем заказ, если есть
+        if order: context['order'] = order
         context['request'] = self.request
         return context
 
     def get_permissions(self):
-         # Читать могут все, кто видит заказ (проверяется в get_queryset)
-         if self.action in ['list', 'retrieve']:
-              return [permissions.IsAuthenticated()]
-         # Создавать/менять/удалять может админ или создатель заказа
-         # и только если заказ partner_to_store и confirmed
-         elif self.action in ['create', 'update', 'partial_update', 'destroy', 'add_group']:
-              order = self.get_order()
-              # Если order есть (вложенный роутер), проверяем его
-              if order:
-                   if order.order_type != 'partner_to_store' or order.status != 'confirmed':
-                        return [permissions.DenyAll()]
-                   # Используем IsOwnerOrAdmin (проверит created_by или админа)
-                   return [IsOwnerOrAdmin()]
-              else:
-                   # Если доступ через /defects/ (не вложенный), разрешаем только админу менять/удалять
-                   # Создание брака напрямую через /defects/ запрещено
-                   if self.action == 'create':
-                        return [permissions.DenyAll()]
-                   return [IsAdminUser()]
-         return [permissions.IsAuthenticated()]
+            # Права на чтение зависят от get_queryset
+        if self.action in ['list', 'retrieve']: return [permissions.IsAuthenticated()]
+
+        order = self.get_order()  # Может быть None для URL /defects/
+
+            # Для действий с конкретным браком (update/destroy через /defects/{pk}/)
+        if self.action in ['update', 'partial_update', 'destroy']:
+                # Получаем сам объект брака, к которому идет обращение
+                # obj = self.get_object() # get_object будет вызван позже фреймворком
+                # Права должен проверять IsOwnerOrAdmin или кастомный пермишен
+                # Разрешим менять/удалять брак только админу или создателю ЗАКАЗА
+                # Нужен кастомный пермишен или проверка внутри perform_update/destroy
+                # Пока поставим IsOwnerOrAdmin, но он проверит order.created_by!
+            return [IsOwnerOrAdmin()]  # ОСТОРОЖНО: Проверит владельца ЗАКАЗА
+
+            # Для создания брака через вложенный URL /orders/{pk}/defects/
+        if self.action == 'create':
+            if order:  # Если заказ определен из URL
+                    # Проверяем условия заказа
+                if order.order_type != 'partner_to_store' or order.status != 'confirmed':
+                    raise PermissionDenied("Брак можно добавлять только к подтвержденным заказам магазину.")
+                    # Проверяем права на добавление к этому заказу
+                return [IsOwnerOrAdmin()]  # Разрешаем создателю заказа или админу
+            else:
+                    # Запрещаем создание через /api/defects/
+                return [permissions.DenyAll()]
+
+            # Для кастомного action add_group_by_store права проверяются внутри action
+        if self.action == 'add_group_by_store':
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.IsAuthenticated()]  # По умолчанию
 
     def perform_create(self, serializer):
-         # Заказ должен быть в контексте
-         order = self.context.get('order')
-         if not order:
-              raise serializers.ValidationError("Не удалось определить заказ для добавления брака.")
-         # Проверки и права уже должны быть выполнены в get_permissions и validate сериализатора
-         serializer.save(order=order) # Передаем заказ явно
+        order = self.context.get('order')
+        if not order: raise ValidationError(
+            "Создание брака возможно только через URL заказа: /api/orders/{order_pk}/defects/")
+            # Права и статус заказа проверены в get_permissions
+        serializer.save(order=order)  # Явно передаем заказ
 
-    # Action add_group остается как был, но теперь использует контекст
+        # --- ИСПРАВЛЕННЫЙ action add_group_by_store ---
+    @action(detail=False, methods=['post'], url_path='add-group-by-store')
+    @swagger_auto_schema(
+        operation_summary="Добавить брак по магазину и дате",
+        operation_description="Находит последний подтвержденный заказ 'Партнер -> Магазин' для указанного магазина за указанную дату (по умолчанию сегодня) и добавляет к нему брак.",
+        request_body=DefectGroupSerializer,  # Используем тот же сериализатор для тела
+        manual_parameters=[
+            openapi.Parameter('store_id', openapi.IN_QUERY, description="ID Магазина (обязательный)",
+                                type=openapi.TYPE_INTEGER, required=True),
+            openapi.Parameter('date', openapi.IN_QUERY, description="Дата заказа (YYYY-MM-DD, по умолч. сегодня)",
+                                type=openapi.TYPE_STRING, format='date'),
+            ],
+        esponses={201: DefectItemSerializer(many=True), 400: "Ошибка валидации/Не найден заказ",
+                       403: "Нет доступа", 404: "Магазин не найден"}
+        )
+    def add_group_by_store(self, request):
+        user = request.user
+        store_id = request.query_params.get('store_id')
+        date_str = request.query_params.get('date')
 
-    @action(detail=False, methods=['post'])
-    def add_group(self, request, order_pk=None): # Принимаем order_pk из URL
-        """Добавление группы бракованных товаров для заказа"""
-        # Получаем заказ (и проверяем права)
+        if not store_id:
+            return Response({"detail": "Параметр store_id обязателен"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Получаем магазин
         try:
-             order = self.get_order()
-             if not order: # Если вдруг доступ не через вложенный URL
-                  return Response({"error": "Используйте URL /api/orders/{order_pk}/defects/add_group/"}, status=status.HTTP_400_BAD_REQUEST)
-        except PermissionDenied as e:
-             return Response({"detail": str(e)}, status=status.HTTP_403_FORBIDDEN)
+            store = get_object_or_404(Store, pk=int(store_id), is_deleted=False,
+                                          is_active=True)  # Ищем активный, неудаленный
+        except (ValueError, TypeError):
+            return Response({"detail": "Неверный ID магазина"}, status=status.HTTP_400_BAD_REQUEST)
+        except Http404:
+            return Response({"detail": "Магазин не найден, неактивен или удален"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Передаем заказ в контекст сериализатора
-        context = self.get_serializer_context()
-        context['order'] = order
+            # Определяем дату
+        target_date = None
+        if date_str:
+            try:
+                target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                return Response({"detail": "Неверный формат даты"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            target_date = timezone.localdate()
 
+            # Находим последний подходящий заказ
+            # Ищем заказ, СОЗДАННЫЙ текущим пользователем (если он партнер) или любой (если админ)
+        order_filter = Q(store=store) & Q(order_type='partner_to_store') & Q(status='confirmed') & Q(
+            created_at__date=target_date)
+        if user.role == 'partner':
+            order_filter &= Q(created_by=user)  # Партнер ищет только свои заказы
+
+        order = Order.objects.filter(order_filter).order_by('-created_at').first()
+
+        if not order:
+            user_filter_msg = f" созданные пользователем {user.id}" if user.role == 'partner' else ""
+            return Response({
+                "detail": f"Подтвержденные заказы типа 'Партнер -> Магазин' для магазина '{store.name}'{user_filter_msg} за {target_date.strftime('%d.%m.%Y')} не найдены."},
+                status=status.HTTP_404_NOT_FOUND)
+
+            # --- Создаем и валидируем DefectGroupSerializer ---
+            # Передаем найденный заказ в контекст
+        context = {'request': request, 'order': order}
         serializer = DefectGroupSerializer(data=request.data, context=context)
         try:
             serializer.is_valid(raise_exception=True)
-            # Права доступа проверяются внутри сериализатора
-            defects = serializer.save() # save вызовет create сериализатора
-            logger.info(f"Пользователь {request.user.email} добавил группу брака ({len(defects)} шт.) к заказу {order.id}")
+                # Внутри DefectGroupSerializer.create должны быть проверки прав и создание DefectItem
+            defects = serializer.save()  # save вызовет create сериализатора
+            logger.info(
+                    f"Пользователь {request.user.email} добавил группу брака ({len(defects)} шт.) к заказу {order.id} магазина {store.id} за {target_date}")
+                # Используем DefectItemSerializer для ответа
             return Response(
                 DefectItemSerializer(defects, many=True, context=context).data,
                 status=status.HTTP_201_CREATED
             )
         except (serializers.ValidationError, PermissionDenied) as e:
-            logger.warning(f"Ошибка добавления группы брака к заказу {order.id} пользователем {request.user.email}: {e.detail if hasattr(e, 'detail') else str(e)}")
+            logger.warning(
+                f"Ошибка добавления группы брака к заказу {order.id} магазина {store.id}: {e.detail if hasattr(e, 'detail') else str(e)}")
             error_detail = e.detail if hasattr(e, 'detail') else {"detail": str(e)}
-            status_code = status.HTTP_403_FORBIDDEN if isinstance(e, PermissionDenied) else status.HTTP_400_BAD_REQUEST
+            status_code = status.HTTP_403_FORBIDDEN if isinstance(e,
+                                    PermissionDenied) else status.HTTP_400_BAD_REQUEST
             return Response(error_detail, status=status_code)
         except Exception as e:
-            logger.exception(f"Необработанная ошибка при добавлении группы брака к заказу {order.id}: {e}")
-            return Response({"error": "Ошибка при добавлении бракованных товаров."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.exception(
+                f"Необработанная ошибка при добавлении группы брака к заказу {order.id} магазина {store.id}: {e}")
+            return Response({"error": "Ошибка при добавлении бракованных товаров."},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @action(detail=False, methods=['get'])
+
+
+
+    # --- Actions для получения списков брака ---
+    @action(detail=False, methods=['get'], url_path='order-defects')
+    @swagger_auto_schema(operation_summary="Получить брак по ID заказа")
     def order_defects(self, request):
         """Получение бракованных товаров по конкретному заказу"""
         order_id = request.query_params.get('order_id')
-        if not order_id:
-            return Response(
-                {"detail": "Необходимо указать ID заказа"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        queryset = self.get_queryset().filter(order_id=order_id)
-
-        # Проверяем, что заказ существует и имеет элементы
-        from .models import Order
+        if not order_id: return Response({"detail": "Необходимо указать ID заказа"}, status=status.HTTP_400_BAD_REQUEST)
+        # get_queryset проверит права на заказ, если мы в контексте /orders/{pk}/defects/, но здесь нет order_pk
+        # Поэтому получаем queryset и фильтруем вручную, ПРОВЕРЯЯ ПРАВА
+        user = request.user
         try:
-            order = Order.objects.get(id=order_id)
-            if order.order_items.count() == 0:
-                return Response({
-                    "warning": "Заказ не содержит товаров",
-                    "defects": [],
-                    "total_quantity": 0,
-                    "total_price": 0
-                })
-        except Order.DoesNotExist:
-            return Response(
-                {"detail": "Заказ не найден"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+             order = get_object_or_404(Order, pk=int(order_id))
+             if not (user.role == 'admin' or order.created_by == user or order.partner == user):
+                  raise PermissionDenied("Нет доступа к этому заказу")
+        except (ValueError, TypeError): return Response({"detail": "Неверный ID заказа"}, status=status.HTTP_400_BAD_REQUEST)
+        except Http404: return Response({"detail": "Заказ не найден"}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionDenied as e: return Response({"detail": str(e)}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = DefectItemSerializer(queryset, many=True)
+        queryset = DefectItem.objects.filter(order=order).select_related('product')
+        serializer = DefectItemSerializer(queryset, many=True, context={'request': request})
+        total_defect_price = sum(defect.total_price for defect in queryset) or Decimal('0.00')
+        return Response({"order_id": order.id, "defects": serializer.data, "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0, "total_price": float(total_defect_price)})
 
-        # Рассчитываем общую стоимость бракованных товаров
-        total_defect_price = sum(defect.total_price for defect in queryset)
-
-        return Response({
-            "defects": serializer.data,
-            "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
-            "total_price": total_defect_price
-        })
-
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='store-defects')
+    @swagger_auto_schema(operation_summary="Получить брак по магазину и дате")
     def store_defects(self, request):
+        """Получение бракованных товаров по магазину и дате"""
         store_id = request.query_params.get('store_id')
         date_str = request.query_params.get('date')
+        if not store_id: return Response({"detail": "Необходимо указать ID магазина"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not store_id:
-            return Response(
-                {"detail": "Необходимо указать ID магазина"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        queryset = self.get_queryset().filter(order__store_id=store_id)
-
-        # Проверка статистики по магазину
-        from apps.stores.models import Store
+        user = request.user
         try:
-            store = Store.objects.get(id=store_id)
-        except Store.DoesNotExist:
-            return Response(
-                {"detail": "Магазин не найден"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+             store = get_object_or_404(Store, pk=int(store_id))
+             if not (user.role == 'admin' or store.partner == user):
+                  raise PermissionDenied("Нет доступа к этому магазину")
+        except (ValueError, TypeError): return Response({"detail": "Неверный ID магазина"}, status=status.HTTP_400_BAD_REQUEST)
+        except Http404: return Response({"detail": "Магазин не найден"}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionDenied as e: return Response({"detail": str(e)}, status=status.HTTP_403_FORBIDDEN)
 
-        # Фильтрация по дате, если указана
+        # Получаем базовый queryset (все дефекты) и фильтруем
+        queryset = DefectItem.objects.filter(order__store=store).select_related('product', 'order')
         if date_str:
             try:
-                from datetime import datetime
-                date = datetime.strptime(date_str, '%Y-%m-%d').date()
-                queryset = queryset.filter(order__created_at__date=date)
-            except ValueError:
-                return Response(
-                    {"detail": "Неверный формат даты. Используйте YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                queryset = queryset.filter(order__created_at__date=target_date)
+            except ValueError: return Response({"detail": "Неверный формат даты"}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = DefectItemSerializer(queryset, many=True)
-
-        # Рассчитываем общую стоимость бракованных товаров
-        total_defect_price = sum(defect.total_price for defect in queryset)
-
-        # Группируем по товарам
+        serializer = DefectItemSerializer(queryset, many=True, context={'request': request})
+        total_defect_price = sum(defect.total_price for defect in queryset) or Decimal('0.00')
+        # Группировка по товарам (как была)
         product_summary = {}
+        # ... (код группировки) ...
         for defect in queryset:
-            product_id = defect.product_id
-            if product_id not in product_summary:
-                product_summary[product_id] = {
-                    "product_id": product_id,
-                    "product_name": defect.product.name,
-                    "total_quantity": 0,
-                    "total_price": 0
-                }
+             product = defect.product
+             if product:
+                  product_id = product.id
+                  summary = product_summary.setdefault(product_id, {"product_id": product_id, "product_name": product.name,"total_quantity": 0,"total_price": 0.0})
+                  summary["total_quantity"] += defect.quantity
+                  summary["total_price"] += float(defect.total_price or 0)
 
-            product_summary[product_id]["total_quantity"] += defect.quantity
-            product_summary[product_id]["total_price"] += float(defect.total_price)
-
-        return Response({
-            "defects": serializer.data,
-            "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0,
-            "total_price": float(total_defect_price),
-            "products_summary": list(product_summary.values())
-        })
-
-
+        return Response({"store_id": store.id, "store_name": store.name, "filter_date": date_str, "defects": serializer.data, "total_quantity": queryset.aggregate(total=Sum('quantity'))['total'] or 0, "total_price": float(total_defect_price), "products_summary": list(product_summary.values())})
