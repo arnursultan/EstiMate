@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.db import models
 import re
-
+from model_utils import FieldTracker
 
 class UserManager(BaseUserManager):
     def create_user(self, email, phone, first_name, last_name, password=None, role="partner", status="pending",
@@ -83,6 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="partner", verbose_name="Роль")
     token_reset = models.CharField(max_length=5, blank=True, null=True, verbose_name="Токен сброса пароля")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending", verbose_name="Статус аккаунта")
+    tracker = FieldTracker(fields=['status'])
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     is_staff = models.BooleanField(default=False, verbose_name="Сотрудник")
     # Добавляем поле для мягкого удаления
