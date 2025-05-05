@@ -26,8 +26,8 @@ class Store(models.Model):
         ('rejected', 'Отклонен'),
     ]
 
-    name = models.CharField(max_length=100, verbose_name="Название магазина")
-    inn = models.CharField(max_length=20, verbose_name="ИНН")
+    name = models.CharField(max_length=100, verbose_name="Название магазина", unique=True)
+    inn = models.CharField(max_length=20, verbose_name="ИНН", unique=True)
     phone = models.CharField(max_length=15, verbose_name="Телефон")
     city = models.ForeignKey(
         City,

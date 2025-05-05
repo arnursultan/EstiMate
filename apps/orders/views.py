@@ -25,7 +25,7 @@ from django.db import transaction
 import logging
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from datetime import timezone
+from django.utils import timezone
 from decimal import Decimal
 
 
@@ -406,61 +406,50 @@ class DefectItemViewSet(viewsets.ModelViewSet):
         return context
 
     def get_permissions(self):
-            # Права на чтение зависят от get_queryset
-        if self.action in ['list', 'retrieve']: return [permissions.IsAuthenticated()]
-
-        order = self.get_order()  # Может быть None для URL /defects/
-
-            # Для действий с конкретным браком (update/destroy через /defects/{pk}/)
-        if self.action in ['update', 'partial_update', 'destroy']:
-                # Получаем сам объект брака, к которому идет обращение
-                # obj = self.get_object() # get_object будет вызван позже фреймворком
-                # Права должен проверять IsOwnerOrAdmin или кастомный пермишен
-                # Разрешим менять/удалять брак только админу или создателю ЗАКАЗА
-                # Нужен кастомный пермишен или проверка внутри perform_update/destroy
-                # Пока поставим IsOwnerOrAdmin, но он проверит order.created_by!
-            return [IsOwnerOrAdmin()]  # ОСТОРОЖНО: Проверит владельца ЗАКАЗА
-
-            # Для создания брака через вложенный URL /orders/{pk}/defects/
-        if self.action == 'create':
-            if order:  # Если заказ определен из URL
-                    # Проверяем условия заказа
-                if order.order_type != 'partner_to_store' or order.status != 'confirmed':
-                    raise PermissionDenied("Брак можно добавлять только к подтвержденным заказам магазину.")
-                    # Проверяем права на добавление к этому заказу
-                return [IsOwnerOrAdmin()]  # Разрешаем создателю заказа или админу
-            else:
-                    # Запрещаем создание через /api/defects/
-                return [permissions.DenyAll()]
-
-            # Для кастомного action add_group_by_store права проверяются внутри action
-        if self.action == 'add_group_by_store':
+        if self.action in ['list', 'retrieve']:
             return [permissions.IsAuthenticated()]
 
-        return [permissions.IsAuthenticated()]  # По умолчанию
+        order = self.get_order()
+
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [IsOwnerOrAdmin()]
+
+        if self.action == 'create':
+            # Все аутентифицированные могут создавать брак
+            return [permissions.IsAuthenticated()]
+
+        if self.action == 'add_group_by_store':
+            # Все аутентифицированные могут добавлять брак
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.IsAuthenticated()]
+
+    # По умолчанию
 
     def perform_create(self, serializer):
         order = self.context.get('order')
-        if not order: raise ValidationError(
-            "Создание брака возможно только через URL заказа: /api/orders/{order_pk}/defects/")
-            # Права и статус заказа проверены в get_permissions
-        serializer.save(order=order)  # Явно передаем заказ
+        if not order:
+            raise ValidationError("Создание брака возможно только через URL заказа: /api/orders/{order_pk}/defects/")
+
+        # Удалена проверка роли - все могут добавлять брак
+        serializer.save(order=order)
 
         # --- ИСПРАВЛЕННЫЙ action add_group_by_store ---
+
     @action(detail=False, methods=['post'], url_path='add-group-by-store')
     @swagger_auto_schema(
         operation_summary="Добавить брак по магазину и дате",
         operation_description="Находит последний подтвержденный заказ 'Партнер -> Магазин' для указанного магазина за указанную дату (по умолчанию сегодня) и добавляет к нему брак.",
-        request_body=DefectGroupSerializer,  # Используем тот же сериализатор для тела
+        request_body=DefectGroupSerializer,
         manual_parameters=[
             openapi.Parameter('store_id', openapi.IN_QUERY, description="ID Магазина (обязательный)",
-                                type=openapi.TYPE_INTEGER, required=True),
+                              type=openapi.TYPE_INTEGER, required=True),
             openapi.Parameter('date', openapi.IN_QUERY, description="Дата заказа (YYYY-MM-DD, по умолч. сегодня)",
-                                type=openapi.TYPE_STRING, format='date'),
-            ],
-        esponses={201: DefectItemSerializer(many=True), 400: "Ошибка валидации/Не найден заказ",
-                       403: "Нет доступа", 404: "Магазин не найден"}
-        )
+                              type=openapi.TYPE_STRING, format='date'),
+        ],
+        responses={201: DefectItemSerializer(many=True), 400: "Ошибка валидации/Не найден заказ",
+                   403: "Нет доступа", 404: "Магазин не найден"}
+    )
     def add_group_by_store(self, request):
         user = request.user
         store_id = request.query_params.get('store_id')
@@ -469,16 +458,15 @@ class DefectItemViewSet(viewsets.ModelViewSet):
         if not store_id:
             return Response({"detail": "Параметр store_id обязателен"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Получаем магазин
+        # Получаем магазин
         try:
-            store = get_object_or_404(Store, pk=int(store_id), is_deleted=False,
-                                          is_active=True)  # Ищем активный, неудаленный
+            store = get_object_or_404(Store, pk=int(store_id), is_deleted=False, is_active=True)
         except (ValueError, TypeError):
             return Response({"detail": "Неверный ID магазина"}, status=status.HTTP_400_BAD_REQUEST)
         except Http404:
             return Response({"detail": "Магазин не найден, неактивен или удален"}, status=status.HTTP_404_NOT_FOUND)
 
-            # Определяем дату
+        # Определяем дату
         target_date = None
         if date_str:
             try:
@@ -486,34 +474,31 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             except ValueError:
                 return Response({"detail": "Неверный формат даты"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            target_date = timezone.localdate()
+            # Исправлено: используем локальную дату
+            target_date = timezone.now().date()
 
-            # Находим последний подходящий заказ
-            # Ищем заказ, СОЗДАННЫЙ текущим пользователем (если он партнер) или любой (если админ)
+        # Находим последний подходящий заказ
         order_filter = Q(store=store) & Q(order_type='partner_to_store') & Q(status='confirmed') & Q(
             created_at__date=target_date)
-        if user.role == 'partner':
-            order_filter &= Q(created_by=user)  # Партнер ищет только свои заказы
 
         order = Order.objects.filter(order_filter).order_by('-created_at').first()
 
         if not order:
-            user_filter_msg = f" созданные пользователем {user.id}" if user.role == 'partner' else ""
             return Response({
-                "detail": f"Подтвержденные заказы типа 'Партнер -> Магазин' для магазина '{store.name}'{user_filter_msg} за {target_date.strftime('%d.%m.%Y')} не найдены."},
-                status=status.HTTP_404_NOT_FOUND)
+                "detail": f"Подтвержденные заказы типа 'Партнер -> Магазин' для магазина '{store.name}' за {target_date.strftime('%d.%m.%Y')} не найдены."
+            }, status=status.HTTP_404_NOT_FOUND)
 
-            # --- Создаем и валидируем DefectGroupSerializer ---
-            # Передаем найденный заказ в контекст
+        # Создаем и валидируем DefectGroupSerializer
         context = {'request': request, 'order': order}
         serializer = DefectGroupSerializer(data=request.data, context=context)
+
         try:
             serializer.is_valid(raise_exception=True)
-                # Внутри DefectGroupSerializer.create должны быть проверки прав и создание DefectItem
-            defects = serializer.save()  # save вызовет create сериализатора
+            defects = serializer.save()
             logger.info(
-                    f"Пользователь {request.user.email} добавил группу брака ({len(defects)} шт.) к заказу {order.id} магазина {store.id} за {target_date}")
-                # Используем DefectItemSerializer для ответа
+                f"Пользователь {request.user.email} добавил группу брака ({len(defects)} шт.) к заказу {order.id} магазина {store.id} за {target_date}")
+
+            # Используем DefectItemSerializer для ответа
             return Response(
                 DefectItemSerializer(defects, many=True, context=context).data,
                 status=status.HTTP_201_CREATED
@@ -522,16 +507,13 @@ class DefectItemViewSet(viewsets.ModelViewSet):
             logger.warning(
                 f"Ошибка добавления группы брака к заказу {order.id} магазина {store.id}: {e.detail if hasattr(e, 'detail') else str(e)}")
             error_detail = e.detail if hasattr(e, 'detail') else {"detail": str(e)}
-            status_code = status.HTTP_403_FORBIDDEN if isinstance(e,
-                                    PermissionDenied) else status.HTTP_400_BAD_REQUEST
+            status_code = status.HTTP_403_FORBIDDEN if isinstance(e, PermissionDenied) else status.HTTP_400_BAD_REQUEST
             return Response(error_detail, status=status_code)
         except Exception as e:
             logger.exception(
                 f"Необработанная ошибка при добавлении группы брака к заказу {order.id} магазина {store.id}: {e}")
             return Response({"error": "Ошибка при добавлении бракованных товаров."},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
 
     # --- Actions для получения списков брака ---

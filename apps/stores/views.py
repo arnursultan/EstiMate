@@ -409,13 +409,7 @@ class StoreViewSet(viewsets.ModelViewSet):
         """Частичная оплата долга магазина"""
         store = self.get_object()
 
-        # Изменено: проверяем только роль пользователя, а не принадлежность магазина
-        user = request.user
-        if user.role != 'admin' and user.role != 'partner':
-            return Response(
-                {"detail": "Только администраторы и партнеры могут оплачивать долги"},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        # Удалена проверка роли - все могут оплачивать долги
 
         # Проверяем, что у магазина есть долг
         if store.remaining_debt <= 0:

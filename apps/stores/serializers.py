@@ -46,8 +46,14 @@ class StoreSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # Проверка ИНН
         inn = data.get('inn')
-        if inn and len(inn) < 10: # Оставляем базовую проверку
-            raise serializers.ValidationError({"inn": "ИНН должен содержать не менее 10 цифр"})
+        if inn:
+            if len(inn) < 12:
+                raise serializers.ValidationError({"inn": "ИНН должен содержать не менее 12 цифр"})
+            if len(inn) > 14:
+                raise serializers.ValidationError({"inn": "ИНН должен содержать не более 14 цифр"})
+            store_id = self.instance.pk if self.instance else None
+            if Store.objects.exclude(pk=store_id).filter(inn=inn).exists():
+                raise serializers.ValidationError({"inn": "Магазин с таким ИНН уже существует"})
 
         # Проверка телефона
         phone = data.get('phone')
@@ -59,7 +65,11 @@ class StoreSerializer(serializers.ModelSerializer):
         if name:
             name = name.strip()
             if name:
-                 data['name'] = name[0].upper() + name[1:] # Форматируем здесь при создании/обновлении
+                 data['name'] = name[0].upper() + name[1:]
+            store_id = self.instance.pk if self.instance else None
+            if Store.objects.exclude(pk=store_id).filter(name=name).exists():
+                raise serializers.ValidationError({"name": "Магазин с таким названием уже существует"})
+        # Форматируем здесь при создании/обновлении
 
         # Статус по умолчанию устанавливается в модели или view
         # data['status'] = 'approved'
@@ -109,6 +119,7 @@ class StoreDebtSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['created_at', 'updated_at']
 
+
     # Убираем validate, т.к. min_value уже в поле
     # def validate(self, data): ...
 
@@ -131,20 +142,20 @@ class StoreDebtPaymentSerializer(serializers.ModelSerializer):
             # Пытаемся получить магазин из контекста URL, если не передан в data
             view = self.context.get('view')
             if view and hasattr(view, 'kwargs'):
-                 store_id = view.kwargs.get('store_pk') or view.kwargs.get('pk')
-                 if store_id:
-                     try:
-                         store = Store.objects.get(id=store_id)
-                         data['store'] = store
-                     except Store.DoesNotExist:
-                         raise serializers.ValidationError({"store": "Магазин не найден."})
-                 else:
-                     raise serializers.ValidationError({"store": "Необходимо указать магазин."})
+                store_id = view.kwargs.get('store_pk') or view.kwargs.get('pk')
+                if store_id:
+                    try:
+                        store = Store.objects.get(id=store_id)
+                        data['store'] = store
+                    except Store.DoesNotExist:
+                        raise serializers.ValidationError({"store": "Магазин не найден."})
+                else:
+                    raise serializers.ValidationError({"store": "Необходимо указать магазин."})
             else:
-                 raise serializers.ValidationError({"store": "Необходимо указать магазин."})
+                raise serializers.ValidationError({"store": "Необходимо указать магазин."})
 
-        if not amount: # Проверка на None и 0
-             raise serializers.ValidationError({"amount": "Сумма оплаты должна быть больше нуля"})
+        if not amount:
+            raise serializers.ValidationError({"amount": "Сумма оплаты должна быть больше нуля"})
 
         # Проверяем, что у магазина есть долг
         remaining_debt = store.remaining_debt
@@ -153,10 +164,9 @@ class StoreDebtPaymentSerializer(serializers.ModelSerializer):
 
         # Проверяем, что сумма оплаты не превышает оставшийся долг
         if amount > remaining_debt:
-            raise serializers.ValidationError(f"Сумма оплаты ({amount}) превышает оставшийся долг ({remaining_debt} сом)")
+            raise serializers.ValidationError(
+                f"Сумма оплаты ({amount}) превышает оставшийся долг ({remaining_debt} сом)")
 
-        # Проверка прав доступа пользователя (админ или владелец магазина)
-        if request and not (request.user.role == 'admin' or (request.user.role == 'partner' and store.partner == request.user)):
-             raise serializers.ValidationError("У вас нет прав для добавления оплаты этому магазину")
+        # Удалена проверка роли - все могут оплачивать
 
         return data

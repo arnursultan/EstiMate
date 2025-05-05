@@ -86,7 +86,7 @@ class DefectItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
     total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True, coerce_to_string=False)
     quantity = serializers.IntegerField(min_value=1)
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all()) # Берем любой товар
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
 
     class Meta:
         model = DefectItem
@@ -100,8 +100,6 @@ class DefectItemSerializer(serializers.ModelSerializer):
         order = data.get('order') or self.context.get('order')
         product = data.get('product')
         quantity = data.get('quantity')
-        request = self.context.get('request')
-        user = request.user if request else None
 
         if not order:
             raise serializers.ValidationError("Необходимо указать заказ")
@@ -113,8 +111,7 @@ class DefectItemSerializer(serializers.ModelSerializer):
         if order.status != 'confirmed':
             raise serializers.ValidationError("Брак можно регистрировать только для подтвержденных заказов")
 
-        if user and not (user.role == 'admin' or order.created_by == user):
-             raise exceptions.PermissionDenied("У вас нет прав добавлять брак к этому заказу.")
+        # Удалена проверка роли - все могут добавлять брак
 
         order_item = OrderItem.objects.filter(order=order, product=product).first()
         if not order_item:
@@ -623,16 +620,14 @@ class DefectGroupSerializer(serializers.Serializer):
     def create(self, validated_data):
         order = self.context.get('order')
         if not order:
-             raise serializers.ValidationError("Не удалось определить заказ для добавления брака.")
+            raise serializers.ValidationError("Не удалось определить заказ для добавления брака.")
 
         if order.order_type != 'partner_to_store':
-             raise serializers.ValidationError("Брак можно регистрировать только для заказов магазину")
+            raise serializers.ValidationError("Брак можно регистрировать только для заказов магазину")
         if order.status != 'confirmed':
-             raise serializers.ValidationError("Брак можно регистрировать только для подтвержденных заказов")
+            raise serializers.ValidationError("Брак можно регистрировать только для подтвержденных заказов")
 
-        user = self.context['request'].user
-        if not (user.role == 'admin' or order.created_by == user):
-             raise exceptions.PermissionDenied("У вас нет прав добавлять брак к этому заказу.")
+        # Удалена проверка роли - все могут добавлять брак
 
         defects_data = validated_data.get('defects', [])
         created_defects = []
@@ -651,12 +646,14 @@ class DefectGroupSerializer(serializers.Serializer):
 
             order_item = order_items_map.get(product_id)
             if not order_item:
-                logger.warning(f"Товар '{product.name}' не был найден в заказе {order.id} при добавлении брака. Пропуск.")
+                logger.warning(
+                    f"Товар '{product.name}' не был найден в заказе {order.id} при добавлении брака. Пропуск.")
                 continue
 
             if quantity > order_item.quantity:
-                 logger.warning(f"Количество брака ({quantity}) для товара '{product.name}' превышает заказанное ({order_item.quantity}) в заказе {order.id}. Пропуск.")
-                 continue
+                logger.warning(
+                    f"Количество брака ({quantity}) для товара '{product.name}' превышает заказанное ({order_item.quantity}) в заказе {order.id}. Пропуск.")
+                continue
 
             try:
                 defect = DefectItem.objects.create(
@@ -668,10 +665,10 @@ class DefectGroupSerializer(serializers.Serializer):
                 created_defects.append(defect)
                 logger.info(f"Добавлен брак: {quantity} шт. товара '{product.name}' к заказу {order.id}")
             except Exception as e:
-                 logger.error(f"Ошибка при создании DefectItem для товара {product_id} в заказе {order.id}: {e}")
-                 raise serializers.ValidationError("Ошибка при сохранении брака.")
+                logger.error(f"Ошибка при создании DefectItem для товара {product_id} в заказе {order.id}: {e}")
+                raise serializers.ValidationError("Ошибка при сохранении брака.")
 
         if not created_defects:
-             raise serializers.ValidationError("Не удалось добавить ни один элемент брака. Проверьте данные.")
+            raise serializers.ValidationError("Не удалось добавить ни один элемент брака. Проверьте данные.")
 
         return created_defects
