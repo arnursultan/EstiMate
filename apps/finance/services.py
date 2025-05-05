@@ -306,17 +306,19 @@ class AdminStatisticsService:
             order_type='partner_to_store', status='confirmed',
             created_at__gte=start_datetime, created_at__lte=end_datetime
         ).prefetch_related(
-             Prefetch('order_items', queryset=OrderItem.objects.select_related('product')),
-             Prefetch('defect_items', queryset=DefectItem.objects.select_related('product'))
-         )
+            Prefetch('order_items', queryset=OrderItem.objects.select_related('product')),
+            Prefetch('defect_items', queryset=DefectItem.objects.select_related('product'))
+        )
         partner_orders_qs = Order.objects.filter(
             order_type='admin_to_partner', status='confirmed',
             created_at__gte=start_datetime, created_at__lte=end_datetime
         ).prefetch_related(
-             Prefetch('order_items', queryset=OrderItem.objects.select_related('product'))
-         )
-        store_orders_count = store_orders_qs.count(); print(f"[Service] Админ: Найденные Store Orders ({store_orders_count})")
-        partner_orders_count = partner_orders_qs.count(); print(f"[Service] Админ: Найденные Partner Orders ({partner_orders_count})")
+            Prefetch('order_items', queryset=OrderItem.objects.select_related('product'))
+        )
+        store_orders_count = store_orders_qs.count()
+        print(f"[Service] Админ: Найденные Store Orders ({store_orders_count})")
+        partner_orders_count = partner_orders_qs.count()
+        print(f"[Service] Админ: Найденные Partner Orders ({partner_orders_count})")
 
         store_order_items = [item for order in store_orders_qs for item in order.order_items.all()]
         partner_order_items = [item for order in partner_orders_qs for item in order.order_items.all()]
@@ -340,50 +342,60 @@ class AdminStatisticsService:
 
         admin_inventory = Product.objects.filter(is_deleted=False)
         remaining_inventory_count = admin_inventory.aggregate(total=Sum('quantity'))['total'] or 0
-        remaining_inventory_value = sum(p.quantity * p.price for p in admin_inventory if p.quantity and p.price is not None) or Decimal('0.00')
+        remaining_inventory_value = sum(
+            p.quantity * p.price for p in admin_inventory if p.quantity and p.price is not None) or Decimal('0.00')
         print(f"[Service] Админ: Inventory: Count={remaining_inventory_count}, Value={remaining_inventory_value}")
 
         # --- РАСЧЕТЫ ---
         print("[Service] Расчет админ показателей...")
-        total_sales_amount_period = sum(item.paid_items_price for item in store_order_items) # Сумма платных
-        total_requested_by_partners_amount_period = sum(item.total_price or Decimal('0.00') for item in partner_order_items)
+        total_sales_amount_period = sum(item.paid_items_price for item in store_order_items)  # Сумма платных
+        total_requested_by_partners_amount_period = sum(
+            item.total_price or Decimal('0.00') for item in partner_order_items)
         total_debt_created_period = period_store_debts.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
         total_paid_debt_period = period_store_payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
         total_expenses_amount_period = expenses_agg['total'] or Decimal('0.00')
-        total_defect_cost_period = sum(d.total_price for d in defect_items) or Decimal('0.00') # Используем свойство
+        total_defect_cost_period = sum(d.total_price for d in defect_items) or Decimal('0.00')  # Используем свойство
         total_defect_count_period = sum(d.quantity for d in defect_items)
         total_bonus_count_period = sum(item.bonus_quantity or 0 for item in store_order_items)
         total_bonus_cost_period = sum(
-             (item.bonus_quantity or 0) * (item.price or Decimal('0.00'))
-             for item in store_order_items
+            (item.bonus_quantity or 0) * (item.price or Decimal('0.00'))
+            for item in store_order_items
         ) or Decimal('0.00')
-        print(f"[Service] Админ Расчет: Sales={total_sales_amount_period}, Paid={total_paid_debt_period}, Expenses={total_expenses_amount_period}, DefectCost={total_defect_cost_period}, BonusCost={total_bonus_cost_period}, GivenToPartners={total_requested_by_partners_amount_period}")
+
+        # Расчет общего баланса: sales_amount - bonus_cost - defect_cost
+        total_balance = total_sales_amount_period - total_bonus_cost_period - total_defect_cost_period
+
+        print(
+            f"[Service] Админ Расчет: Sales={total_sales_amount_period}, Paid={total_paid_debt_period}, Expenses={total_expenses_amount_period}, DefectCost={total_defect_cost_period}, BonusCost={total_bonus_cost_period}, GivenToPartners={total_requested_by_partners_amount_period}")
+        print(f"[Service] Админ Расчет: Total Balance={total_balance}")
 
         # --- ФОРМИРОВАНИЕ ОТВЕТА ---
         result = {
             "admin_id": admin.id,
             "admin_name": f"{admin.first_name} {admin.last_name}",
-             "date_range": {
-                 "start_date": start_date.isoformat() if start_date else None,
-                 "end_date": end_date.isoformat(),
-                 "formatted": "За все время" if start_date is None else (start_date.strftime("%d.%m.%Y") if start_date == end_date else f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}")
-             },
-             "period_summary": {
-                 "sales_amount": float(total_sales_amount_period), # Сумма платных товаров
-                 "payments_received": float(total_paid_debt_period),
-                 "partner_expenses_total": float(total_expenses_amount_period),
-                 "defect_cost": float(total_defect_cost_period),
-                 "bonus_cost": float(total_bonus_cost_period), # Добавлено
-                 "products_given_to_partners": float(total_requested_by_partners_amount_period),
-                 "orders_to_stores_count": store_orders_count,
-                 "orders_to_partners_count": partner_orders_count,
-                 "bonus_items_count": total_bonus_count_period,
-                 "defect_items_count": total_defect_count_period,
-             },
-             "inventory_status": {
-                 "remaining_items_count": remaining_inventory_count,
-                 "remaining_items_value": float(remaining_inventory_value),
-             },
+            "date_range": {
+                "start_date": start_date.isoformat() if start_date else None,
+                "end_date": end_date.isoformat(),
+                "formatted": "За все время" if start_date is None else (start_date.strftime(
+                    "%d.%m.%Y") if start_date == end_date else f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}")
+            },
+            "period_summary": {
+                "sales_amount": float(total_sales_amount_period),  # Сумма платных товаров
+                "payments_received": float(total_paid_debt_period),
+                "partner_expenses_total": float(total_expenses_amount_period),
+                "defect_cost": float(total_defect_cost_period),
+                "bonus_cost": float(total_bonus_cost_period),  # Добавлено
+                "products_given_to_partners": float(total_requested_by_partners_amount_period),
+                "orders_to_stores_count": store_orders_count,
+                "orders_to_partners_count": partner_orders_count,
+                "bonus_items_count": total_bonus_count_period,
+                "defect_items_count": total_defect_count_period,
+                "total_balance": float(total_balance),  # Добавлен общий баланс
+            },
+            "inventory_status": {
+                "remaining_items_count": remaining_inventory_count,
+                "remaining_items_value": float(remaining_inventory_value),
+            },
         }
         print(f"[Service] Итоговый результат для админа {admin_id}: {result}")
         return result

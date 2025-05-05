@@ -595,6 +595,8 @@ class OrderStatusUpdateSerializer(serializers.ModelSerializer):
 
 # --- DefectGroupSerializer ---
 # (без изменений, как в предыдущем ответе)
+# В serializers.py исправить DefectGroupSerializer
+
 class DefectGroupSerializer(serializers.Serializer):
     """Сериализатор для добавления группы бракованных товаров"""
     defects = serializers.ListField(
@@ -604,16 +606,23 @@ class DefectGroupSerializer(serializers.Serializer):
 
     def validate_defects(self, value):
         if not isinstance(value, list):
-             raise serializers.ValidationError("Поле 'defects' должно быть списком.")
+            raise serializers.ValidationError("Поле 'defects' должно быть списком.")
+
         for item in value:
-             if not isinstance(item, dict):
-                  raise serializers.ValidationError("Каждый элемент в 'defects' должен быть словарем.")
-             if 'product_id' not in item or not isinstance(item['product_id'], int):
-                  raise serializers.ValidationError("Каждый элемент брака должен содержать 'product_id' (integer).")
-             if 'quantity' not in item or not isinstance(item['quantity'], int) or item['quantity'] <= 0:
-                  raise serializers.ValidationError("Каждый элемент брака должен содержать 'quantity' (positive integer).")
-             if 'description' in item and not isinstance(item['description'], str):
-                   raise serializers.ValidationError("Поле 'description' должно быть строкой.")
+            if not isinstance(item, dict):
+                raise serializers.ValidationError("Каждый элемент в 'defects' должен быть словарем.")
+
+            # Исправлено: используем 'product' вместо 'product_id'
+            if 'product' not in item or not isinstance(item['product'], int):
+                raise serializers.ValidationError("Каждый элемент брака должен содержать 'product' (integer).")
+
+            if 'quantity' not in item or not isinstance(item['quantity'], int) or item['quantity'] <= 0:
+                raise serializers.ValidationError(
+                    "Каждый элемент брака должен содержать 'quantity' (positive integer).")
+
+            if 'description' in item and not isinstance(item['description'], str):
+                raise serializers.ValidationError("Поле 'description' должно быть строкой.")
+
         return value
 
     @transaction.atomic
@@ -622,37 +631,21 @@ class DefectGroupSerializer(serializers.Serializer):
         if not order:
             raise serializers.ValidationError("Не удалось определить заказ для добавления брака.")
 
-        if order.order_type != 'partner_to_store':
-            raise serializers.ValidationError("Брак можно регистрировать только для заказов магазину")
-        if order.status != 'confirmed':
-            raise serializers.ValidationError("Брак можно регистрировать только для подтвержденных заказов")
-
-        # Удалена проверка роли - все могут добавлять брак
+        # Удалена проверка типа заказа и статуса, так как мы создаём виртуальный заказ автоматически
 
         defects_data = validated_data.get('defects', [])
         created_defects = []
-        order_items_map = {item.product_id: item for item in order.order_items.all()}
 
         for defect_data in defects_data:
-            product_id = defect_data['product_id']
+            # Исправлено: используем 'product' вместо 'product_id'
+            product_id = defect_data['product']
             quantity = defect_data['quantity']
             description = defect_data.get('description', '')
 
             try:
                 product = Product.objects.get(id=product_id)
             except Product.DoesNotExist:
-                logger.warning(f"Товар с ID {product_id} не найден при добавлении брака к заказу {order.id}. Пропуск.")
-                continue
-
-            order_item = order_items_map.get(product_id)
-            if not order_item:
-                logger.warning(
-                    f"Товар '{product.name}' не был найден в заказе {order.id} при добавлении брака. Пропуск.")
-                continue
-
-            if quantity > order_item.quantity:
-                logger.warning(
-                    f"Количество брака ({quantity}) для товара '{product.name}' превышает заказанное ({order_item.quantity}) в заказе {order.id}. Пропуск.")
+                logger.warning(f"Товар с ID {product_id} не найден при добавлении брака. Пропуск.")
                 continue
 
             try:

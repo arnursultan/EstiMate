@@ -436,19 +436,36 @@ class DefectItemViewSet(viewsets.ModelViewSet):
 
         # --- ИСПРАВЛЕННЫЙ action add_group_by_store ---
 
+    # В DefectItemViewSet в apps/orders/views.py
+
+    # В DefectItemViewSet в apps/orders/views.py
+
     @action(detail=False, methods=['post'], url_path='add-group-by-store')
     @swagger_auto_schema(
-        operation_summary="Добавить брак по магазину и дате",
-        operation_description="Находит последний подтвержденный заказ 'Партнер -> Магазин' для указанного магазина за указанную дату (по умолчанию сегодня) и добавляет к нему брак.",
+        operation_summary="Добавить брак для магазина",
+        operation_description="""
+        Добавляет брак для магазина, создавая при необходимости виртуальный заказ.
+        Позволяет добавлять брак к магазину независимо от наличия реальных заказов.
+        """,
         request_body=DefectGroupSerializer,
         manual_parameters=[
-            openapi.Parameter('store_id', openapi.IN_QUERY, description="ID Магазина (обязательный)",
-                              type=openapi.TYPE_INTEGER, required=True),
-            openapi.Parameter('date', openapi.IN_QUERY, description="Дата заказа (YYYY-MM-DD, по умолч. сегодня)",
-                              type=openapi.TYPE_STRING, format='date'),
+            openapi.Parameter(
+                'store_id', openapi.IN_QUERY,
+                description="ID Магазина (обязательный)",
+                type=openapi.TYPE_INTEGER, required=True
+            ),
+            openapi.Parameter(
+                'date', openapi.IN_QUERY,
+                description="Дата брака (YYYY-MM-DD, по умолч. сегодня)",
+                type=openapi.TYPE_STRING, format='date'
+            ),
         ],
-        responses={201: DefectItemSerializer(many=True), 400: "Ошибка валидации/Не найден заказ",
-                   403: "Нет доступа", 404: "Магазин не найден"}
+        responses={
+            201: DefectItemSerializer(many=True),
+            400: "Ошибка валидации",
+            403: "Нет доступа",
+            404: "Магазин не найден"
+        }
     )
     def add_group_by_store(self, request):
         user = request.user
@@ -470,50 +487,61 @@ class DefectItemViewSet(viewsets.ModelViewSet):
         target_date = None
         if date_str:
             try:
-                target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                target_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
             except ValueError:
                 return Response({"detail": "Неверный формат даты"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            # Исправлено: используем локальную дату
             target_date = timezone.now().date()
 
-        # Находим последний подходящий заказ
-        order_filter = Q(store=store) & Q(order_type='partner_to_store') & Q(status='confirmed') & Q(
-            created_at__date=target_date)
-
-        order = Order.objects.filter(order_filter).order_by('-created_at').first()
-
-        if not order:
-            return Response({
-                "detail": f"Подтвержденные заказы типа 'Партнер -> Магазин' для магазина '{store.name}' за {target_date.strftime('%d.%m.%Y')} не найдены."
-            }, status=status.HTTP_404_NOT_FOUND)
-
-        # Создаем и валидируем DefectGroupSerializer
-        context = {'request': request, 'order': order}
-        serializer = DefectGroupSerializer(data=request.data, context=context)
-
         try:
-            serializer.is_valid(raise_exception=True)
-            defects = serializer.save()
-            logger.info(
-                f"Пользователь {request.user.email} добавил группу брака ({len(defects)} шт.) к заказу {order.id} магазина {store.id} за {target_date}")
+            with transaction.atomic():
+                # Создаём виртуальный заказ для добавления брака
+                # Тип заказа "partner_to_store", статус "confirmed"
+                order = Order.objects.create(
+                    created_by=user,
+                    partner=user,  # Партнер тот же, кто создал заказ
+                    store=store,
+                    order_type='partner_to_store',
+                    status='confirmed',
+                    is_group_order=True
+                )
 
-            # Используем DefectItemSerializer для ответа
-            return Response(
-                DefectItemSerializer(defects, many=True, context=context).data,
-                status=status.HTTP_201_CREATED
-            )
+                logger.info(f"Создан виртуальный заказ #{order.id} для добавления брака к магазину {store.id}")
+
+                # Создаем и валидируем DefectGroupSerializer
+                context = {'request': request, 'order': order}
+                serializer = DefectGroupSerializer(data=request.data, context=context)
+
+                serializer.is_valid(raise_exception=True)
+                defects = serializer.save()
+
+                logger.info(
+                    f"Пользователь {user.email} добавил группу брака ({len(defects)} шт.) к виртуальному заказу {order.id} магазина {store.id}"
+                )
+
+                # Используем DefectItemSerializer для ответа
+                return Response(
+                    DefectItemSerializer(defects, many=True, context=context).data,
+                    status=status.HTTP_201_CREATED
+                )
+
         except (serializers.ValidationError, PermissionDenied) as e:
             logger.warning(
-                f"Ошибка добавления группы брака к заказу {order.id} магазина {store.id}: {e.detail if hasattr(e, 'detail') else str(e)}")
+                f"Ошибка добавления группы брака к магазину {store.id}: {e.detail if hasattr(e, 'detail') else str(e)}"
+            )
             error_detail = e.detail if hasattr(e, 'detail') else {"detail": str(e)}
             status_code = status.HTTP_403_FORBIDDEN if isinstance(e, PermissionDenied) else status.HTTP_400_BAD_REQUEST
             return Response(error_detail, status=status_code)
         except Exception as e:
             logger.exception(
-                f"Необработанная ошибка при добавлении группы брака к заказу {order.id} магазина {store.id}: {e}")
-            return Response({"error": "Ошибка при добавлении бракованных товаров."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                f"Необработанная ошибка при добавлении группы брака к магазину {store.id}: {e}"
+            )
+            return Response(
+                {"error": "Ошибка при добавлении бракованных товаров."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 
 
     # --- Actions для получения списков брака ---
