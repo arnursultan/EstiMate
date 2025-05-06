@@ -1,8 +1,9 @@
+# apps/stores/models.py
 from django.db import models
 from django.core.validators import MinValueValidator
 from apps.users.models import User
 from django.db.models import Sum
-from decimal import Decimal # Убедись, что импортирован Decimal
+from decimal import Decimal
 
 
 class City(models.Model):
@@ -26,9 +27,9 @@ class Store(models.Model):
         ('rejected', 'Отклонен'),
     ]
 
-    name = models.CharField(max_length=100, verbose_name="Название магазина", unique=True)
-    inn = models.CharField(max_length=20, verbose_name="ИНН", unique=True)
-    phone = models.CharField(max_length=15, verbose_name="Телефон")
+    name = models.CharField(max_length=100, verbose_name="Название магазина")  # Убрали unique=True
+    inn = models.CharField(max_length=20, verbose_name="ИНН", unique=True)  # Оставили unique=True
+    phone = models.CharField(max_length=15, verbose_name="Телефон", unique=True)  # Добавили unique=True
     city = models.ForeignKey(
         City,
         on_delete=models.PROTECT,
@@ -36,8 +37,6 @@ class Store(models.Model):
         verbose_name="Город"
     )
     address = models.CharField(max_length=200, verbose_name="Адрес")
-    # УДАЛЯЕМ поле expenses, т.к. расходы теперь у партнера
-    # expenses = models.DecimalField(...)
     partner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -54,7 +53,6 @@ class Store(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активен")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    # Убедись, что поле is_deleted существует
     is_deleted = models.BooleanField(default=False, verbose_name="Удален")
 
     class Meta:
@@ -69,9 +67,6 @@ class Store(models.Model):
     @property
     def total_debt(self):
         """Общая сумма всех долгов магазина"""
-        # Фильтруем удаленные магазины, если нужно не считать их долги
-        # Но т.к. долги связаны с магазином, они останутся.
-        # Лучше фильтровать при агрегации по всем магазинам.
         return self.debts.aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00')
 
     @property

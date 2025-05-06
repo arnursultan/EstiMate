@@ -57,23 +57,20 @@ class StoreSerializer(serializers.ModelSerializer):
 
         # Проверка телефона
         phone = data.get('phone')
-        if phone and not phone.startswith('+'): # Оставляем базовую проверку
-             raise serializers.ValidationError({"phone": "Номер телефона должен начинаться с +"})
+        if phone:
+            if not phone.startswith('+'):
+                raise serializers.ValidationError({"phone": "Номер телефона должен начинаться с +"})
+            store_id = self.instance.pk if self.instance else None
+            if Store.objects.exclude(pk=store_id).filter(phone=phone).exists():
+                raise serializers.ValidationError({"phone": "Магазин с таким номером телефона уже существует"})
 
         # Проверка имени магазина - первая буква заглавная
         name = data.get('name')
         if name:
             name = name.strip()
             if name:
-                 data['name'] = name[0].upper() + name[1:]
-            store_id = self.instance.pk if self.instance else None
-            if Store.objects.exclude(pk=store_id).filter(name=name).exists():
-                raise serializers.ValidationError({"name": "Магазин с таким названием уже существует"})
-        # Форматируем здесь при создании/обновлении
-
-        # Статус по умолчанию устанавливается в модели или view
-        # data['status'] = 'approved'
-        # data['is_deleted'] = False
+                data['name'] = name[0].upper() + name[1:]
+            # Убираем проверку уникальности имени, так как оно не уникально
 
         return data
 
